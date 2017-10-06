@@ -15,6 +15,7 @@
 
 #include "TV792Histogram.h"
 #include "THe3RateVsTime.h"
+#include "THe3CountsInSequence.h"
 #include "TV1720Waveform.h"
 
 /// This is an example of how to organize a set of different histograms
@@ -37,11 +38,13 @@ public:
 	TV792Histograms* GetV792Histograms();
 	TV1720Waveform* GetV1720Histograms();
         THe3RateVsTime* GetHe3RateHistograms();
+        THe3CountsInSequence* GetHe3CountsHistograms();
 private:
 
 	TV792Histograms *fV792Histogram;
 	TV1720Waveform *fV1720Waveform;
   THe3RateVsTime* fHe3RateVsTime;
+  THe3CountsInSequence* fHe3CountsInSequence;
   
 };
 
