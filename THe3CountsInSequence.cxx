@@ -1,6 +1,6 @@
 #include "THe3CountsInSequence.h"
 
-#include "TV792Data.hxx"
+#include "TV792NData.hxx"
 #include "TGenericData.hxx"
 #include "TDirectory.h"
 
@@ -74,12 +74,12 @@ void THe3CountsInSequence::UpdateHistograms(TDataContainer& dataContainer){
   }
 
 
-  TV792Data *data = dataContainer.GetEventData<TV792Data>("ADC0");
+  TV792NData *data = dataContainer.GetEventData<TV792NData>("ADC0");
   if(!data) return;
 
 
   /// Get the Vector of ADC Measurements.
-  std::vector<VADCMeasurement> measurements = data->GetMeasurements();
+  std::vector<VADCNMeasurement> measurements = data->GetMeasurements();
 
   bool havehit = false;
   for(unsigned int i = 0; i < measurements.size(); i++){ // loop over measurements

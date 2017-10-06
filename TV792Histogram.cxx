@@ -1,6 +1,6 @@
 #include "TV792Histogram.h"
 
-#include "TV792Data.hxx"
+#include "TV792NData.hxx"
 #include "TDirectory.h"
 
 const int Nchannels = 16;
@@ -55,11 +55,11 @@ void TV792Histograms::UpdateHistograms(TDataContainer& dataContainer){
  //printf ("About to sert rtrequest: %f\n",start.tv_sec
  //    + 0.000001*start.tv_usec); 
 
-  TV792Data *data = dataContainer.GetEventData<TV792Data>("ADC0");
+  TV792NData *data = dataContainer.GetEventData<TV792NData>("ADC0");
   if(!data) return;
 
   /// Get the Vector of ADC Measurements.
-  std::vector<VADCMeasurement> measurements = data->GetMeasurements();
+  std::vector<VADCNMeasurement> measurements = data->GetMeasurements();
   for(unsigned int i = 0; i < measurements.size(); i++){ // loop over measurements
 	
     int chan = measurements[i].GetChannel();
