@@ -6,7 +6,7 @@ CXXFLAGS = -g -O2 -Wall -Wuninitialized
 
 # required ZLIB library
 
-CXXFLAGS += -DHAVE_LIBZ
+CXXFLAGS += -DHAVE_LIBZ -std=c++11
 
 # required ROOTANA library
 
@@ -31,7 +31,7 @@ CXXFLAGS  += -DHAVE_ROOT $(ROOTCFLAGS)
 
 ifdef HAVE_ROOT_XML
 CXXFLAGS  += -DHAVE_ROOT_XML
-ROOTGLIBS += -lXMLParser
+ROOTGLIBS += -lXMLParser -lThread -lRHTTP
 endif
 
 ifdef HAVE_ROOT_HTTP
@@ -57,13 +57,31 @@ LIBS += $(MIDASLIBS)
 
 endif # MIDASSYS
 
+
+
+CAENDIGLIB = $(HOME)/Andrew/CAENStuff/CAENDigitizer_2.7.9/include
+CAENCOMMLIB = $(HOME)/Andrew/CAENStuff/CAENComm-1.2/include
+
 OBJS:=
 OBJS += TV792Histogram.o
 OBJS += TV1720Waveform.o
+OBJS += TUCNHit.o
+OBJS += TUCNDetectorBaseClass.o
+OBJS += TUCNDetectorCharge.o
 OBJS += THe3RateVsTime.o
+OBJS += THe3CountsInSequence.o
 OBJS += TAnaManager.o
+OBJS += TV1720Histograms.o
+OBJS += TUCNAnaManager.o
+OBJS += PulseShapeStruct.o
+OBJS += TUCNAnaViewer.o
+OBJS += TUCNRateViewer.o
+OBJS += TUCNAnaViewer3.o
+OBJS += TV1720WaveformDisplay.o
+OBJS += UCNRateHistogram.o
+OBJS += TTimeHelper.o
 
-all: $(OBJS) ana.exe anaDisplay.exe midas2root.exe
+all: $(OBJS) ana.exe anaDisplay.exe midas2root.exe UCNAnalyzer.exe UCNDisplay.exe UCNRateMonitor.exe UCNDisplay3.exe
 
 ana.exe: ana.cxx $(OBJS) 
 	$(CXX) -o $@ $(CXXFLAGS) $^ $(LIBS) $(ROOTGLIBS) -lm -lz -lpthread -lssl -lutil
@@ -72,6 +90,18 @@ anaDisplay.exe: anaDisplay.cxx $(OBJS)
 	$(CXX) -o $@ $(CXXFLAGS) $^ $(LIBS) $(ROOTGLIBS) -lm -lz -lpthread -lssl -lutil
 
 midas2root.exe: midas2root.cxx $(OBJS) 
+	$(CXX) -o $@ $(CXXFLAGS) $^ $(LIBS) $(ROOTGLIBS) -lm -lz -lpthread -lssl -lutil
+
+UCNDisplay.exe: UCNDisplay.cxx $(OBJS)
+	$(CXX) -o $@ $(CXXFLAGS) $^ $(LIBS) $(ROOTGLIBS) -lm -lz -lpthread -lssl -lutil
+
+UCNDisplay3.exe: UCNDisplay3.cxx $(OBJS)
+	$(CXX) -o $@ $(CXXFLAGS) $^ $(LIBS) $(ROOTGLIBS) -lm -lz -lpthread -lssl -lutil
+
+UCNRateMonitor.exe: UCNRateMonitor.cxx $(OBJS)
+	$(CXX) -o $@ $(CXXFLAGS) $^ $(LIBS) $(ROOTGLIBS) -lm -lz -lpthread -lssl -lutil
+
+UCNAnalyzer.exe: UCNAnalyzer.cxx $(OBJS)
 	$(CXX) -o $@ $(CXXFLAGS) $^ $(LIBS) $(ROOTGLIBS) -lm -lz -lpthread -lssl -lutil
 
 %.o: %.cxx

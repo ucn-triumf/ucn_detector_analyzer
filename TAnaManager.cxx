@@ -4,26 +4,29 @@
 
 TAnaManager::TAnaManager(){
 
-	fV792Histogram = 0;
+  fV792Histogram = 0;
 #ifdef USE_V792
-	fV792Histogram = new TV792Histograms();
-	fV792Histogram->DisableAutoUpdate();  // disable auto-update.  Update histo in AnaManager.
+  fV792Histogram = new TV792Histograms();
+  fV792Histogram->DisableAutoUpdate();  // disable auto-update.  Update histo in AnaManager.
 #endif
 
-
-	//fV1720Waveform = 0;
-	//#ifdef USE_V1720
-
-	//  fV1720Waveform = new TV1720Waveform();
-	//	fV1720Waveform->DisableAutoUpdate();  // disable auto-update.  Update histo in AnaManager.
-	//#endif
-
-	fHe3RateVsTime = 0;
-	fHe3RateVsTime = new THe3RateVsTime();
-	fHe3RateVsTime->DisableAutoUpdate();
-
-	fHe3CountsInSequence = new THe3CountsInSequence();
-	fHe3CountsInSequence->DisableAutoUpdate();
+  
+  //fV1720Waveform = 0;
+  //#ifdef USE_V1720
+  
+  //  fV1720Waveform = new TV1720Waveform();
+  //	fV1720Waveform->DisableAutoUpdate();  // disable auto-update.  Update histo in AnaManager.
+  //#endif
+  
+  fHe3RateVsTime = 0;
+  fHe3RateVsTime = new THe3RateVsTime();
+  fHe3RateVsTime->DisableAutoUpdate();
+  
+  fHe3CountsInSequence = new THe3CountsInSequence();
+  fHe3CountsInSequence->DisableAutoUpdate();
+  
+  
+  ucn_detector = new TUCNDetectorBaseClass();
 
 
 };
@@ -45,14 +48,18 @@ int TAnaManager::ProcessMidasEvent(TDataContainer& dataContainer){
       insequence = 0;
     }
   }
-  
-	if(fV792Histogram) fV792Histogram->UpdateHistograms(dataContainer); 
+  //
+  //	if(fV792Histogram) fV792Histogram->UpdateHistograms(dataContainer); 
 	//std::cout << "Analyzer " << std::endl;
 	//if(fV1720Waveform && 0)  fV1720Waveform->UpdateHistograms(dataContainer);
-	if(fHe3RateVsTime) fHe3RateVsTime->UpdateHistograms(dataContainer);
+  //	if(fHe3RateVsTime) fHe3RateVsTime->UpdateHistograms(dataContainer);
 
-	fHe3CountsInSequence->UpdateHistograms(dataContainer);
+  //	fHe3CountsInSequence->UpdateHistograms(dataContainer);
 	//std::cout << "Finished " << std::endl;
+  //
+    	ucn_detector->ProcessMidasEvent(dataContainer);
+
+
         return 1;
 }
 
