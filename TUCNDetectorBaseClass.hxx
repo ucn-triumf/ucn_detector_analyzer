@@ -18,7 +18,7 @@ class TUCNDetectorBaseClass  {
 
   // Get the UCN hits for this MIDAS event.
   // This method needs to be defined in each derived class.
-  virtual void GetHits(TDataContainer& dataContainer);
+  virtual void GetHits(TDataContainer& dataContainer) = 0;
 
   /// Update the histograms for this canvas.
   void ProcessMidasEvent(TDataContainer& dataContainer);
@@ -40,11 +40,14 @@ class TUCNDetectorBaseClass  {
 
   TUCNDetectorCharge* GetChargeHistograms(){return fDetectorCharge;}
 
-private:
+protected:
+
   bool isLi6; // Is for Li-6 detector
 
   // List of hits
   std::vector<TUCNHit> fHits;
+
+private:
 
   // UCN hit charge or pulse height spectrum histograms
   TUCNDetectorCharge *fDetectorCharge;
