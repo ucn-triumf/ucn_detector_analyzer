@@ -32,7 +32,7 @@ char CutChoice; //< if = y then plot waves in PSDMax-PSDMin range
 float PSDMax;   //< Max PSD value of cut
 float PSDMin;   //< Min PSD value of cut
 
-fstream eventNumber;
+std::fstream eventNumber;
 
 
 class MyTestLoop: public TRootanaDisplay { 
