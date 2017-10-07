@@ -68,6 +68,7 @@ OBJS += TV1720Waveform.o
 OBJS += TUCNHit.o
 OBJS += TUCNDetectorBaseClass.o
 OBJS += TUCNDetectorCharge.o
+OBJS += THe3Detector.o
 OBJS += THe3RateVsTime.o
 OBJS += THe3CountsInSequence.o
 OBJS += TAnaManager.o

@@ -26,7 +26,7 @@ TAnaManager::TAnaManager(){
   fHe3CountsInSequence->DisableAutoUpdate();
   
   
-  ucn_detector = new TUCNDetectorBaseClass();
+  fHe3Detector = new THe3Detector();
 
 
 };
@@ -57,7 +57,7 @@ int TAnaManager::ProcessMidasEvent(TDataContainer& dataContainer){
   //	fHe3CountsInSequence->UpdateHistograms(dataContainer);
 	//std::cout << "Finished " << std::endl;
   //
-    	ucn_detector->ProcessMidasEvent(dataContainer);
+    	fHe3Detector->ProcessMidasEvent(dataContainer);
 
 
         return 1;

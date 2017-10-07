@@ -11,7 +11,7 @@
 #include "THe3CountsInSequence.h"
 #include "TV1720Waveform.h"
 
-#include "TUCNDetectorBaseClass.hxx"
+#include "THe3Detector.hxx"
 
 /// This is the main analysis manager program for the UCN detectors.
 class TAnaManager  {
@@ -32,7 +32,7 @@ public:
   THe3RateVsTime* GetHe3RateHistograms();
   THe3CountsInSequence* GetHe3CountsHistograms();
 
-  TUCNDetectorBaseClass* GetHe3DetectorAnalyzer(){return ucn_detector;}
+  TUCNDetectorBaseClass* GetHe3DetectorAnalyzer(){return fHe3Detector;}
 private:
   
   TV792Histograms *fV792Histogram;
@@ -40,7 +40,7 @@ private:
   THe3RateVsTime* fHe3RateVsTime;
   THe3CountsInSequence* fHe3CountsInSequence;
   
-  TUCNDetectorBaseClass *ucn_detector;
+  THe3Detector  *fHe3Detector;
 
 };
 
