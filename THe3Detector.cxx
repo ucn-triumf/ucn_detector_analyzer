@@ -22,6 +22,10 @@ void THe3Detector::GetHits(TDataContainer& dataContainer){
   /// Get the Vector of ADC Measurements.
   std::vector<VADCNMeasurement> measurements = data->GetMeasurements();
   for(unsigned int i = 0; i < measurements.size(); i++){ // loop over measurements	
+
+    // Only channel 0 has UCN hits...
+    if(measurements[i].GetChannel() != 0) continue;
+    
     TUCNHit hit = TUCNHit();// = new TUCNHit();
     hit.time = (double)timestamp;
     hit.channel = measurements[i].GetChannel();
