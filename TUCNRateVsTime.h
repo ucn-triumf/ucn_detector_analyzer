@@ -1,19 +1,22 @@
-#ifndef THe3RateVsTime_h
-#define THe3RateVsTime_h
+#ifndef TUCNRateVsTime_h
+#define TUCNRateVsTime_h
 
 #include <string>
 
 #include "THistogramArrayBase.h"
+#include "TUCNHit.hxx"
 
 /// Class for making a plot of UCN rate vs time as seen by He-3 detector, readout with V785 peak-sensing ADC.
-class THe3RateVsTime : public THistogramArrayBase {
+class TUCNRateVsTime : public THistogramArrayBase {
  public:
-  THe3RateVsTime();
-  virtual ~THe3RateVsTime(){};
+  TUCNRateVsTime(bool isOffline, bool isLi6);
+  virtual ~TUCNRateVsTime(){};
   
-  /// Update the histograms for this canvas.
-  void UpdateHistograms(TDataContainer& dataContainer);
+  /// Don't use this update method
+  void UpdateHistograms(TDataContainer& dataContainer){};
 
+  void UpdateHistograms(TUCNHitCollection& hits);
+                        
   /// Take actions at begin run
   void BeginRun(int transition,int run,int time);
 
@@ -22,6 +25,9 @@ class THe3RateVsTime : public THistogramArrayBase {
 
 private:
 
+  bool fIsLi6;
+  bool fIsOffline;
+  
   void CreateHistograms();
     
   // Vector storing the rate vs time.

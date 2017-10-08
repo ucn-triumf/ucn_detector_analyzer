@@ -2,7 +2,7 @@
 #include "TV1720RawData.h"
 
 
-TAnaManager::TAnaManager(){
+TAnaManager::TAnaManager(bool isOffline){
 
   fV792Histogram = 0;
 #ifdef USE_V792
@@ -18,15 +18,15 @@ TAnaManager::TAnaManager(){
   //	fV1720Waveform->DisableAutoUpdate();  // disable auto-update.  Update histo in AnaManager.
   //#endif
   
-  fHe3RateVsTime = 0;
-  fHe3RateVsTime = new THe3RateVsTime();
-  fHe3RateVsTime->DisableAutoUpdate();
+  //  fHe3RateVsTime = 0;
+  // fHe3RateVsTime = new THe3RateVsTime();
+  //fHe3RateVsTime->DisableAutoUpdate();
   
   fHe3CountsInSequence = new THe3CountsInSequence();
   fHe3CountsInSequence->DisableAutoUpdate();
   
   
-  fHe3Detector = new THe3Detector();
+  fHe3Detector = new THe3Detector(isOffline);
 
 
 };
@@ -75,16 +75,16 @@ bool TAnaManager::HaveV792Histograms(){
 //	return false;
 //};
 
-bool TAnaManager::HaveHe3RateHistograms(){
-	if(fHe3RateVsTime) return true; 
-	return false;
-};
+//bool TAnaManager::HaveHe3RateHistograms(){
+//	if(fHe3RateVsTime) return true; 
+//	return false;
+//};
 
 TV792Histograms* TAnaManager::GetV792Histograms() {return fV792Histogram;}
 
 //TV1720Waveform* TAnaManager::GetV1720Histograms(){return fV1720Waveform;}
 
-THe3RateVsTime* TAnaManager::GetHe3RateHistograms(){return fHe3RateVsTime;}
+//THe3RateVsTime* TAnaManager::GetHe3RateHistograms(){return fHe3RateVsTime;}
 
 THe3CountsInSequence* TAnaManager::GetHe3CountsHistograms(){return fHe3CountsInSequence;}
 

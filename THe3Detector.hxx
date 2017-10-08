@@ -10,7 +10,7 @@
 class THe3Detector : public TUCNDetectorBaseClass {
 
 public:
-  THe3Detector();
+  THe3Detector(bool isOffline);
 
   void GetHits(TDataContainer& dataContainer);
 

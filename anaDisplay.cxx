@@ -46,11 +46,14 @@ public:
   TUCNRateViewer *rateViewer;
 
   MyTestLoop() {
+
+  //void Initialize(){
+
     SetOutputFilename("ucn_display_output");
     SetOnlineName("UCNDisplay");
-    SetDisplayName("UCN Detector Display");
+
     DisableRootOutput(false);
-    anaManager = new TAnaManager();
+    anaManager = new TAnaManager(IsOffline());
     anaViewer  = new TUCNAnaViewer3();
     rateViewer = new TUCNRateViewer();
     // Number of events to skip before plotting one.
@@ -59,23 +62,27 @@ public:
     SetOnlineUpdatingBasedSeconds();
     // Uncomment this to enable the 'interesting event' functionality.
     //iem_t::instance()->Enable();
-  }
+  };
 
   void AddAllCanvases(){
 
  
-    // Set up tabbed canvases
+    // Add He-3 plots
+    // Charge Spectrum
     AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetHe3DetectorAnalyzer()->GetChargeHistograms(),
 					      "Charge"),"He3 Analysis");
 
+    // UCN Rate Vs Time
+    AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetHe3DetectorAnalyzer()->GetRateVsTime(),
+					      "Rate Vs Time"),"He3 Analysis");
 
     if(anaManager->HaveV792Histograms()) 
       AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetV792Histograms(),"V792"));
     
     //if(anaManager->HaveV1720Histograms()) 
     //AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetV1720Histograms(),"V1720 Waveforms"));
-    if(anaManager->HaveHe3RateHistograms()) 
-      AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetHe3RateHistograms(),"He3 UCN rate"));
+    //    if(anaManager->HaveHe3RateHistograms()) 
+    //AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetHe3RateHistograms(),"He3 UCN rate"));
     AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetHe3CountsHistograms(),"He3 UCN Counts"));
     AddSingleCanvas(new TFancyHistogramCanvas(anaViewer->fV1720WaveformDisplay, "V1720 Waveform",9,false));
     AddSingleCanvas(new TFancyHistogramCanvas(anaViewer->fV1720QLQL, "V1720 QLvsQL", 9, false));

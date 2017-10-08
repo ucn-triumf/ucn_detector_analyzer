@@ -53,7 +53,7 @@ void TUCNDetectorCharge::CreateHistograms(){
 
 
 /// Fill the charge spectrum with the set of ucn hits
-void  TUCNDetectorCharge::UpdateHistograms(std::vector<TUCNHit>& hits){
+void  TUCNDetectorCharge::UpdateHistograms(TUCNHitCollection & hits){
 
   for(unsigned int i = 0; i < hits.size(); i++){
     int channel = hits[i].channel;

@@ -1,11 +1,17 @@
 #include "TUCNDetectorBaseClass.hxx"
 
 
-TUCNDetectorBaseClass::TUCNDetectorBaseClass(){
+TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline){
   
-  fHits = std::vector<TUCNHit>();
-  isLi6 = false;
-  fDetectorCharge = new TUCNDetectorCharge(isLi6);
+  fHits = TUCNHitCollection();
+  fIsLi6 = false;
+  fIsOffline = isOffline;
+  
+  fDetectorCharge = new TUCNDetectorCharge(fIsLi6);
+  fDetectorCharge->DisableAutoUpdate();
+
+  fRateVsTime = new TUCNRateVsTime(fIsLi6,isOffline);
+  fRateVsTime->DisableAutoUpdate();
 
 }
 
@@ -18,5 +24,8 @@ void TUCNDetectorBaseClass::ProcessMidasEvent(TDataContainer& dataContainer){
 
   // Fill the charge spectrum
   fDetectorCharge->UpdateHistograms(fHits);
+
+  // Fill the rate vs time histograms
+  fRateVsTime->UpdateHistograms(fHits);
   
 }

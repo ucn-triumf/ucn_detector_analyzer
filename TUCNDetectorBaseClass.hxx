@@ -6,13 +6,14 @@
 #include "TUCNHit.hxx"
 
 #include "TUCNDetectorCharge.h"
+#include "TUCNRateVsTime.h"
 
 
 /// Generic base class that handles producing a consistent 
 /// set of plots and data for Li-6 and He-3 detectors
 class TUCNDetectorBaseClass  {
  public:
-  TUCNDetectorBaseClass();
+  TUCNDetectorBaseClass(bool isOffline);
   virtual ~TUCNDetectorBaseClass(){};  
 
 
@@ -29,8 +30,8 @@ class TUCNDetectorBaseClass  {
   /// Take actions at end run  
   void EndRun(int transition,int run,int time);
   
-  bool IsLi6(){ return isLi6;};
-  bool IsHe3(){ return !isLi6;};
+  bool IsLi6(){ return fIsLi6;};
+  bool IsHe3(){ return !fIsLi6;};
   
   std::string GetDetectorName(){
     if(IsLi6()) return std::string("Li6");
@@ -39,19 +40,22 @@ class TUCNDetectorBaseClass  {
   }
 
   TUCNDetectorCharge* GetChargeHistograms(){return fDetectorCharge;}
-
+  TUCNRateVsTime* GetRateVsTime(){return fRateVsTime;}
+  
 protected:
 
-  bool isLi6; // Is for Li-6 detector
-
+  bool fIsLi6; // Is for Li-6 detector
+  bool fIsOffline;
+  
   // List of hits
-  std::vector<TUCNHit> fHits;
+  TUCNHitCollection fHits;
 
 private:
 
   // UCN hit charge or pulse height spectrum histograms
   TUCNDetectorCharge *fDetectorCharge;
-
+  TUCNRateVsTime *fRateVsTime;
+  
 };
 
 #endif

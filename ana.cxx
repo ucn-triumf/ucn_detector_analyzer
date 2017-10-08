@@ -44,7 +44,7 @@ public:
     
     if(anaManager)
       delete anaManager;
-    anaManager = new TAnaManager();
+    anaManager = new TAnaManager(IsOffline());
     
   }
   

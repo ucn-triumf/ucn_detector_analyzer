@@ -16,7 +16,7 @@ class TUCNDetectorCharge : public THistogramArrayBase {
   void UpdateHistograms(TDataContainer& dataContainer){};
 
   /// Fill the charge spectrum with the set of ucn hits
-  void UpdateHistograms(std::vector<TUCNHit>& hits);
+  void UpdateHistograms(TUCNHitCollection & hits);
 
   /// Take actions at begin run
   void BeginRun(int transition,int run,int time);
