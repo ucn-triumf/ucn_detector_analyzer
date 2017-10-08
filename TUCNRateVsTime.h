@@ -31,7 +31,7 @@ private:
   void CreateHistograms();
     
   // Vector storing the rate vs time.
-  std::vector< std::vector< std::pair<int,double> >  > fRateVsTime;
+  std::vector< std::pair<int,double> >  fRateVsTime;
 };
 
 #endif

@@ -2,10 +2,10 @@
 
 #include "TDirectory.h"
 
-const int Nchannels = 6;
+const int Nchannels = 8;
  #include <sys/time.h>
 
-int timescale[6] = {300,600,1200,2400,4800,9600};
+int timescale[8] = {300,600,1200,2400,4800,9600,19200,38400};
 
 /// Reset the histograms for this canvas
 TUCNRateVsTime::TUCNRateVsTime(bool isOffline, bool isLi6){  
@@ -38,18 +38,18 @@ void TUCNRateVsTime::CreateHistograms(){
 
     // Create new histograms
     
-    if(fIsLi6) sprintf(title,"Li-6 UCN Rate vs Time (%i seconds)",timescale[i]);
-    else sprintf(title,"He3 UCN Rate vs Time (%i seconds)",timescale[i]);	
+    if(fIsLi6) sprintf(title,"Li-6 UCN Rate vs Time (%i minutes)",timescale[i]/60);
+    else sprintf(title,"He3 UCN Rate vs Time (%i minutes)",timescale[i]/60);	
     
-    TH1D *tmp = new TH1D(name,title,timescale[i]+100,-timescale[i],100);
+    TH1D *tmp = new TH1D(name,title,timescale[0],-timescale[i],0);
     if(fIsOffline) tmp->SetXTitle("Time since last event (sec)");
     else tmp->SetXTitle("Time since now (sec)");
-    tmp->SetYTitle("UCN Rate");
+    tmp->SetYTitle("UCN Rate (cts/sec)");
     // tmp->SetOptStat(0);;
     push_back(tmp);
 
-    std::vector<std::pair<int, double> > tmp2;
-    fRateVsTime.push_back(tmp2);
+    fRateVsTime = std::vector<std::pair<int, double> >();
+      
    }
 
 }
@@ -62,77 +62,57 @@ void TUCNRateVsTime::UpdateHistograms(TUCNHitCollection & hits){
   
   // Update the histogram every event... but only if the event timestamp is different from last event
   int timestamp = hits.eventTime;
-  
+
   if(lastTimestamp != timestamp){
 
-    //    std::cout << "Timestamp " << timestamp << std::endl;
     for(int j = 0; j < Nchannels; j++){
-      for(int i = 0; i < GetHistogram(j)->GetXaxis()->GetNbins(); i++){
-        GetHistogram(j)->SetBinContent(i+1,0);
-      }
-      
-      for(int i = 0; i < fRateVsTime[j].size(); i++){
-        int timediff = fRateVsTime[j][i].first - timestamp;
-        GetHistogram(j)->SetBinContent(timediff+timescale[j],fRateVsTime[j][i].second );
-      }
-      
-      // See if we have a new timestamp to deal with...
-      //      std::cout << " " << 
-      if(fRateVsTime[j].size() == 0 || timestamp >= (fRateVsTime[j].back().first + (2^j))){
-        
-        // Add new entry at back
-        fRateVsTime[j].push_back( std::pair<int,double>(timestamp,0));
-        
-        // maybe start erasing first entry...
-        if(fRateVsTime[j].size() > timescale[0]){
-          //          std::cout << "erasing!! " << fRateVsTime[j].begin()->first << " " << fRateVsTime[j].size() << " " << timescale[0] << std::endl;
-          fRateVsTime[j].erase(fRateVsTime[j].begin());
+      GetHistogram(j)->Reset();
+
+      for(int i = 0; i < fRateVsTime.size(); i++){
+        std::pair<int, double> entry = fRateVsTime[i];
+        if( !entry.second) continue;
+        int timediff = (entry.first - timestamp);
+        for(int k = 0; k < entry.second; k++){
+          GetHistogram(j)->Fill(timediff);
         }
       }
+    }
+  }
+
+  // Check if the rateVsTime array needs new entry.
+  if(fRateVsTime.size() == 0 || timestamp > fRateVsTime.back().first){
+        
+    // Add new entry at back
+    fRateVsTime.push_back( std::pair<int,double>(timestamp,0));
+
+    // maybe start erasing first entry...
+    if(fRateVsTime.size() > timescale[Nchannels-1]){
+      fRateVsTime.erase(fRateVsTime.begin());
     }
   }
   lastTimestamp = timestamp;
 
-  for(int j = 0; j < 6; j++){
-    int lastTime = 99999999;
-    for(int i = fRateVsTime[j].size()-1; i >= 0; i--){        
-      if( i > fRateVsTime[j].size()-10)
-        std::cout << i << " " << j << " Time " << fRateVsTime[j][i].first << std::endl;
-    }
 
+  if (hits.size()){
+    std::cout << "hits " << hits.size() << std::endl;
   }
-
-      
-  bool havehit = false;
-  for(unsigned int i = 0; i < hits.size(); i++){ // loop over measurements
+  for(unsigned int j = 0; j < hits.size(); j++){ // loop over measurements
 	
-    int chan = hits[i].channel;
-    uint32_t adc = hits[i].chargeLong;
+    int hittime = (int)hits[j].time;
     
-    havehit = true;
-    
+    // Find the right entry and update...
+    for(int i = fRateVsTime.size()-1; i >= 0; i--){      
+      if(hittime == fRateVsTime[i].first){
+        fRateVsTime[i].second = fRateVsTime[i].second + 1.0;
+        std::cout << "Found hit " << hittime << " "  << fRateVsTime[i].first
+                  << " " << fRateVsTime[i].second << std::endl;
+        break;
+      }
+    }    
   }
 
-  if(havehit)
-    std::cout << "Have hit!" << timestamp << std::endl;
-  
-  if(havehit){    
-    // Find the right entry and update...
-    for(int j = 0; j < 6; j++){
-      int lastTime = 99999999;
-      for(int i = fRateVsTime[j].size()-1; i >= 0; i--){      
-        if(timestamp >= fRateVsTime[j][i].first && timestamp < lastTime ){
-          fRateVsTime[j][i].second = fRateVsTime[j][i].second + 1.0;
-          std::cout << "Adding hit " << i << " " << j << " " << fRateVsTime[j][i].second << " " << fRateVsTime[j][i].first << " "
-                    << timestamp << " " << lastTime << std::endl;
-          
-          break;
-        }
-        lastTime = fRateVsTime[j][i].first;
-      }
-    }
-  }
-  
+
+
 }
 
 
