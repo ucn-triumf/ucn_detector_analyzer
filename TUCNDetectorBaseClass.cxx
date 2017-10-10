@@ -27,5 +27,9 @@ void TUCNDetectorBaseClass::ProcessMidasEvent(TDataContainer& dataContainer){
 
   // Fill the rate vs time histograms
   fRateVsTime->UpdateHistograms(fHits);
+
+  // Fill out a bunch of histograms for UCN hit rate with respect to the irradiation sequence.
+  
+  
   
 }

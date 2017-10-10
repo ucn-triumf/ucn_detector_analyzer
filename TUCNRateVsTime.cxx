@@ -41,7 +41,7 @@ void TUCNRateVsTime::CreateHistograms(){
     if(fIsLi6) sprintf(title,"Li-6 UCN Rate vs Time (%i minutes)",timescale[i]/60);
     else sprintf(title,"He3 UCN Rate vs Time (%i minutes)",timescale[i]/60);	
     
-    TH1D *tmp = new TH1D(name,title,timescale[0],-timescale[i],0);
+    TH1D *tmp = new TH1D(name,title,timescale[0]*1.1,-timescale[i],timescale[i]*0.1);
     if(fIsOffline) tmp->SetXTitle("Time since last event (sec)");
     else tmp->SetXTitle("Time since now (sec)");
     tmp->SetYTitle("UCN Rate (cts/sec)");
