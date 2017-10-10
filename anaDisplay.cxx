@@ -102,11 +102,15 @@ public:
   }
 
   void ResetHistograms(){
+
+    std::cout << "Resetting..." << std::endl;
+    if(!rateViewer->GetCurrHisto())return;
     TH1D* hC = rateViewer->GetCurrHisto()->Get();
     TH1D* hP = rateViewer->GetPrevHisto()->Get();
     if ( hC ) hC->Reset();
     if ( hP ) hP->Reset();
-}
+    std::cout << "Done reset " << std::endl;
+  }
 
   void UpdateHistograms(TDataContainer& dataContainer){
 
