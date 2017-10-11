@@ -77,8 +77,7 @@ public:
 					      "Charge"),"He3 Analysis");
 
     // UCN Rate Vs Time
-    AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetHe3DetectorAnalyzer()->GetRateVsTime(),
-					      "Rate Vs Time"),"He3 Analysis");
+    AddSingleCanvas(anaManager->GetHe3DetectorAnalyzer()->GetRateVsTimeCanvas(),"He3 Analysis");
 
     // UCN hits in cycle
     AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->GetHe3DetectorAnalyzer()->GetHitsInCycle(),

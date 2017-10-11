@@ -25,7 +25,6 @@ TAnaManager::TAnaManager(bool isOffline){
   fHe3CountsInSequence = new THe3CountsInSequence();
   fHe3CountsInSequence->DisableAutoUpdate();
   
-  
   fHe3Detector = new THe3Detector(isOffline);
 
 

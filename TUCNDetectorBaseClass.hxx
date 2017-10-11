@@ -7,7 +7,7 @@
 
 #include "TUCNDetectorCharge.h"
 #include "TUCNRateVsTime.h"
-
+#include "TFancyHistogramCanvas.hxx"
 
 /// Generic base class that handles producing a consistent 
 /// set of plots and data for Li-6 and He-3 detectors
@@ -41,8 +41,16 @@ class TUCNDetectorBaseClass  {
 
   TUCNDetectorCharge* GetChargeHistograms(){return fDetectorCharge;}
   TUCNRateVsTime* GetRateVsTime(){return fRateVsTime;}
+  TFancyHistogramCanvas* GetRateVsTimeCanvas(){    
+    TFancyHistogramCanvas *canvas = new TFancyHistogramCanvas(fRateVsTime,"Rate Vs Time");
+    canvas->SetChannelName("Timescale");    
+    return canvas;
+  }
+
   TH1D* GetHitsInCycle(){return fHitsInCycle;}
   TH1D* GetHitsPerCycle(){return fHitsPerCycle;}
+
+
   
 protected:
 
