@@ -41,6 +41,8 @@ class TUCNDetectorBaseClass  {
 
   TUCNDetectorCharge* GetChargeHistograms(){return fDetectorCharge;}
   TUCNRateVsTime* GetRateVsTime(){return fRateVsTime;}
+  TH1D* GetHitsInCycle(){return fHitsInCycle;}
+  TH1D* GetHitsPerCycle(){return fHitsPerCycle;}
   
 protected:
 
@@ -50,11 +52,18 @@ protected:
   // List of hits
   TUCNHitCollection fHits;
 
+  // Start time of the current sequence;
+  double fCycleStartTime;
+
 private:
 
   // UCN hit charge or pulse height spectrum histograms
   TUCNDetectorCharge *fDetectorCharge;
   TUCNRateVsTime *fRateVsTime;
+
+  TH1D *fHitsInCycle;
+  TH1D *fHitsPerCycle;
+  
   
 };
 

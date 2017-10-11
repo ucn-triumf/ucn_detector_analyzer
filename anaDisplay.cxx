@@ -10,6 +10,7 @@
 #include "TRootanaDisplay.hxx"
 #include "TH1D.h"
 #include "TV792Data.hxx"
+#include "TSimpleHistogramCanvas.hxx"
 #include "TFancyHistogramCanvas.hxx"
 #include "TInterestingEventManager.hxx"
 #include "TFancyHistogramCanvas.hxx"
@@ -75,6 +76,11 @@ public:
     // UCN Rate Vs Time
     AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetHe3DetectorAnalyzer()->GetRateVsTime(),
 					      "Rate Vs Time"),"He3 Analysis");
+
+    // UCN hits in cycle
+    AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->GetHe3DetectorAnalyzer()->GetHitsInCycle(),
+					       "Hits in Cycle"),"He3 Analysis");
+
 
     if(anaManager->HaveV792Histograms()) 
       AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetV792Histograms(),"V792"));

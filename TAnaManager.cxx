@@ -35,19 +35,6 @@ bool insequence = 0;
 
 int TAnaManager::ProcessMidasEvent(TDataContainer& dataContainer){
   
-  // Check if we are in sequence
-  TGenericData *data = dataContainer.GetEventData<TGenericData>("SEQN");
-  if(data){
-    if(data->GetData32()[1]){
-      if(insequence == 0){
-	std::cout << "Started new sequence." << std::endl;
-      }
-      insequence = 1;
-    }
-    else{
-      insequence = 0;
-    }
-  }
   //
   //	if(fV792Histogram) fV792Histogram->UpdateHistograms(dataContainer); 
 	//std::cout << "Analyzer " << std::endl;

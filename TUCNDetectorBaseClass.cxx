@@ -13,6 +13,21 @@ TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline){
   fRateVsTime = new TUCNRateVsTime(fIsLi6,isOffline);
   fRateVsTime->DisableAutoUpdate();
 
+  fCycleStartTime = 0.0;
+
+  char htitle[250], hname[250];
+  if(fIsLi6){
+    sprintf(hname,"hitsinsequence_li6");
+    sprintf(htitle,"Cumulative Hits Within Cycle: Li-6");
+  }else{
+    sprintf(hname,"hitsinsequence_he3");
+    sprintf(htitle,"Cumulative Hits Within Cycle: He-3");
+  }
+    
+  fHitsInCycle = new TH1D(hname,htitle,100,0,100);
+  fHitsInCycle->SetYTitle("Counts");
+  fHitsInCycle->SetXTitle("Time since start of sequence (sec)");
+ //  TH1D* GetHitsPerCycle(){return fHitsPerCycle;}
 }
 
 
@@ -29,6 +44,30 @@ void TUCNDetectorBaseClass::ProcessMidasEvent(TDataContainer& dataContainer){
   fRateVsTime->UpdateHistograms(fHits);
 
   // Fill out a bunch of histograms for UCN hit rate with respect to the irradiation sequence.
+  // Use the sequence bank to see when a new run starts:
+  bool sequence_started = false;
+  TGenericData *data = dataContainer.GetEventData<TGenericData>("SEQN");
+  if(data){
+    if(data->GetData32()[1] & 2){
+      sequence_started = true;
+      std::cout << "New sequence started.\n";
+      double tmp = ((double)dataContainer.GetMidasData().GetTimeStamp())
+		+ ((double)data->GetData32()[0])/1000.0;
+      if(fCycleStartTime != 0.0)
+	std::cout << "Seconds since last sequence started: " << tmp - fCycleStartTime << std::endl;
+      fCycleStartTime = tmp;
+    }
+  }
+
+
+  // Fill the Cumulative "Hits in " histogram
+  for(unsigned int j = 0; j < fHits.size(); j++){ // loop over measurements
+    
+    double hittime = (int)fHits[j].time;
+    double time_in_cycle = hittime - fCycleStartTime;
+    fHitsInCycle->Fill(time_in_cycle);
+  }
+  
   
   
   
