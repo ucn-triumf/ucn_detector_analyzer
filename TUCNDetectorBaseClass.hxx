@@ -7,6 +7,7 @@
 
 #include "TUCNDetectorCharge.h"
 #include "TUCNRateVsTime.h"
+#include "TSimpleHistogramCanvas.hxx"
 #include "TFancyHistogramCanvas.hxx"
 
 /// Generic base class that handles producing a consistent 
@@ -48,7 +49,12 @@ class TUCNDetectorBaseClass  {
   }
 
   TH1D* GetHitsInCycle(){return fHitsInCycle;}
-  TH1D* GetHitsPerCycle(){return fHitsPerCycle;}
+
+  TSimpleHistogramCanvas* GetHitsPerCycleCanvas(){    
+    TSimpleHistogramCanvas *canvas = new TSimpleHistogramCanvas(fHitsPerCycle,"Hits Per Cycle");
+    return canvas;
+  }
+  //  TH1D* GetHitsPerCycle(){return fHitsPerCycle;}
 
 
   
@@ -62,6 +68,7 @@ protected:
 
   // Start time of the current sequence;
   double fCycleStartTime;
+  double fLastCycleStartTime;
 
 private:
 
@@ -70,9 +77,12 @@ private:
   TUCNRateVsTime *fRateVsTime;
 
   TH1D *fHitsInCycle;
-  TH1D *fHitsPerCycle;
-  
-  
+  TGraph *fHitsPerCycle;
+
+  // UCN hits in cycle
+  int fTotalHitsCycle;
+  // vector to store the cycle hits in
+  std::vector<std::pair<double, double> > fHitsPerCycleVector;
 };
 
 #endif

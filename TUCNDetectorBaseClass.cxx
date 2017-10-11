@@ -14,6 +14,8 @@ TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline){
   fRateVsTime->DisableAutoUpdate();
 
   fCycleStartTime = 0.0;
+  fLastCycleStartTime  = 0.0;
+  fTotalHitsCycle = 0;
 
   char htitle[250], hname[250];
   if(fIsLi6){
@@ -27,7 +29,24 @@ TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline){
   fHitsInCycle = new TH1D(hname,htitle,500,0,100);
   fHitsInCycle->SetYTitle("Counts");
   fHitsInCycle->SetXTitle("Time since start of sequence (sec)");
- //  TH1D* GetHitsPerCycle(){return fHitsPerCycle;}
+
+  //  TH1D* GetHitsPerCycle(){return fHitsPerCycle;}
+  fHitsPerCycle = new TGraph();
+  if(fIsLi6){
+    
+    if(isOffline)
+      fHitsPerCycle->SetTitle("UCN Counts per Cycle: Li-6; Time since last event (sec) ; UCN hits in cycle");
+    else
+      fHitsPerCycle->SetTitle("UCN Counts per Cycle: Li-6; Time since now (sec) ; UCN hits in cycle");
+  }else{
+    if(isOffline)
+      fHitsPerCycle->SetTitle("UCN Counts per Cycle: He-3; Time since last event (sec) ; UCN hits in cycle");
+    else
+      fHitsPerCycle->SetTitle("UCN Counts per Cycle: He-3; Time since now (sec) ; UCN hits in cycle");
+      
+  }  
+  std::cout << "Finished Detector Setup " << std::endl;
+
 }
 
 
@@ -50,25 +69,41 @@ void TUCNDetectorBaseClass::ProcessMidasEvent(TDataContainer& dataContainer){
   if(data){
     if(data->GetData32()[1] & 2){
       sequence_started = true;
-      //std::cout << "New sequence started.\n";
+      fLastCycleStartTime = fCycleStartTime;
       double tmp = ((double)dataContainer.GetMidasData().GetTimeStamp())
-		+ ((double)data->GetData32()[0])/1000.0;
-      //if(fCycleStartTime != 0.0)
-      //std::cout << "Seconds since last sequence started: " << tmp - fCycleStartTime << std::endl;
++ ((double)data->GetData32()[0])/1000.0;
       fCycleStartTime = tmp;
     }
   }
 
 
-  // Fill the Cumulative "Hits in " histogram
-  for(unsigned int j = 0; j < fHits.size(); j++){ // loop over measurements
-    
+  // Fill the Cumulative "Hits in Cycle" histogram
+  for(unsigned int j = 0; j < fHits.size(); j++){ // loop over measurements   
     double hittime = (int)fHits[j].time;
     double time_in_cycle = hittime - fCycleStartTime;
     fHitsInCycle->Fill(time_in_cycle);
+    fTotalHitsCycle++;
   }
   
+  // If new sequence started, update information for the cumulative sequence plot
+  if(sequence_started && fLastCycleStartTime != 0.0){
+    fHitsPerCycleVector.push_back(std::pair<double,double>(fLastCycleStartTime,fTotalHitsCycle));
+    fTotalHitsCycle = 0;
+    if(fHitsPerCycleVector.size() > 100){ // Save at most 100 cycles
+      fHitsPerCycleVector.erase(fHitsPerCycleVector.begin());
+    }
+  }
   
-  
-  
+  fHitsPerCycle->Set(0);
+  double maxCycle = 0;
+  for(unsigned int i = 0; i < fHitsPerCycleVector.size(); i++){
+    double dtime = fHitsPerCycleVector[i].first - ((double)dataContainer.GetMidasData().GetTimeStamp());
+    //      fLastCycleStartTime;
+    fHitsPerCycle->SetPoint(i,dtime,fHitsPerCycleVector[i].second);  
+    if(fHitsPerCycleVector[i].second > maxCycle) maxCycle = fHitsPerCycleVector[i].second;
+  }
+
+  fHitsPerCycle->SetMinimum(0);
+  fHitsPerCycle->SetMaximum(maxCycle*1.2);
+
 }
