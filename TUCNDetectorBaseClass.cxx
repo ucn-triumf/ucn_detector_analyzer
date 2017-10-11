@@ -24,7 +24,7 @@ TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline){
     sprintf(htitle,"Cumulative Hits Within Cycle: He-3");
   }
     
-  fHitsInCycle = new TH1D(hname,htitle,100,0,100);
+  fHitsInCycle = new TH1D(hname,htitle,500,0,100);
   fHitsInCycle->SetYTitle("Counts");
   fHitsInCycle->SetXTitle("Time since start of sequence (sec)");
  //  TH1D* GetHitsPerCycle(){return fHitsPerCycle;}
