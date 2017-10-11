@@ -48,12 +48,15 @@ public:
 
   MyTestLoop() {
 
-  //void Initialize(){
-
     SetOutputFilename("ucn_display_output");
     SetOnlineName("UCNDisplay");
-
+    
     DisableRootOutput(false);
+
+  }
+  
+  void Initialize(){
+    
     anaManager = new TAnaManager(IsOffline());
     anaViewer  = new TUCNAnaViewer3();
     rateViewer = new TUCNRateViewer();

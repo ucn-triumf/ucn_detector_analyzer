@@ -9,7 +9,7 @@
 /// Class for making a plot of UCN rate vs time as seen by He-3 detector, readout with V785 peak-sensing ADC.
 class TUCNRateVsTime : public THistogramArrayBase {
  public:
-  TUCNRateVsTime(bool isOffline, bool isLi6);
+  TUCNRateVsTime(bool isLi6, bool isOffline);
   virtual ~TUCNRateVsTime(){};
   
   /// Don't use this update method

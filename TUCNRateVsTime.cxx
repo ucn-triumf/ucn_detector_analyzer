@@ -8,7 +8,7 @@ const int Nchannels = 8;
 int timescale[8] = {300,600,1200,2400,4800,9600,19200,38400};
 
 /// Reset the histograms for this canvas
-TUCNRateVsTime::TUCNRateVsTime(bool isOffline, bool isLi6){  
+TUCNRateVsTime::TUCNRateVsTime(bool isLi6, bool isOffline){  
 
   fIsLi6 = isLi6;
   fIsOffline = isOffline;
@@ -57,6 +57,7 @@ void TUCNRateVsTime::CreateHistograms(){
 int lastTimestamp = 0;
 void TUCNRateVsTime::UpdateHistograms(TUCNHitCollection & hits){
 
+  
   struct timeval start,stop;
   gettimeofday(&start,NULL);
   

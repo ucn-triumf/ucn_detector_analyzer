@@ -4,7 +4,7 @@
 
 THe3Detector::THe3Detector(bool isOffline):TUCNDetectorBaseClass(isOffline){
   
-  
+  std::cout << "He3 constructor : " << isOffline << std::endl;  
   
 }
 

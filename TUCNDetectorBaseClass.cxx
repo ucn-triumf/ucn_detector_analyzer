@@ -50,11 +50,11 @@ void TUCNDetectorBaseClass::ProcessMidasEvent(TDataContainer& dataContainer){
   if(data){
     if(data->GetData32()[1] & 2){
       sequence_started = true;
-      std::cout << "New sequence started.\n";
+      //std::cout << "New sequence started.\n";
       double tmp = ((double)dataContainer.GetMidasData().GetTimeStamp())
 		+ ((double)data->GetData32()[0])/1000.0;
-      if(fCycleStartTime != 0.0)
-	std::cout << "Seconds since last sequence started: " << tmp - fCycleStartTime << std::endl;
+      //if(fCycleStartTime != 0.0)
+      //std::cout << "Seconds since last sequence started: " << tmp - fCycleStartTime << std::endl;
       fCycleStartTime = tmp;
     }
   }
