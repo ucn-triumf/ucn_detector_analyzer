@@ -94,9 +94,6 @@ void TUCNRateVsTime::UpdateHistograms(TUCNHitCollection & hits){
   lastTimestamp = timestamp;
 
 
-  if (hits.size()){
-    std::cout << "hits " << hits.size() << std::endl;
-  }
   for(unsigned int j = 0; j < hits.size(); j++){ // loop over measurements
 	
     int hittime = (int)hits[j].time;
@@ -105,9 +102,7 @@ void TUCNRateVsTime::UpdateHistograms(TUCNHitCollection & hits){
     for(int i = fRateVsTime.size()-1; i >= 0; i--){      
       if(hittime == fRateVsTime[i].first){
         fRateVsTime[i].second = fRateVsTime[i].second + 1.0;
-        std::cout << "Found hit " << hittime << " "  << fRateVsTime[i].first
-                  << " " << fRateVsTime[i].second << std::endl;
-        break;
+          break;
       }
     }    
   }
