@@ -50,9 +50,16 @@ class TUCNDetectorBaseClass  {
 
   TH1D* GetHitsInCycle(){return fHitsInCycle;}
 
+  TSimpleHistogramCanvas* GetHitsInCycleCanvas(){    
+    return  new TSimpleHistogramCanvas(fHitsInCycle,"Hits In Current Cycle");
+  }
+
+  TSimpleHistogramCanvas* GetHitsInCycleCumulCanvas(){    
+    return  new TSimpleHistogramCanvas(fHitsInCycleCumul,"Cumulative Hits In Cycle");
+  }
+
   TSimpleHistogramCanvas* GetHitsPerCycleCanvas(){    
-    TSimpleHistogramCanvas *canvas = new TSimpleHistogramCanvas(fHitsPerCycle,"Hits Per Cycle");
-    return canvas;
+    return  new TSimpleHistogramCanvas(fHitsPerCycle,"Hits Per Cycle");
   }
   //  TH1D* GetHitsPerCycle(){return fHitsPerCycle;}
 
@@ -77,10 +84,12 @@ private:
   TUCNRateVsTime *fRateVsTime;
 
   TH1D *fHitsInCycle;
+  TH1D *fHitsInCycleCumul;
   TGraph *fHitsPerCycle;
 
-  // UCN hits in cycle
+  // UCN hits in this cycle
   int fTotalHitsCycle;
+
   // vector to store the cycle hits in
   std::vector<std::pair<double, double> > fHitsPerCycleVector;
 };

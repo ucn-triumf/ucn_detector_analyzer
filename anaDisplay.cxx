@@ -80,9 +80,10 @@ public:
     AddSingleCanvas(anaManager->GetHe3DetectorAnalyzer()->GetRateVsTimeCanvas(),"He3 Analysis");
 
     // UCN hits in cycle
-    AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->GetHe3DetectorAnalyzer()->GetHitsInCycle(),
-					       "Hits in Cycle"),"He3 Analysis");
-   // UCN Hits Per Cycle
+    AddSingleCanvas(anaManager->GetHe3DetectorAnalyzer()->GetHitsInCycleCanvas(),"He3 Analysis");
+    AddSingleCanvas(anaManager->GetHe3DetectorAnalyzer()->GetHitsInCycleCumulCanvas(),"He3 Analysis");
+    
+    // UCN Hits Per Cycle
     AddSingleCanvas(anaManager->GetHe3DetectorAnalyzer()->GetHitsPerCycleCanvas(),"He3 Analysis");
 
 

@@ -20,17 +20,28 @@ TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline){
   char htitle[250], hname[250];
   if(fIsLi6){
     sprintf(hname,"hitsinsequence_li6");
-    sprintf(htitle,"Cumulative Hits Within Cycle: Li-6");
+    sprintf(htitle,"Hits Within Current Cycle: Li-6");
   }else{
     sprintf(hname,"hitsinsequence_he3");
-    sprintf(htitle,"Cumulative Hits Within Cycle: He-3");
+    sprintf(htitle,"Hits Within Current Cycle: He-3");
   }
     
-  fHitsInCycle = new TH1D(hname,htitle,500,0,100);
+  fHitsInCycle = new TH1D(hname,htitle,200,0,100);
   fHitsInCycle->SetYTitle("Counts");
   fHitsInCycle->SetXTitle("Time since start of sequence (sec)");
 
-  //  TH1D* GetHitsPerCycle(){return fHitsPerCycle;}
+  if(fIsLi6){
+    sprintf(hname,"hitsinsequencecumul_li6");
+    sprintf(htitle,"Cumulative Hits Within Cycles: Li-6");
+  }else{
+    sprintf(hname,"hitsinsequencecmumul_he3");
+    sprintf(htitle,"Cumulative Hits Within Cycles: He-3");
+  }
+    
+  fHitsInCycleCumul = new TH1D(hname,htitle,500,0,100);
+  fHitsInCycleCumul->SetYTitle("Counts");
+  fHitsInCycleCumul->SetXTitle("Time since start of sequence (sec)");
+
   fHitsPerCycle = new TGraph();
   if(fIsLi6){
     
@@ -82,6 +93,7 @@ void TUCNDetectorBaseClass::ProcessMidasEvent(TDataContainer& dataContainer){
     double hittime = (int)fHits[j].time;
     double time_in_cycle = hittime - fCycleStartTime;
     fHitsInCycle->Fill(time_in_cycle);
+    fHitsInCycleCumul->Fill(time_in_cycle);
     fTotalHitsCycle++;
   }
   
@@ -92,6 +104,8 @@ void TUCNDetectorBaseClass::ProcessMidasEvent(TDataContainer& dataContainer){
     if(fHitsPerCycleVector.size() > 100){ // Save at most 100 cycles
       fHitsPerCycleVector.erase(fHitsPerCycleVector.begin());
     }
+    // Reset the hits in cycle histogram
+    fHitsInCycle->Reset();
   }
   
   fHitsPerCycle->Set(0);
