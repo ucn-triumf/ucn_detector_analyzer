@@ -34,7 +34,7 @@ TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline){
     sprintf(hname,"hitsinsequencecumul_li6");
     sprintf(htitle,"Cumulative Hits Within Cycles: Li-6");
   }else{
-    sprintf(hname,"hitsinsequencecmumul_he3");
+    sprintf(hname,"hitsinsequencecumul_he3");
     sprintf(htitle,"Cumulative Hits Within Cycles: He-3");
   }
     
