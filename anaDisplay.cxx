@@ -86,9 +86,6 @@ public:
     // UCN Hits Per Cycle
     AddSingleCanvas(anaManager->GetHe3DetectorAnalyzer()->GetHitsPerCycleCanvas(),"He3 Analysis");
 
-
-    if(anaManager->HaveV792Histograms()) 
-      AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetV792Histograms(),"V792"));
     
     //if(anaManager->HaveV1720Histograms()) 
     //AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetV1720Histograms(),"V1720 Waveforms"));
@@ -115,11 +112,11 @@ public:
   void ResetHistograms(){
 
     std::cout << "Resetting..." << std::endl;
-    if(!rateViewer->GetCurrHisto())return;
-    TH1D* hC = rateViewer->GetCurrHisto()->Get();
-    TH1D* hP = rateViewer->GetPrevHisto()->Get();
-    if ( hC ) hC->Reset();
-    if ( hP ) hP->Reset();
+    //    if(!rateViewer->GetCurrHisto())return;
+    //TH1D* hC = rateViewer->GetCurrHisto()->Get();
+    //TH1D* hP = rateViewer->GetPrevHisto()->Get();
+    //if ( hC ) hC->Reset();
+    //if ( hP ) hP->Reset();
     std::cout << "Done reset " << std::endl;
   }
 
