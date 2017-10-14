@@ -70,6 +70,7 @@ OBJS += TUCNDetectorBaseClass.o
 OBJS += TUCNDetectorCharge.o
 OBJS += TUCNRateVsTime.o
 OBJS += THe3Detector.o
+OBJS += TLi6Detector.o
 OBJS += THe3CountsInSequence.o
 OBJS += TAnaManager.o
 OBJS += TV1720Histograms.o

@@ -1,10 +1,10 @@
 #include "TUCNDetectorBaseClass.hxx"
 
 
-TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline){
+TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline, bool isLi6){
   
   fHits = TUCNHitCollection();
-  fIsLi6 = false;
+  fIsLi6 = isLi6;
   fIsOffline = isOffline;
   
   fDetectorCharge = new TUCNDetectorCharge(fIsLi6);
@@ -26,7 +26,7 @@ TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline){
     sprintf(htitle,"Hits Within Current Cycle: He-3");
   }
     
-  fHitsInCycle = new TH1D(hname,htitle,200,0,100);
+  fHitsInCycle = new TH1D(hname,htitle,220,-10,100);
   fHitsInCycle->SetYTitle("Counts");
   fHitsInCycle->SetXTitle("Time since start of sequence (sec)");
 
@@ -38,7 +38,7 @@ TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline){
     sprintf(htitle,"Cumulative Hits Within Cycles: He-3");
   }
     
-  fHitsInCycleCumul = new TH1D(hname,htitle,500,0,100);
+  fHitsInCycleCumul = new TH1D(hname,htitle,550,-10,100);
   fHitsInCycleCumul->SetYTitle("Counts");
   fHitsInCycleCumul->SetXTitle("Time since start of sequence (sec)");
 

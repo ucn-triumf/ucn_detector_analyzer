@@ -72,20 +72,32 @@ public:
 
  
     // Add He-3 plots
-    // Charge Spectrum
-    AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetHe3DetectorAnalyzer()->GetChargeHistograms(),
-					      "Charge"),"He3 Analysis");
 
-    // UCN Rate Vs Time
-    AddSingleCanvas(anaManager->GetHe3DetectorAnalyzer()->GetRateVsTimeCanvas(),"He3 Analysis");
+    // Add the common plots, for He3 and Li6 detectors
 
-    // UCN hits in cycle
-    AddSingleCanvas(anaManager->GetHe3DetectorAnalyzer()->GetHitsInCycleCanvas(),"He3 Analysis");
-    AddSingleCanvas(anaManager->GetHe3DetectorAnalyzer()->GetHitsInCycleCumulCanvas(),"He3 Analysis");
-    
-    // UCN Hits Per Cycle
-    AddSingleCanvas(anaManager->GetHe3DetectorAnalyzer()->GetHitsPerCycleCanvas(),"He3 Analysis");
+    for(int i = 0; i < 2; i++){
+      TUCNDetectorBaseClass* detector = anaManager->GetHe3DetectorAnalyzer();
+      std::string tabname = std::string("He3 Analysis");
+      if(i==1){
+        detector = anaManager->GetLi6DetectorAnalyzer();
+        tabname = std::string("Li6 Analysis");
+      }
 
+      // Charge Spectrum
+      AddSingleCanvas(new TFancyHistogramCanvas(detector->GetChargeHistograms(),
+                                                "Charge"),tabname.c_str());
+      
+      // UCN Rate Vs Time
+      AddSingleCanvas(detector->GetRateVsTimeCanvas(),tabname.c_str());
+      
+      // UCN hits in cycle
+      AddSingleCanvas(detector->GetHitsInCycleCanvas(),tabname.c_str());
+      AddSingleCanvas(detector->GetHitsInCycleCumulCanvas(),tabname.c_str());
+      
+      // UCN Hits Per Cycle
+      AddSingleCanvas(detector->GetHitsPerCycleCanvas(),tabname.c_str());
+
+    }
     
     //if(anaManager->HaveV1720Histograms()) 
     //AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetV1720Histograms(),"V1720 Waveforms"));

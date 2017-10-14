@@ -9,6 +9,7 @@
 #include "TV1720Waveform.h"
 
 #include "THe3Detector.hxx"
+#include "TLi6Detector.hxx"
 
 /// This is the main analysis manager program for the UCN detectors.
 class TAnaManager  {
@@ -28,6 +29,7 @@ public:
   THe3CountsInSequence* GetHe3CountsHistograms();
 
   TUCNDetectorBaseClass* GetHe3DetectorAnalyzer(){return fHe3Detector;}
+  TUCNDetectorBaseClass* GetLi6DetectorAnalyzer(){return fLi6Detector;}
 private:
   
   TV1720Waveform *fV1720Waveform;
@@ -35,6 +37,7 @@ private:
   THe3CountsInSequence* fHe3CountsInSequence;
   
   THe3Detector  *fHe3Detector;
+  TLi6Detector  *fLi6Detector;
 
 };
 
