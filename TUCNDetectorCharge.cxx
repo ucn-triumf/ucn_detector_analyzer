@@ -36,12 +36,15 @@ void TUCNDetectorCharge::CreateHistograms(){
 
 
     // Create new histograms
-    
-    if(fIsLi6)  sprintf(title,"Li-6 Charge Histogram for channel=%i",i);	
-    else  sprintf(title,"He-3 Pulse Height Histogram for channel=%i",i);	
-    
-    
-    TH1D *tmp = new TH1D(name,title,4200,0,4200);
+    TH1D *tmp;
+    if(fIsLi6){
+      sprintf(title,"Li-6 Charge Short Histogram for channel=%i",i);
+      tmp = new TH1D(name,title,6600,0,66000);
+    }else{
+      sprintf(title,"He-3 Pulse Height Histogram for channel=%i",i);	
+      tmp = new TH1D(name,title,4200,0,4200);
+    }
+      
     tmp->SetYTitle("Number of entries");
     if(fIsLi6)     tmp->SetXTitle("Charge (ADC counts)");
     else     tmp->SetXTitle("Pulse Height (ADC counts)");
@@ -57,7 +60,7 @@ void  TUCNDetectorCharge::UpdateHistograms(TUCNHitCollection & hits){
 
   for(unsigned int i = 0; i < hits.size(); i++){
     int channel = hits[i].channel;
-    int charge = hits[i].chargeLong;
+    int charge = hits[i].chargeShort;
     
     if(channel >= 0 && channel < size())
       GetHistogram(channel)->Fill(charge);
