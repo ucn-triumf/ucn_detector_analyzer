@@ -14,6 +14,7 @@ TUCNRateVsTime::TUCNRateVsTime(bool isLi6, bool isOffline){
   fIsOffline = isOffline;
   
   CreateHistograms();
+  lastTimestamp = 0;
 }
 
 
@@ -54,7 +55,7 @@ void TUCNRateVsTime::CreateHistograms(){
 
 }
 
-int lastTimestamp = 0;
+
 void TUCNRateVsTime::UpdateHistograms(TUCNHitCollection & hits){
 
   
@@ -95,15 +96,15 @@ void TUCNRateVsTime::UpdateHistograms(TUCNHitCollection & hits){
   lastTimestamp = timestamp;
 
 
+
   for(unsigned int j = 0; j < hits.size(); j++){ // loop over measurements
 	
     int hittime = (int)hits[j].time;
-    
     // Find the right entry and update...
     for(int i = fRateVsTime.size()-1; i >= 0; i--){      
       if(hittime == fRateVsTime[i].first){
         fRateVsTime[i].second = fRateVsTime[i].second + 1.0;
-          break;
+        break;
       }
     }    
   }

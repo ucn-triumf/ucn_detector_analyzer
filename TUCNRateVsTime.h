@@ -29,6 +29,8 @@ private:
   bool fIsOffline;
   
   void CreateHistograms();
+
+  int lastTimestamp;
     
   // Vector storing the rate vs time.
   std::vector< std::pair<int,double> >  fRateVsTime;
