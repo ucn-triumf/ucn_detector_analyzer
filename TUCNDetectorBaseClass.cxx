@@ -26,7 +26,7 @@ TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline, bool isLi6){
     sprintf(htitle,"Hits Within Current Cycle: He-3");
   }
     
-  fHitsInCycle = new TH1D(hname,htitle,220,-10,100);
+  fHitsInCycle = new TH1D(hname,htitle,110,-10,100);
   fHitsInCycle->SetYTitle("Counts");
   fHitsInCycle->SetXTitle("Time since start of sequence (sec)");
 
@@ -38,7 +38,7 @@ TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline, bool isLi6){
     sprintf(htitle,"Cumulative Hits Within Cycles: He-3");
   }
     
-  fHitsInCycleCumul = new TH1D(hname,htitle,550,-10,100);
+  fHitsInCycleCumul = new TH1D(hname,htitle,110,-10,100);
   fHitsInCycleCumul->SetYTitle("Counts");
   fHitsInCycleCumul->SetXTitle("Time since start of sequence (sec)");
 
@@ -81,8 +81,8 @@ void TUCNDetectorBaseClass::ProcessMidasEvent(TDataContainer& dataContainer){
     if(data->GetData32()[1] & 2){
       sequence_started = true;
       fLastCycleStartTime = fCycleStartTime;
-      double tmp = ((double)dataContainer.GetMidasData().GetTimeStamp())
-+ ((double)data->GetData32()[0])/1000.0;
+      double tmp = ((double)dataContainer.GetMidasData().GetTimeStamp());
+      //+ ((double)data->GetData32()[0])/1000.0;
       fCycleStartTime = tmp;
     }
   }
