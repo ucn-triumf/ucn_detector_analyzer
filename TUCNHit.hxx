@@ -19,6 +19,7 @@ public:
   double chargeLong; // This is just change for He-3
   double chargeShort; // This is just charge for He-3
   double psd; // This is 0 for He-3
+  double baseline; // This is 0 for He-3
 
 };
 

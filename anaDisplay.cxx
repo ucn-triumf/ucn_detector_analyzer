@@ -98,7 +98,15 @@ public:
       AddSingleCanvas(detector->GetHitsPerCycleCanvas(),tabname.c_str());
 
     }
-    
+
+    // Add specific plots for V1720
+    TLi6Detector* li6detector = dynamic_cast<TLi6Detector*>(anaManager->GetLi6DetectorAnalyzer());
+    if(li6detector){
+      std::cout << "Dynamic casted!!!" << std::endl;
+      AddSingleCanvas(li6detector->GetV1720BaselineCanvas(),"V1720");
+    }
+
+
     //if(anaManager->HaveV1720Histograms()) 
     //AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetV1720Histograms(),"V1720 Waveforms"));
     //    if(anaManager->HaveHe3RateHistograms()) 

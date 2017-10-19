@@ -120,4 +120,8 @@ void TUCNDetectorBaseClass::ProcessMidasEvent(TDataContainer& dataContainer){
   fHitsPerCycle->SetMinimum(0);
   fHitsPerCycle->SetMaximum(maxCycle*1.2);
 
+
+  // Do detector specific plot filling
+  FillSpecificPlots();
+  
 }

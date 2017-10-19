@@ -22,6 +22,10 @@ class TUCNDetectorBaseClass  {
   // This method needs to be defined in each derived class.
   virtual void GetHits(TDataContainer& dataContainer) = 0;
 
+  // Fill plots specific to detector type.
+  // Can be defined in derived class.
+  virtual void FillSpecificPlots(){};
+  
   /// Update the histograms for this canvas.
   void ProcessMidasEvent(TDataContainer& dataContainer);
 
@@ -77,6 +81,8 @@ protected:
   double fCycleStartTime;
   double fLastCycleStartTime;
 
+  
+  
 private:
 
   // UCN hit charge or pulse height spectrum histograms
