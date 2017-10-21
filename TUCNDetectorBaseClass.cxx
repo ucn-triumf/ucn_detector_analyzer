@@ -4,6 +4,7 @@
 TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline, bool isLi6){
   
   fHits = TUCNHitCollection();
+  fNonHits = TUCNHitCollection();
   fIsLi6 = isLi6;
   fIsOffline = isOffline;
   
@@ -38,7 +39,7 @@ TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline, bool isLi6){
     sprintf(htitle,"Cumulative Hits Within Cycles: He-3");
   }
     
-  fHitsInCycleCumul = new TH1D(hname,htitle,110,-10,100);
+  fHitsInCycleCumul = new TH1D(hname,htitle,550,-10,100);
   fHitsInCycleCumul->SetYTitle("Counts");
   fHitsInCycleCumul->SetXTitle("Time since start of sequence (sec)");
 
@@ -102,7 +103,7 @@ void TUCNDetectorBaseClass::ProcessMidasEvent(TDataContainer& dataContainer){
 
   // Fill the Cumulative "Hits in Cycle" histogram
   for(unsigned int j = 0; j < fHits.size(); j++){ // loop over measurements   
-    double hittime = (int)fHits[j].time;
+    double hittime = fHits[j].time;
     double time_in_cycle = hittime - fCycleStartTime;
     fHitsInCycle->Fill(time_in_cycle);
     fHitsInCycleCumul->Fill(time_in_cycle);

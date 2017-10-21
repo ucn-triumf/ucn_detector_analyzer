@@ -86,6 +86,7 @@ TLi6Detector::TLi6Detector(bool isOffline):TUCNDetectorBaseClass(isOffline,true)
 void TLi6Detector::GetHits(TDataContainer& dataContainer){
 
   fHits = TUCNHitCollection();
+  fNonHits = TUCNHitCollection();
   int timestamp = dataContainer.GetMidasData().GetTimeStamp();
   fHits.eventTime = timestamp;
   
@@ -114,7 +115,7 @@ void TLi6Detector::GetHits(TDataContainer& dataContainer){
 	  TUCNHit hit = TUCNHit();
 	  hit.time = (double)timestamp;
 	  hit.clockTime = (out->TimeTag & 0xffffffff);
-	  hit.channel = out->Channel;
+	  hit.channel = out->Channel + i*8;
 	  hit.chargeShort = out->ChargeShort;
 	  hit.chargeLong = out->ChargeLong;
 	  hit.baseline = out->Baseline;
@@ -129,7 +130,8 @@ void TLi6Detector::GetHits(TDataContainer& dataContainer){
 
           // Check for roll-over
           if( lastClockTime > hit.clockTime && lastClockTime > 0xd0000000 && hit.clockTime < 0x20000000){
-            std::cout << "Found roll-over: " << std::hex << lastClockTime << " "<< hit.clockTime << std::endl;
+            if(hit.clockTime % 100 == 0)
+              std::cout << "Found roll-over: " << std::hex << lastClockTime << " "<< hit.clockTime << std::endl;
             numberRollOvers++;
           }              
           lastClockTime = hit.clockTime;
@@ -137,22 +139,57 @@ void TLi6Detector::GetHits(TDataContainer& dataContainer){
           // Get the current precise time
           hit.preciseTime = initialUnixTime + ((double)numberRollOvers)*17.17986918 + ((double)(hit.clockTime - initialClockTime))/((double)0xffffffff) * 17.17986918;
 
-          if(hit.clockTime % 10 == 0)
+          // If requested, we will use this precise time for all the hit timing plots.
+          if(UsePreciseSequenceTime() || 1 ) hit.time = hit.preciseTime;
+          
+          if(hit.clockTime % 1000 == 0)
             std::cout << hit.preciseTime << " " <<  initialUnixTime << " " << hit.preciseTime -  initialUnixTime
+                      << " " << timestamp - initialUnixTime
                       << " " << numberRollOvers << " " << hit.clockTime << " "
                       << initialClockTime << " " << ((double)(hit.clockTime - initialClockTime)) << std::endl;
           
-	  fHits.push_back(hit);
 	  static long int chan6_time;
 	  if(hit.channel == 6) chan6_time = hit.clockTime;
 
 	  if(0 && hit.channel != 0) std::cout << "Board " << i << " channel " << hit.channel << "has hit at time " 
 					 << hit.clockTime << " diff " << hit.clockTime-chan6_time << std::endl;
+
+          // Is this a real UCN hit or a monitoring hit?
+          if(hit.channel < 14){
+             fHits.push_back(hit);
+          }else{
+            fNonHits.push_back(hit);
+          }
+
+
       }
     }
   }
 
 }
+
+// Get a more precise sequence start time from v1720 bank
+bool TLi6Detector::CheckForSequenceStartPrecise(TDataContainer& dataContainer){
+
+  // Check if we had a hit on channel1-6 (14) indicating the start of a new sequence
+  for(unsigned int j = 0; j < fNonHits.size(); j++){ // loop over measurements   
+
+      if(fNonHits[j].channel == 14){
+      fLastCycleStartTime = fCycleStartTime;
+      fCycleStartTime = fNonHits[j].preciseTime;
+      if(fNonHits[j].clockTime %20 == 0)
+        std::cout << "Li-6 Sequence start: "  << fCycleStartTime <<  " " << fCycleStartTime-fLastCycleStartTime
+                << std::endl;
+      return true;
+    }
+  }
+
+
+  return false;
+  
+  
+}
+
 
 
 void TLi6Detector::FillSpecificPlots(){

@@ -41,6 +41,12 @@ public:
 
   void GetHits(TDataContainer& dataContainer);
 
+  // Get a more precise sequence start time from v1720 bank
+  virtual bool CheckForSequenceStartPrecise(TDataContainer& dataContainer);
+
+  virtual bool UsePreciseSequenceTime(){return true;};
+
+  
   TFancyHistogramCanvas* GetV1720BaselineCanvas(){    
     return new TFancyHistogramCanvas(fBaselines,"Baselines");
     //canvas->SetChannelName("Timescale");    
@@ -52,7 +58,15 @@ public:
   
 private:
   TV1720Baselines *fBaselines;
+
+  // Decoder for the V1720 bank
   DPPBankHandler fDPP[NDPPBOARDS];
+
+  // stuff for calculating precise time from V1720 timestamp
+  long int lastClockTime;
+  double initialUnixTime;
+  long int initialClockTime;
+  long int numberRollOvers;
   
 };
 

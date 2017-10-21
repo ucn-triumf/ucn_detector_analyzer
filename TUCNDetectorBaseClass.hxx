@@ -27,10 +27,10 @@ class TUCNDetectorBaseClass  {
   // timestamps from the VME sequencer module (with ~2second jitter)
   // or a more precise time based on hits in the particular digitizer.
   bool CheckForSequenceStartCrude(TDataContainer& dataContainer);
-  virtual bool CheckForSequenceStartPrecise(TDataContainer& dataContainer){};
+  virtual bool CheckForSequenceStartPrecise(TDataContainer& dataContainer){return false;};
 
   /// Method to decide which sequence time to use.
-  bool UsePreciseSequenceTime(){return false;};
+  virtual bool UsePreciseSequenceTime(){return false;};
   
   // Fill plots specific to detector type.
   // Can be defined in derived class.
@@ -84,8 +84,11 @@ protected:
   bool fIsLi6; // Is for Li-6 detector
   bool fIsOffline;
   
-  // List of hits
+  // List of UCN hits
   TUCNHitCollection fHits;
+
+  // List of non-UCN hits.
+  TUCNHitCollection fNonHits;
 
   // Start time of the current sequence;
   double fCycleStartTime;
