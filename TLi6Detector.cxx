@@ -74,6 +74,11 @@ TLi6Detector::TLi6Detector(bool isOffline):TUCNDetectorBaseClass(isOffline,true)
 
   fBaselines = new TV1720Baselines();
   fBaselines->DisableAutoUpdate();
+
+  lastClockTime = 0;
+  initialUnixTime = -1;
+  numberRollOvers = 0;
+  initialClockTime = 0;
   
 }
 
@@ -93,7 +98,7 @@ void TLi6Detector::GetHits(TDataContainer& dataContainer){
     sprintf(bankname,"W20%i",i);
     TGenericData *data = dataContainer.GetEventData<TGenericData>(bankname);
     if(!data) continue;
-        
+
     // Decode the data
     fDPP[i].Init(((char*)data->GetData32()));
 
@@ -108,17 +113,40 @@ void TLi6Detector::GetHits(TDataContainer& dataContainer){
 	  
 	  TUCNHit hit = TUCNHit();
 	  hit.time = (double)timestamp;
-	  hit.clockTime = out->TimeTag;
+	  hit.clockTime = (out->TimeTag & 0xffffffff);
 	  hit.channel = out->Channel;
 	  hit.chargeShort = out->ChargeShort;
 	  hit.chargeLong = out->ChargeLong;
 	  hit.baseline = out->Baseline;
-	  
+
+          // Figure out precise unixTime from clock
+
+          // Save the unix time for the first event we found
+          if(initialUnixTime < 0){
+            initialUnixTime = (double) timestamp;
+            initialClockTime = hit.clockTime;
+          }
+
+          // Check for roll-over
+          if( lastClockTime > hit.clockTime && lastClockTime > 0xd0000000 && hit.clockTime < 0x20000000){
+            std::cout << "Found roll-over: " << std::hex << lastClockTime << " "<< hit.clockTime << std::endl;
+            numberRollOvers++;
+          }              
+          lastClockTime = hit.clockTime;
+
+          // Get the current precise time
+          hit.preciseTime = initialUnixTime + ((double)numberRollOvers)*17.17986918 + ((double)(hit.clockTime - initialClockTime))/((double)0xffffffff) * 17.17986918;
+
+          if(hit.clockTime % 10 == 0)
+            std::cout << hit.preciseTime << " " <<  initialUnixTime << " " << hit.preciseTime -  initialUnixTime
+                      << " " << numberRollOvers << " " << hit.clockTime << " "
+                      << initialClockTime << " " << ((double)(hit.clockTime - initialClockTime)) << std::endl;
+          
 	  fHits.push_back(hit);
 	  static long int chan6_time;
 	  if(hit.channel == 6) chan6_time = hit.clockTime;
 
-	  if(hit.channel != 0) std::cout << "Board " << i << " channel " << hit.channel << "has hit at time " 
+	  if(0 && hit.channel != 0) std::cout << "Board " << i << " channel " << hit.channel << "has hit at time " 
 					 << hit.clockTime << " diff " << hit.clockTime-chan6_time << std::endl;
       }
     }

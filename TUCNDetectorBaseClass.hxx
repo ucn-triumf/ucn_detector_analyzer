@@ -22,6 +22,16 @@ class TUCNDetectorBaseClass  {
   // This method needs to be defined in each derived class.
   virtual void GetHits(TDataContainer& dataContainer) = 0;
 
+  // We have different methods for checking for the start
+  // of a sequence; either the crude method based on
+  // timestamps from the VME sequencer module (with ~2second jitter)
+  // or a more precise time based on hits in the particular digitizer.
+  bool CheckForSequenceStartCrude(TDataContainer& dataContainer);
+  virtual bool CheckForSequenceStartPrecise(TDataContainer& dataContainer){};
+
+  /// Method to decide which sequence time to use.
+  bool UsePreciseSequenceTime(){return false;};
+  
   // Fill plots specific to detector type.
   // Can be defined in derived class.
   virtual void FillSpecificPlots(){};
@@ -79,6 +89,7 @@ protected:
 
   // Start time of the current sequence;
   double fCycleStartTime;
+  double fValueOpenTime;
   double fLastCycleStartTime;
 
   

@@ -60,6 +60,22 @@ TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline, bool isLi6){
 
 }
 
+bool TUCNDetectorBaseClass::CheckForSequenceStartCrude(TDataContainer& dataContainer){
+
+  // Use the sequence bank to see when a new run starts:
+  TGenericData *data = dataContainer.GetEventData<TGenericData>("SEQN");
+
+  if(data){
+    if(data->GetData32()[1] & 2){
+      fLastCycleStartTime = fCycleStartTime;
+      double tmp = ((double)dataContainer.GetMidasData().GetTimeStamp());
+      fCycleStartTime = tmp;
+      return true;
+    }
+  }
+  return false;
+}
+
 
 /// Update the histograms for this canvas.
 void TUCNDetectorBaseClass::ProcessMidasEvent(TDataContainer& dataContainer){
@@ -73,19 +89,15 @@ void TUCNDetectorBaseClass::ProcessMidasEvent(TDataContainer& dataContainer){
   // Fill the rate vs time histograms
   fRateVsTime->UpdateHistograms(fHits);
 
-  // Fill out a bunch of histograms for UCN hit rate with respect to the irradiation sequence.
-  // Use the sequence bank to see when a new run starts:
+  // Check for sequence start time
   bool sequence_started = false;
-  TGenericData *data = dataContainer.GetEventData<TGenericData>("SEQN");
-  if(data){
-    if(data->GetData32()[1] & 2){
-      sequence_started = true;
-      fLastCycleStartTime = fCycleStartTime;
-      double tmp = ((double)dataContainer.GetMidasData().GetTimeStamp());
-      //+ ((double)data->GetData32()[0])/1000.0;
-      fCycleStartTime = tmp;
-    }
+  if(UsePreciseSequenceTime()){
+    sequence_started = CheckForSequenceStartPrecise(dataContainer);
+  }else{
+    sequence_started = CheckForSequenceStartCrude(dataContainer);
   }
+
+  // Fill out a bunch of histograms for UCN hit rate with respect to the irradiation sequence.
 
 
   // Fill the Cumulative "Hits in Cycle" histogram

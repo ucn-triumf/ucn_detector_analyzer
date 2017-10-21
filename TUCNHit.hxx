@@ -14,7 +14,8 @@ public:
   int module;
   int channel;
   bool isLi6;
-  double time; // Unix time (with sub-second precision)
+  double time; // Unix time (with second precision)
+  double preciseTime; // Unix time (with sub-second precision)
   long int clockTime;
   double chargeLong; // This is just change for He-3
   double chargeShort; // This is just charge for He-3
