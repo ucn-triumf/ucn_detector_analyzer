@@ -84,37 +84,45 @@ void TLi6Detector::GetHits(TDataContainer& dataContainer){
   int timestamp = dataContainer.GetMidasData().GetTimeStamp();
   fHits.eventTime = timestamp;
   
-  TGenericData *data = dataContainer.GetEventData<TGenericData>("W200");
-  if(!data) return;
 
-  int nhits = data->GetData32()[0];
-  if(nhits != 1) std::cout <<"WARNING: more than one hit per W200 bank. Not expected by decoder... " << std::endl;
+  // Loop over two boards
+  for(int i = 0; i < NDPPBOARDS; i++){
+ 
+    fDPP[i].ClearWaves();
+    char bankname[100];
+    sprintf(bankname,"W20%i",i);
+    TGenericData *data = dataContainer.GetEventData<TGenericData>(bankname);
+    if(!data) continue;
+        
+    // Decode the data
+    fDPP[i].Init(((char*)data->GetData32()));
 
-  int startHitPtr = 1;
-  for(int i = 0; i < nhits; i++){
+    if(fDPP[i].GetNEvents() != 1) std::cout <<"WARNING: more than one hit per W200 bank. Not expected by decoder... " << std::endl;
+    
+    // Fill the UCN hit structures...
+    for (int ichan = 0; ichan < PSD_MAXNCHAN;ichan++) {
+      for (int isubev = 0;isubev< fDPP[i].GetNWaves(ichan) ;isubev++) {
+	  DPP_Bank_Out_t *out  = fDPP[i].GetPSD( isubev, ichan );
+	  
+	  if ( out==NULL) continue;
+	  
+	  TUCNHit hit = TUCNHit();
+	  hit.time = (double)timestamp;
+	  hit.clockTime = out->TimeTag;
+	  hit.channel = out->Channel;
+	  hit.chargeShort = out->ChargeShort;
+	  hit.chargeLong = out->ChargeLong;
+	  hit.baseline = out->Baseline;
+	  
+	  fHits.push_back(hit);
+	  static long int chan6_time;
+	  if(hit.channel == 6) chan6_time = hit.clockTime;
 
-    
-    TUCNHit hit = TUCNHit();
-    
-    hit.time = (double)timestamp;
-    hit.clockTime = data->GetData32()[startHitPtr];
-    hit.channel = data->GetData32()[startHitPtr+2] & 0xffff;
-    hit.chargeShort = (data->GetData32()[startHitPtr+2] & 0xffff0000) >> 16;
-    hit.chargeLong = data->GetData32()[startHitPtr+3] & 0xffff;
-    hit.baseline = (data->GetData32()[startHitPtr+3] & 0xffff0000) >> 16;
-    
-    //std::cout << hit.clockTime << " " << hit.channel << " " << hit.chargeShort <<std::endl;
-    
-    fHits.push_back(hit);
-
+	  if(hit.channel != 0) std::cout << "Board " << i << " channel " << hit.channel << "has hit at time " 
+					 << hit.clockTime << " diff " << hit.clockTime-chan6_time << std::endl;
+      }
+    }
   }
-  //double clocktime;
-  //double chargeLong; // This is just charge for He-3
-  //double chargeShort; // This is 0 for He-3
-  //double psd; // This is 0 for He-3
-
-  
-
 
 }
 

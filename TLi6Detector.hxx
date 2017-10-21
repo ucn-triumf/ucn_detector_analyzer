@@ -3,6 +3,8 @@
 
 #include "TUCNDetectorBaseClass.hxx"
 
+#include "PulseShapeStruct.h"
+
 /// Class for making histograms of V1720 baseline
 class TV1720Baselines : public THistogramArrayBase {
  public:
@@ -50,6 +52,7 @@ public:
   
 private:
   TV1720Baselines *fBaselines;
+  DPPBankHandler fDPP[NDPPBOARDS];
   
 };
 
