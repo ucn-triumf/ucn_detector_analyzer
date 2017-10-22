@@ -77,11 +77,11 @@ OBJS += TV1720Histograms.o
 OBJS += TUCNAnaManager.o
 OBJS += PulseShapeStruct.o
 OBJS += TUCNAnaViewer.o
-OBJS += TUCNRateViewer.o
+#OBJS += TUCNRateViewer.o
 OBJS += TUCNAnaViewer3.o
 OBJS += TV1720WaveformDisplay.o
-OBJS += UCNRateHistogram.o
-OBJS += TTimeHelper.o
+#OBJS += UCNRateHistogram.o
+#OBJS += TTimeHelper.o
 
 all: $(OBJS) ana.exe anaDisplay.exe midas2root.exe UCNAnalyzer.exe UCNDisplay.exe UCNRateMonitor.exe UCNDisplay3.exe
 
@@ -94,17 +94,17 @@ anaDisplay.exe: anaDisplay.cxx $(OBJS)
 midas2root.exe: midas2root.cxx $(OBJS) 
 	$(CXX) -o $@ $(CXXFLAGS) $^ $(LIBS) $(ROOTGLIBS) -lm -lz -lpthread -lssl -lutil
 
-UCNDisplay.exe: UCNDisplay.cxx $(OBJS)
-	$(CXX) -o $@ $(CXXFLAGS) $^ $(LIBS) $(ROOTGLIBS) -lm -lz -lpthread -lssl -lutil
+#UCNDisplay.exe: UCNDisplay.cxx $(OBJS)
+#	$(CXX) -o $@ $(CXXFLAGS) $^ $(LIBS) $(ROOTGLIBS) -lm -lz -lpthread -lssl -lutil
 
-UCNDisplay3.exe: UCNDisplay3.cxx $(OBJS)
-	$(CXX) -o $@ $(CXXFLAGS) $^ $(LIBS) $(ROOTGLIBS) -lm -lz -lpthread -lssl -lutil
+#UCNDisplay3.exe: UCNDisplay3.cxx $(OBJS)
+#	$(CXX) -o $@ $(CXXFLAGS) $^ $(LIBS) $(ROOTGLIBS) -lm -lz -lpthread -lssl -lutil
 
-UCNRateMonitor.exe: UCNRateMonitor.cxx $(OBJS)
-	$(CXX) -o $@ $(CXXFLAGS) $^ $(LIBS) $(ROOTGLIBS) -lm -lz -lpthread -lssl -lutil
+#UCNRateMonitor.exe: UCNRateMonitor.cxx $(OBJS)
+#	$(CXX) -o $@ $(CXXFLAGS) $^ $(LIBS) $(ROOTGLIBS) -lm -lz -lpthread -lssl -lutil
 
-UCNAnalyzer.exe: UCNAnalyzer.cxx $(OBJS)
-	$(CXX) -o $@ $(CXXFLAGS) $^ $(LIBS) $(ROOTGLIBS) -lm -lz -lpthread -lssl -lutil
+#UCNAnalyzer.exe: UCNAnalyzer.cxx $(OBJS)
+#	$(CXX) -o $@ $(CXXFLAGS) $^ $(LIBS) $(ROOTGLIBS) -lm -lz -lpthread -lssl -lutil
 
 %.o: %.cxx
 	$(CXX) -o $@ $(CXXFLAGS) -c $<

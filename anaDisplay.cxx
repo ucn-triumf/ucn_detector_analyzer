@@ -18,7 +18,7 @@
 #include "TV1720WaveformDisplay.h"
 #include "TAnaManager.hxx"
 #include "TUCNAnaViewer3.h"
-#include "TUCNRateViewer.h"
+//#include "TUCNRateViewer.h"
 #include "TRootanaDisplay.hxx"
 #include "PulseShapeStruct.h"
 #include "TDataContainer.hxx"
@@ -44,7 +44,7 @@ public:
   // analysis manager.
   TAnaManager *anaManager;
   TUCNAnaViewer3 *anaViewer;
-  TUCNRateViewer *rateViewer;
+  //  TUCNRateViewer *rateViewer;
 
   MyTestLoop() {
 
@@ -59,7 +59,7 @@ public:
     
     anaManager = new TAnaManager(IsOffline());
     anaViewer  = new TUCNAnaViewer3();
-    rateViewer = new TUCNRateViewer();
+    //    rateViewer = new TUCNRateViewer();
     // Number of events to skip before plotting one.
     //SetNumberSkipEvent(10);
     // Choose to use functionality to update after X seconds
@@ -105,17 +105,17 @@ public:
       std::cout << "Dynamic casted!!!" << std::endl;
       AddSingleCanvas(li6detector->GetV1720BaselineCanvas(),"V1720");
     }
-
+    AddSingleCanvas(new TFancyHistogramCanvas(anaViewer->fV1720WaveformDisplay, "V1720 Waveform",9,false),"V1720");
+    AddSingleCanvas(new TFancyHistogramCanvas(anaViewer->fV1720QLQL, "V1720 QLvsQL", 9, false),"V1720");
+    AddSingleCanvas(new TFancyHistogramCanvas(anaViewer->fV1720QSQS, "V1720 QSvsQS", 9, false),"V1720");
 
     //if(anaManager->HaveV1720Histograms()) 
     //AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetV1720Histograms(),"V1720 Waveforms"));
     //    if(anaManager->HaveHe3RateHistograms()) 
     //AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetHe3RateHistograms(),"He3 UCN rate"));
-    AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetHe3CountsHistograms(),"He3 UCN Counts"));
-    AddSingleCanvas(new TFancyHistogramCanvas(anaViewer->fV1720WaveformDisplay, "V1720 Waveform",9,false));
-    AddSingleCanvas(new TFancyHistogramCanvas(anaViewer->fV1720QLQL, "V1720 QLvsQL", 9, false));
-    AddSingleCanvas(new TFancyHistogramCanvas(anaViewer->fV1720QSQS, "V1720 QSvsQS", 9, false));
-    AddSingleCanvas("Digitizer Count Rate on all channels");
+
+
+    //AddSingleCanvas("Digitizer Count Rate on all channels");
   };
 
 
@@ -132,11 +132,6 @@ public:
   void ResetHistograms(){
 
     std::cout << "Resetting..." << std::endl;
-    //    if(!rateViewer->GetCurrHisto())return;
-    //TH1D* hC = rateViewer->GetCurrHisto()->Get();
-    //TH1D* hP = rateViewer->GetPrevHisto()->Get();
-    //if ( hC ) hC->Reset();
-    //if ( hP ) hP->Reset();
     std::cout << "Done reset " << std::endl;
   }
 
@@ -171,14 +166,15 @@ public:
 
     //std::cout<<"anaViewer Update Histograms"<<std::endl;
     //if(banklist.find("W20") != std::string::npos)
-    //anaViewer->ProcessMidasEvent(dataContainer, CutChoice, PSDMax, PSDMin);
+    anaViewer->ProcessMidasEvent(dataContainer, 'n', PSDMax, PSDMin);
 
     //std::cout<<"anaManager Update Histograms"<<std::endl;
     anaManager->ProcessMidasEvent(dataContainer);
   }
 
   void PlotCanvas(TDataContainer& dataContainer){
-    
+
+    /*
     if(GetDisplayWindow()->GetCurrentTabName().compare("Digitizer Count Rate on all channels") == 0){       
       TCanvas* c1 = GetDisplayWindow()->GetCanvas("Digitizer Count Rate on all channels");
     // try to force some root options
@@ -201,6 +197,7 @@ public:
       c1->Modified();
       c1->Update();
     }
+    */
 }
 
   bool fileExists(const std::string& filename)
