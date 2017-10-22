@@ -76,14 +76,15 @@ OBJS += TAnaManager.o
 OBJS += TV1720Histograms.o
 #OBJS += TUCNAnaManager.o
 OBJS += PulseShapeStruct.o
-OBJS += TUCNAnaViewer.o
+# OBJS += TUCNAnaViewer.o
 #OBJS += TUCNRateViewer.o
 OBJS += TUCNAnaViewer3.o
 OBJS += TV1720WaveformDisplay.o
 #OBJS += UCNRateHistogram.o
 #OBJS += TTimeHelper.o
 
-all: $(OBJS) ana.exe anaDisplay.exe midas2root.exe UCNAnalyzer.exe UCNDisplay.exe UCNRateMonitor.exe UCNDisplay3.exe
+all: $(OBJS) ana.exe anaDisplay.exe midas2root.exe
+# UCNAnalyzer.exe UCNDisplay.exe UCNRateMonitor.exe UCNDisplay3.exe
 
 ana.exe: ana.cxx $(OBJS) 
 	$(CXX) -o $@ $(CXXFLAGS) $^ $(LIBS) $(ROOTGLIBS) -lm -lz -lpthread -lssl -lutil
