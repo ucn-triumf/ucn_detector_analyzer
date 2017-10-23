@@ -79,7 +79,18 @@ TLi6Detector::TLi6Detector(bool isOffline):TUCNDetectorBaseClass(isOffline,true)
   initialUnixTime = -1;
   numberRollOvers = 0;
   initialClockTime = 0;
-  
+
+  fSequenceLength = new TH1F("sequencelength_v1720","Sequence Length (by V1720)",1200,0,300);
+  fSequenceLength->SetXTitle("Sequence Length (sec)");
+  fDelayTime = new TH1F("delaytime_v1720","Delay Time (by V1720)",1200,0,300);
+  fDelayTime->SetXTitle("Delay Time (sec)");
+  fValveOpenTime = new TH1F("valveopentime_v1720","Valve Open Time (by V1720)",1200,0,300);
+  fValveOpenTime->SetXTitle("Valve Open Time (sec)");
+ 
+  fEndOfIrradiationTime = 0;
+  fUCNValveOpenTime = 0;
+  fUCNValveCloseTime = 0;
+ 
 }
 
 
@@ -140,7 +151,7 @@ void TLi6Detector::GetHits(TDataContainer& dataContainer){
           hit.preciseTime = initialUnixTime + ((double)numberRollOvers)*17.17986918 + ((double)(hit.clockTime - initialClockTime))/((double)0xffffffff) * 17.17986918;
 
           // If requested, we will use this precise time for all the hit timing plots.
-          if(UsePreciseSequenceTime() || 1 ) hit.time = hit.preciseTime;
+          if(UsePreciseSequenceTime()) hit.time = hit.preciseTime;
           
           if(hit.clockTime % 1000 == 0)
             std::cout << hit.preciseTime << " " <<  initialUnixTime << " " << hit.preciseTime -  initialUnixTime
@@ -155,7 +166,7 @@ void TLi6Detector::GetHits(TDataContainer& dataContainer){
 					 << hit.clockTime << " diff " << hit.clockTime-chan6_time << std::endl;
 
           // Is this a real UCN hit or a monitoring hit?
-          if(hit.channel < 14){
+          if(hit.channel < 13){
              fHits.push_back(hit);
           }else{
             fNonHits.push_back(hit);
@@ -169,24 +180,42 @@ void TLi6Detector::GetHits(TDataContainer& dataContainer){
 }
 
 // Get a more precise sequence start time from v1720 bank
+// Sequence hits in V1720 are as follows:
+// channel 15 (1-7) end of irradiation
+// channel 14 (1-6) UCN valve open
+// channel 13 (1-5) UCN valve close (currently doesn't work)
 bool TLi6Detector::CheckForSequenceStartPrecise(TDataContainer& dataContainer){
 
-  // Check if we had a hit on channel1-6 (14) indicating the start of a new sequence
+  // Check if we had a hit on channel1-7 (15) indicating the start of a new sequence
   for(unsigned int j = 0; j < fNonHits.size(); j++){ // loop over measurements   
 
-      if(fNonHits[j].channel == 14){
+    if(fNonHits[j].channel == 15){ // end of irradiation
       fLastCycleStartTime = fCycleStartTime;
       fCycleStartTime = fNonHits[j].preciseTime;
-      if(fNonHits[j].clockTime %20 == 0)
-        std::cout << "Li-6 Sequence start: "  << fCycleStartTime <<  " " << fCycleStartTime-fLastCycleStartTime
-                << std::endl;
+      fEndOfIrradiationTime = fCycleStartTime;
+      fSequenceLength->Fill(fCycleStartTime-fLastCycleStartTime);
+      if(fNonHits[j].clockTime %100 == 0)
+	std::cout << "Li-6 Sequence start: "  << fCycleStartTime <<  " " << fCycleStartTime-fLastCycleStartTime << " " << fEndOfIrradiationTime
+		  << std::endl;
       return true;
+    } 
+    
+    if(fNonHits[j].channel == 14){ // UCN valve open
+      fUCNValveOpenTime = fNonHits[j].preciseTime;
+      fDelayTime->Fill(fUCNValveOpenTime - fEndOfIrradiationTime);
+      if(fNonHits[j].clockTime %100 == 0)
+	std::cout << " Valve opens " << fUCNValveOpenTime - fEndOfIrradiationTime << " " << fEndOfIrradiationTime << std::endl;
     }
+    
+    if(fNonHits[j].channel == 13){ // UCN valve closed
+      fUCNValveCloseTime = fNonHits[j].preciseTime;
+      fValveOpenTime->Fill(fUCNValveCloseTime - fUCNValveOpenTime);
+      std::cout << " SDFDF " << fUCNValveCloseTime - fUCNValveOpenTime << std::endl;
+    }
+
   }
 
-
   return false;
-  
   
 }
 

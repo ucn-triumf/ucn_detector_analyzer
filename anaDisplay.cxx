@@ -99,15 +99,18 @@ public:
 
     }
 
-    // Add specific plots for V1720
+    // Add detailed specific plots for V1720
     TLi6Detector* li6detector = dynamic_cast<TLi6Detector*>(anaManager->GetLi6DetectorAnalyzer());
-    if(li6detector){
-      std::cout << "Dynamic casted!!!" << std::endl;
-      AddSingleCanvas(li6detector->GetV1720BaselineCanvas(),"V1720");
-    }
-    AddSingleCanvas(new TFancyHistogramCanvas(anaViewer->fV1720WaveformDisplay, "V1720 Waveform",9,false),"V1720");
-    AddSingleCanvas(new TFancyHistogramCanvas(anaViewer->fV1720QLQL, "V1720 QLvsQL", 9, false),"V1720");
-    AddSingleCanvas(new TFancyHistogramCanvas(anaViewer->fV1720QSQS, "V1720 QSvsQS", 9, false),"V1720");
+    if(li6detector) AddSingleCanvas(li6detector->GetV1720BaselineCanvas(),"V1720 Details");
+    
+    AddSingleCanvas(new TFancyHistogramCanvas(anaViewer->fV1720WaveformDisplay, "V1720 Waveform",9,false),"V1720 Details");
+    AddSingleCanvas(new TFancyHistogramCanvas(anaViewer->fV1720QLQL, "V1720 QLvsQL", 9, false),"V1720 Details");
+    AddSingleCanvas(new TFancyHistogramCanvas(anaViewer->fV1720QSQS, "V1720 QSvsQS", 9, false),"V1720 Details");
+
+    // Add plots about sequencing checks
+    if(li6detector) AddSingleCanvas(li6detector->GetV1720SequenceCanvas(),"Sequencing");
+    
+   
 
     //if(anaManager->HaveV1720Histograms()) 
     //AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetV1720Histograms(),"V1720 Waveforms"));

@@ -4,6 +4,7 @@
 #include "TUCNDetectorBaseClass.hxx"
 
 #include "PulseShapeStruct.h"
+#include "TMulticanvas.h"
 
 /// Class for making histograms of V1720 baseline
 class TV1720Baselines : public THistogramArrayBase {
@@ -53,6 +54,16 @@ public:
     //return canvas;
   }
 
+  TMulticanvas* GetV1720SequenceCanvas(){    
+
+    TMulticanvas *canvas = new TMulticanvas("Sequence Statistics");
+    canvas->AddHistoSingle(fSequenceLength,0);
+    canvas->AddHistoSingle(fDelayTime,1);
+    canvas->AddHistoSingle(fValveOpenTime,2);    
+    return canvas;
+
+  }
+
   // Fill V1720 specific plots
   void FillSpecificPlots();
   
@@ -68,6 +79,17 @@ private:
   long int initialClockTime;
   long int numberRollOvers;
   
+
+  // histograms for keeping track of statistics for sequencing.
+  TH1F *fSequenceLength;
+  TH1F *fDelayTime;
+  TH1F *fValveOpenTime;
+  double fEndOfIrradiationTime;
+  double fUCNValveOpenTime;
+  double fUCNValveCloseTime;
+
+
+
 };
 
 #endif
