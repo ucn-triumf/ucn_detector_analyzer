@@ -19,6 +19,14 @@ TUCNAnaViewer3::TUCNAnaViewer3(){
   fV1720WaveformDisplay = new TV1720WaveformDisplay();
   fV1720QLQL = new TV1720QLQL();
   fV1720QSQS = new TV1720QSQS();
+ 
+  // QS vs QL histograms
+  fV1720QSQLHistograms = new TV1720QSQLHistograms();
+  fV1720QSQLHistograms->DisableAutoUpdate();
+
+  // PSD vs QL histograms
+  fV1720PSDQLHistograms = new TV1720PSDQLHistograms();
+  fV1720PSDQLHistograms->DisableAutoUpdate();
 
 }
 
@@ -122,9 +130,26 @@ int TUCNAnaViewer3::FindAndFitPulses(TDataContainer& dataContainer, char CutChoi
 	{
 	  wf = fDPP[iboard].GetWaveform(i, ichan );
 	  b  = fDPP[iboard].GetPSD( i, ichan );
+
+	  // Fill the QS vs QL and PSD vs QL plots
+	  Short_t tChargeL  = b->ChargeLong;
+	  Short_t tChargeS  = b->ChargeShort;
+	  Float_t tPSD      = 0.0;
+	  if(tChargeL != 0)
+	    tPSD = ((Float_t)(tChargeL)-(Float_t)(tChargeS))/((Float_t)(tChargeL));
+	  
+	  // fill histograms
+	  fV1720QSQLHistograms->UpdateHistogram(iboard, ichan, tChargeS, tChargeL);
+	  fV1720PSDQLHistograms->UpdateHistogram(iboard, ichan, tPSD, (Float_t)tChargeL);
+	  if(ichan != 0)
+	    std::cout << "Chan " << ichan << " " << tChargeL << " " 
+		      << tChargeS << " " << tPSD << std::endl;
+
+
+
 	  uint16_t pulseValues[b->Length];
 	  TimeStampArray[i] = b->TimeTag;
-	  
+
 	  
 	  for (int s=0; s < b->Length; s++)//sets the value of wf for each bin to an array
 	    {
@@ -144,6 +169,8 @@ int TUCNAnaViewer3::FindAndFitPulses(TDataContainer& dataContainer, char CutChoi
 	  QSDifference[i] = ((float)qsCalculated[i])/((float)b->ChargeShort);
 	  QLBoard[i] = b->ChargeLong;
 	  QSBoard[i] = b->ChargeShort;
+
+	  
 	}
       
  
