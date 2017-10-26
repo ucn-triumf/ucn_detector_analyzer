@@ -26,6 +26,7 @@ public:
     SetOutputFilename("ucn_analyzer_output");
     DisableAutoMainWindow();
     UseBatchMode();
+    SetOnlineName("jsroot_server");
     anaManager = 0;
     anaViewer = 0;
   };

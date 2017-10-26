@@ -25,6 +25,7 @@ public:
     DisableAutoMainWindow();
     UseBatchMode();
     DisableRootOutput(true);
+    SetOnlineName("jsroot_server_persist");
     anaManager = 0;
     anaViewer = 0;
   };
