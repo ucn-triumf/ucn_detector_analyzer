@@ -34,7 +34,7 @@ void TV1720QSQLHistograms::CreateHistograms(){
       char title[100];
       sprintf(name,"V1720QSQL_%i_%i",iBoard,i);
 
-      sprintf(title,"V1720 Gate Values for module = %i, channel=%i",iBoard,i);	
+      sprintf(title,"V1720 qshort vs qlong (mod, ch = %i,%i)",iBoard,i);	
 
       TH2F *tmp = new TH2F(name,title,320,-20,40000,320,-20,30000);
       tmp->SetDrawOption("colz");
@@ -101,7 +101,7 @@ void TV1720PSDQLHistograms::CreateHistograms(){
       char title[100];
       sprintf(name,"V1720PSDQL_%i_%i",iBoard,i);
 
-      sprintf(title,"V1720 Energy Comparison for module = %i, channel=%i",iBoard,i);	
+      sprintf(title,"V1720 PSD vs qlong (mod, ch = %i,%i)",iBoard,i);	
 
       TH2F *tmp = new TH2F(name,title,200,-20,14000,200,-1,1);
       tmp->SetDrawOption("colz");
