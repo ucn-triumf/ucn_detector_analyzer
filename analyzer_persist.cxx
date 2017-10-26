@@ -1,4 +1,4 @@
-// Analyzer
+// Analyzer; nominally this analyzer will allow histograms that persist across runs...DW
 
 #include <stdio.h>
 #include <iostream>
@@ -22,11 +22,10 @@ public:
 
   
   Analyzer() {
-
-    SetOutputFilename("ucn_analyzer_output");
     DisableAutoMainWindow();
     UseBatchMode();
-    SetOnlineName("jsroot_server");
+    DisableRootOutput(true);
+    SetOnlineName("jsroot_server_persist");
     anaManager = 0;
     anaViewer = 0;
   };
@@ -34,11 +33,6 @@ public:
   virtual ~Analyzer() {};
 
   void Initialize(){
-
-#ifdef HAVE_THTTP_SERVER
-    std::cout << "Using THttpServer in read/write mode" << std::endl;
-    SetTHttpServerReadWrite();
-#endif
 
     anaManager = new TAnaManager(IsOffline());
     anaViewer  = new TUCNAnaViewer3();
@@ -60,7 +54,7 @@ public:
   
   void BeginRun(int transition,int run,int time){
     
-    InitManager();
+    //    InitManager();
     
   }
 

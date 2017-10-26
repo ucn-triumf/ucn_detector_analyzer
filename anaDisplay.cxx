@@ -59,19 +59,13 @@ public:
     
     anaManager = new TAnaManager(IsOffline());
     anaViewer  = new TUCNAnaViewer3();
-    //    rateViewer = new TUCNRateViewer();
-    // Number of events to skip before plotting one.
-    //SetNumberSkipEvent(10);
-    // Choose to use functionality to update after X seconds
     SetOnlineUpdatingBasedSeconds();
+
     // Uncomment this to enable the 'interesting event' functionality.
     //iem_t::instance()->Enable();
   };
 
   void AddAllCanvases(){
-
- 
-    // Add He-3 plots
 
     // Add the common plots, for He3 and Li6 detectors
 
@@ -106,22 +100,12 @@ public:
     AddSingleCanvas(new TFancyHistogramCanvas(anaViewer->fV1720WaveformDisplay, "V1720 Waveform",9,false),"V1720 Details");
     AddSingleCanvas(new TFancyHistogramCanvas(anaViewer->fV1720QSQLHistograms, "Q Short vs Q Long",16,false),"V1720 Details");
     AddSingleCanvas(new TFancyHistogramCanvas(anaViewer->fV1720PSDQLHistograms, "PSD vs Q Long",16,false),"V1720 Details");
-    //AddSingleCanvas(new TFancyHistogramCanvas(anaViewer->fV1720QLQL, "V1720 QLvsQL", 9, false),"V1720 Details");
-    //AddSingleCanvas(new TFancyHistogramCanvas(anaViewer->fV1720QSQS, "V1720 QSvsQS", 9, false),"V1720 Details");
 
     // Add plots about sequencing checks
     TLi6Detector* li6detector = dynamic_cast<TLi6Detector*>(anaManager->GetLi6DetectorAnalyzer());
     if(li6detector) AddSingleCanvas(li6detector->GetV1720SequenceCanvas(),"Sequencing");
     
    
-
-    //if(anaManager->HaveV1720Histograms()) 
-    //AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetV1720Histograms(),"V1720 Waveforms"));
-    //    if(anaManager->HaveHe3RateHistograms()) 
-    //AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetHe3RateHistograms(),"He3 UCN rate"));
-
-
-    //AddSingleCanvas("Digitizer Count Rate on all channels");
   };
 
 
@@ -143,68 +127,15 @@ public:
 
   void UpdateHistograms(TDataContainer& dataContainer){
 
-    //TMidasEvent sample = dataContainer.GetMidasEvent();
-    //TMidas_BANK32 * bank = NULL;  
-    //char * pdata = sample.GetData();
-    //DPP_Bank_Out_t *b; 
-    //std::string banklist(sample.GetBankList());
-
-    /// If CutChoice hasnt been given a value then the user can choose to perfrom
-    /// a PSD cut on the data bein viewed or not. If yes then user enters the max
-    /// and min values of this PSD cut.
-    /// A. Sikora June 2017
-    CutChoice = 'n';
-    if (!CutChoice)
-      {
-	std::cout<<"Would you like to enter a PSD cut? (y = yes, n = no)"<<std::endl;
-	std::cin>>CutChoice;
-	if (CutChoice == 'y')
-	  {
-	    std::cout<<"Enter max PSD value "<<std::endl;
-	    std::cin>>PSDMax;
-	    std::cout<<"Enter min PSD value "<<std::endl;
-	    std::cin>>PSDMin;
-	  }
-      }
-    //std::cout<<"anaViewer2 Update Histograms"<<std::endl;
-
-    //rateViewer->ProcessMidasEvent(dataContainer,CutChoice, PSDMax, PSDMin);
-
-    //std::cout<<"anaViewer Update Histograms"<<std::endl;
-    //if(banklist.find("W20") != std::string::npos)
     anaViewer->ProcessMidasEvent(dataContainer, 'n', PSDMax, PSDMin);
 
-    //std::cout<<"anaManager Update Histograms"<<std::endl;
     anaManager->ProcessMidasEvent(dataContainer);
   }
 
   void PlotCanvas(TDataContainer& dataContainer){
 
-    /*
-    if(GetDisplayWindow()->GetCurrentTabName().compare("Digitizer Count Rate on all channels") == 0){       
-      TCanvas* c1 = GetDisplayWindow()->GetCanvas("Digitizer Count Rate on all channels");
-    // try to force some root options
-      gStyle->SetOptTitle(1);
-      c1->UseCurrentStyle();
-
-      
-      c1->Clear();
-      c1->Divide(1,2);
-      c1->cd(1);
-      UCNRateHistogram* hcur = rateViewer->GetCurrHisto();
-      if ( hcur != NULL) {
-	std::cout<<"hcur title="<<hcur->Get()->GetTitle()<<std::endl;
-	hcur->Get()->Draw();
-
-      }
-      c1->cd(2);
-      UCNRateHistogram* hprev = rateViewer->GetPrevHisto();
-      if ( hprev != NULL) hprev->Get()->Draw();
-      c1->Modified();
-      c1->Update();
-    }
-    */
-}
+  }
+  
 
   bool fileExists(const std::string& filename)
   {
