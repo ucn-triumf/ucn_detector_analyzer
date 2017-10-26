@@ -141,9 +141,9 @@ int TUCNAnaViewer3::FindAndFitPulses(TDataContainer& dataContainer, char CutChoi
 	  // fill histograms
 	  fV1720QSQLHistograms->UpdateHistogram(iboard, ichan, tChargeS, tChargeL);
 	  fV1720PSDQLHistograms->UpdateHistogram(iboard, ichan, tPSD, (Float_t)tChargeL);
-	  if(ichan != 0)
-	    std::cout << "Chan " << ichan << " " << tChargeL << " " 
-		      << tChargeS << " " << tPSD << std::endl;
+	  //if(ichan != 0)
+          //std::cout << "Chan " << ichan << " " << tChargeL << " " 
+          //	      << tChargeS << " " << tPSD << std::endl;
 
 
 

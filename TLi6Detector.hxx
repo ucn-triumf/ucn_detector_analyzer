@@ -40,6 +40,8 @@ class TLi6Detector : public TUCNDetectorBaseClass {
 public:
   TLi6Detector(bool isOffline);
 
+  void CheckClockRollover(int board, TUCNHit hit, int timestamp);
+  
   void GetHits(TDataContainer& dataContainer);
 
   // Get a more precise sequence start time from v1720 bank
@@ -74,10 +76,11 @@ private:
   DPPBankHandler fDPP[NDPPBOARDS];
 
   // stuff for calculating precise time from V1720 timestamp
-  long int lastClockTime;
+  // Do separate counts for both V1720s
+  long int lastClockTime[2];
   double initialUnixTime;
-  long int initialClockTime;
-  long int numberRollOvers;
+  long int initialClockTime[2];
+  long int numberRollOvers[2];
   
 
   // histograms for keeping track of statistics for sequencing.

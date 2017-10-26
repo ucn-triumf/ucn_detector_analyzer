@@ -5,6 +5,11 @@
 const int Nchannels = 16;
 #include <sys/time.h>
 
+// Keep track of which V1720 have UCN hits and which have monitoring hits
+const bool ucn_channels[16] = { true,  true,  true,  true,
+                            true,  true,  true, false,
+                            true, false, false, false,
+                            false, false, false, false};
 /// Reset the histograms for this canvas
 TV1720Baselines::TV1720Baselines(){  
   CreateHistograms();
@@ -75,10 +80,10 @@ TLi6Detector::TLi6Detector(bool isOffline):TUCNDetectorBaseClass(isOffline,true)
   fBaselines = new TV1720Baselines();
   fBaselines->DisableAutoUpdate();
 
-  lastClockTime = 0;
+  lastClockTime[0] = 0; lastClockTime[1] = 0;
   initialUnixTime = -1;
-  numberRollOvers = 0;
-  initialClockTime = 0;
+  numberRollOvers[0] = 0; numberRollOvers[1] = 0;
+  initialClockTime[0] = 0; initialClockTime[1] = 0;
 
   fSequenceLength = new TH1F("sequencelength_v1720","Sequence Length (by V1720)",1200,0,300);
   fSequenceLength->SetXTitle("Sequence Length (sec)");
@@ -92,6 +97,43 @@ TLi6Detector::TLi6Detector(bool isOffline):TUCNDetectorBaseClass(isOffline,true)
   fUCNValveCloseTime = 0;
  
 }
+
+
+/// Check for clock roll-overs.  Check separately for both V1720s.
+/// First hits for other channels will be nonsense, until first PPS event seen.
+static bool initClockSet[2] = {false,false};
+void TLi6Detector::CheckClockRollover(int board, TUCNHit hit, int timestamp){
+
+  // Check for roll-over
+  if( lastClockTime[board] > hit.clockTime && lastClockTime[board] > 0xd0000000 && hit.clockTime < 0x20000000){
+    //    if(hit.clockTime % 100 == 0)
+      std::cout << "Found roll-over: " << std::hex << lastClockTime[board] << " "<< hit.clockTime << std::endl;
+    numberRollOvers[board]++;
+  }              
+  lastClockTime[board] = hit.clockTime;  
+
+  // We check the initial clock time only with the PPS signals.
+  if(!((board == 0 && hit.channel == 7) || (board == 1 && hit.channel == 9))) return;
+
+
+  // Figure out precise unixTime from clock
+  
+  // Save the unix time for the first event we found
+  if(initialUnixTime < 0){
+    initialUnixTime = (double) timestamp;
+    std::cout << "Set initial time: " << initialUnixTime << " " << hit.channel << " " << board << std::endl;
+  }
+
+  if(!initClockSet[board]){
+    initialClockTime[board] = hit.clockTime;
+    initClockSet[board] = true;
+    std::cout << "Set initial clock set: " << initialClockTime[board] << " " << hit.channel << " " << board << std::endl;
+  }
+  
+  
+
+}
+
 
 
 void TLi6Detector::GetHits(TDataContainer& dataContainer){
@@ -131,33 +173,21 @@ void TLi6Detector::GetHits(TDataContainer& dataContainer){
 	  hit.chargeLong = out->ChargeLong;
 	  hit.baseline = out->Baseline;
 
-          // Figure out precise unixTime from clock
-
-          // Save the unix time for the first event we found
-          if(initialUnixTime < 0){
-            initialUnixTime = (double) timestamp;
-            initialClockTime = hit.clockTime;
-          }
-
-          // Check for roll-over
-          if( lastClockTime > hit.clockTime && lastClockTime > 0xd0000000 && hit.clockTime < 0x20000000){
-            if(hit.clockTime % 100 == 0)
-              std::cout << "Found roll-over: " << std::hex << lastClockTime << " "<< hit.clockTime << std::endl;
-            numberRollOvers++;
-          }              
-          lastClockTime = hit.clockTime;
-
+          // Check for roll overs of the V1720 clock
+          CheckClockRollover(i,hit,timestamp);
+          
           // Get the current precise time
-          hit.preciseTime = initialUnixTime + ((double)numberRollOvers)*17.17986918 + ((double)(hit.clockTime - initialClockTime))/((double)0xffffffff) * 17.17986918;
+          hit.preciseTime = initialUnixTime + ((double)numberRollOvers[i])*17.17986918 + ((double)(hit.clockTime - initialClockTime[i]))/((double)0xffffffff) * 17.17986918;
 
           // If requested, we will use this precise time for all the hit timing plots.
           if(UsePreciseSequenceTime()) hit.time = hit.preciseTime;
           
-          if(hit.clockTime % 1000 == 0)
-            std::cout << hit.preciseTime << " " <<  initialUnixTime << " " << hit.preciseTime -  initialUnixTime
+          if(hit.clockTime % 100 == 0)
+            std::cout << hit.channel << " "
+                      << hit.preciseTime << " " <<  initialUnixTime << " " << hit.preciseTime -  initialUnixTime
                       << " " << timestamp - initialUnixTime
-                      << " " << numberRollOvers << " " << hit.clockTime << " "
-                      << initialClockTime << " " << ((double)(hit.clockTime - initialClockTime)) << std::endl;
+                      << " " << numberRollOvers[i] << " " << hit.clockTime << " "
+                      << initialClockTime[i] << " " << ((double)(hit.clockTime - initialClockTime[i])) << std::endl;
           
 	  static long int chan6_time;
 	  if(hit.channel == 6) chan6_time = hit.clockTime;
@@ -166,7 +196,7 @@ void TLi6Detector::GetHits(TDataContainer& dataContainer){
 					 << hit.clockTime << " diff " << hit.clockTime-chan6_time << std::endl;
 
           // Is this a real UCN hit or a monitoring hit?
-          if(hit.channel < 13){
+          if(ucn_channels[hit.channel]){
              fHits.push_back(hit);
           }else{
             fNonHits.push_back(hit);
