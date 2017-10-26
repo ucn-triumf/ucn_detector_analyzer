@@ -83,7 +83,7 @@ OBJS += TV1720WaveformDisplay.o
 #OBJS += UCNRateHistogram.o
 #OBJS += TTimeHelper.o
 
-all: $(OBJS) ana.exe anaDisplay.exe midas2root.exe
+all: $(OBJS) ana.exe anaDisplay.exe midas2root.exe analyzer_persist.exe
 # UCNAnalyzer.exe UCNDisplay.exe UCNRateMonitor.exe UCNDisplay3.exe
 
 ana.exe: ana.cxx $(OBJS) 
@@ -94,6 +94,10 @@ anaDisplay.exe: anaDisplay.cxx $(OBJS)
 
 midas2root.exe: midas2root.cxx $(OBJS) 
 	$(CXX) -o $@ $(CXXFLAGS) $^ $(LIBS) $(ROOTGLIBS) -lm -lz -lpthread -lssl -lutil
+
+analyzer_persist.exe: analyzer_persist.cxx $(OBJS) 
+	$(CXX) -o $@ $(CXXFLAGS) $^ $(LIBS) $(ROOTGLIBS) -lm -lz -lpthread -lssl -lutil
+
 
 #UCNDisplay.exe: UCNDisplay.cxx $(OBJS)
 #	$(CXX) -o $@ $(CXXFLAGS) $^ $(LIBS) $(ROOTGLIBS) -lm -lz -lpthread -lssl -lutil
