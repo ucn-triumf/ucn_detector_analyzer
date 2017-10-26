@@ -40,6 +40,8 @@ class TLi6Detector : public TUCNDetectorBaseClass {
 public:
   TLi6Detector(bool isOffline);
 
+  void BeginRun(int transition,int run,int time);
+
   void CheckClockRollover(int board, TUCNHit hit, int timestamp);
   
   void GetHits(TDataContainer& dataContainer);
@@ -81,7 +83,7 @@ private:
   double initialUnixTime;
   long int initialClockTime[2];
   long int numberRollOvers[2];
-  
+  bool initClockSet[2];
 
   // histograms for keeping track of statistics for sequencing.
   TH1F *fSequenceLength;

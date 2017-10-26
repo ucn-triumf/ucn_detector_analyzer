@@ -65,6 +65,8 @@ void  TV1720Baselines::UpdateHistograms(TUCNHitCollection & hits){
 /// Take actions at begin run
 void TV1720Baselines::BeginRun(int transition,int run,int time){
   CreateHistograms();
+
+  
 }
 
 /// Take actions at end run  
@@ -98,10 +100,16 @@ TLi6Detector::TLi6Detector(bool isOffline):TUCNDetectorBaseClass(isOffline,true)
  
 }
 
+void TLi6Detector::BeginRun(int transition,int run,int time){
+  lastClockTime[0] = 0; lastClockTime[1] = 0;
+  initialUnixTime = -1;
+  numberRollOvers[0] = 0; numberRollOvers[1] = 0;
+  initialClockTime[0] = 0; initialClockTime[1] = 0;
+  initClockSet[0] = false; initClockSet[1] = false; 
+}
 
 /// Check for clock roll-overs.  Check separately for both V1720s.
 /// First hits for other channels will be nonsense, until first PPS event seen.
-static bool initClockSet[2] = {false,false};
 void TLi6Detector::CheckClockRollover(int board, TUCNHit hit, int timestamp){
 
   // Check for roll-over
@@ -130,8 +138,6 @@ void TLi6Detector::CheckClockRollover(int board, TUCNHit hit, int timestamp){
     std::cout << "Set initial clock set: " << initialClockTime[board] << " " << hit.channel << " " << board << std::endl;
   }
   
-  
-
 }
 
 

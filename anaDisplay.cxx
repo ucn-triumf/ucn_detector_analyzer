@@ -113,6 +113,7 @@ public:
 
   void BeginRun(int transition,int run,int time) {
     std::cout << "User BOR method" << std::endl;
+    anaManager->BeginRun(transition, run, time);
   }
 
   void EndRun(int transition,int run,int time) {

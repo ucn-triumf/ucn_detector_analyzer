@@ -61,6 +61,7 @@ public:
   void BeginRun(int transition,int run,int time){
     
     InitManager();
+    anaManager->BeginRun(transition, run, time);
     
   }
 

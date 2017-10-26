@@ -20,6 +20,10 @@ public:
   /// Processes the midas event, fills histograms, etc.
   int ProcessMidasEvent(TDataContainer& dataContainer);
   
+  void BeginRun(int transition,int run,int time) {
+    if(fLi6Detector) fLi6Detector->BeginRun(transition,run,time);
+  }
+
   /// Methods for determining if we have a particular set of histograms.
   //bool HaveHe3RateHistograms();
   bool HaveV1720Histograms();
