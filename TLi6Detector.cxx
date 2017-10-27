@@ -114,7 +114,7 @@ void TLi6Detector::CheckClockRollover(int board, TUCNHit hit, int timestamp){
 
   // Check for roll-over
   if( lastClockTime[board] > hit.clockTime && lastClockTime[board] > 0xd0000000 && hit.clockTime < 0x20000000){
-    //    if(hit.clockTime % 100 == 0)
+    if(hit.clockTime % 100 == 0)
       std::cout << "Found roll-over: " << std::hex << lastClockTime[board] << " "<< hit.clockTime << std::endl;
     numberRollOvers[board]++;
   }              
@@ -188,7 +188,7 @@ void TLi6Detector::GetHits(TDataContainer& dataContainer){
           // If requested, we will use this precise time for all the hit timing plots.
           if(UsePreciseSequenceTime()) hit.time = hit.preciseTime;
           
-          if(hit.clockTime % 100 == 0)
+          if(hit.clockTime % 2000 == 0)
             std::cout << hit.channel << " "
                       << hit.preciseTime << " " <<  initialUnixTime << " " << hit.preciseTime -  initialUnixTime
                       << " " << timestamp - initialUnixTime
@@ -246,7 +246,7 @@ bool TLi6Detector::CheckForSequenceStartPrecise(TDataContainer& dataContainer){
     if(fNonHits[j].channel == 13){ // UCN valve closed
       fUCNValveCloseTime = fNonHits[j].preciseTime;
       fValveOpenTime->Fill(fUCNValveCloseTime - fUCNValveOpenTime);
-      std::cout << " SDFDF " << fUCNValveCloseTime - fUCNValveOpenTime << std::endl;
+      //std::cout << " SDFDF " << fUCNValveCloseTime - fUCNValveOpenTime << std::endl;
     }
 
   }
