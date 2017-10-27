@@ -24,6 +24,11 @@ public:
     if(fLi6Detector) fLi6Detector->BeginRun(transition,run,time);
   }
 
+  // Method to force analyzer to use simpler PC timestamps
+  void UsePCTime(){
+    if(fHe3Detector) fHe3Detector->UsePCTime();
+    if(fLi6Detector) fLi6Detector->UsePCTime();    
+  }
   /// Methods for determining if we have a particular set of histograms.
   //bool HaveHe3RateHistograms();
   bool HaveV1720Histograms();

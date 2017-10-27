@@ -45,6 +45,7 @@ public:
   TAnaManager *anaManager;
   TUCNAnaViewer3 *anaViewer;
   //  TUCNRateViewer *rateViewer;
+  bool fUsePCTime;
 
   MyTestLoop() {
 
@@ -52,7 +53,18 @@ public:
     SetOnlineName("UCNDisplay");
     
     DisableRootOutput(false);
+    fUsePCTime = false;
 
+  }
+
+  bool CheckOption(std::string option){
+
+    if(option == "--use-pc-time"){
+      std::cout << "Using PC time for UCN hit times" << std::endl;
+      fUsePCTime = true;
+      return true;
+    }
+    return false;
   }
   
   void Initialize(){
@@ -128,6 +140,8 @@ public:
 
   void UpdateHistograms(TDataContainer& dataContainer){
 
+    if(fUsePCTime) anaManager->UsePCTime();
+    
     anaViewer->ProcessMidasEvent(dataContainer, 'n', PSDMax, PSDMin);
 
     anaManager->ProcessMidasEvent(dataContainer);

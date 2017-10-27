@@ -54,6 +54,11 @@ class TUCNDetectorBaseClass  {
     return std::string("notset");
   }
 
+  // Method to force analyzer to use simpler PC timestamps
+  void UsePCTime(bool usepc = true){
+    fUsePCTime = true;
+  }  
+
   TUCNDetectorCharge* GetChargeHistograms(){return fDetectorCharge;}
   TUCNRateVsTime* GetRateVsTime(){return fRateVsTime;}
   TFancyHistogramCanvas* GetRateVsTimeCanvas(){    
@@ -95,7 +100,7 @@ protected:
   double fValueOpenTime;
   double fLastCycleStartTime;
 
-  
+  bool fUsePCTime;
   
 private:
 

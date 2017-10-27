@@ -7,7 +7,9 @@ TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline, bool isLi6){
   fNonHits = TUCNHitCollection();
   fIsLi6 = isLi6;
   fIsOffline = isOffline;
-  
+
+  fUsePCTime = false;
+    
   fDetectorCharge = new TUCNDetectorCharge(fIsLi6);
   fDetectorCharge->DisableAutoUpdate();
 

@@ -49,7 +49,10 @@ public:
   // Get a more precise sequence start time from v1720 bank
   virtual bool CheckForSequenceStartPrecise(TDataContainer& dataContainer);
 
-  virtual bool UsePreciseSequenceTime(){return true;};
+  virtual bool UsePreciseSequenceTime(){
+    if(fUsePCTime) return false;
+    return true;
+  };
 
   
   TFancyHistogramCanvas* GetV1720BaselineCanvas(){    
