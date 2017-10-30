@@ -3,7 +3,7 @@
 #include "TDirectory.h"
 
 const int Nchannels = 8;
- #include <sys/time.h>
+#include <sys/time.h>
 
 int timescale[8] = {300,600,1200,2400,4800,9600,19200,38400};
 
@@ -42,7 +42,7 @@ void TUCNRateVsTime::CreateHistograms(){
     if(fIsLi6) sprintf(title,"Li-6 UCN Rate vs Time (%i minutes)",timescale[i]/60);
     else sprintf(title,"He3 UCN Rate vs Time (%i minutes)",timescale[i]/60);	
     
-    TH1D *tmp = new TH1D(name,title,timescale[0]*1.2,-timescale[i],timescale[i]*0.2);
+    TH1D *tmp = new TH1D(name,title,timescale[0]*1.2,-timescale[i]-0.5,timescale[i]*0.2 - 0.5);
     if(fIsOffline) tmp->SetXTitle("Time since last event (sec)");
     else tmp->SetXTitle("Time since now (sec)");
     tmp->SetYTitle("UCN Rate (cts/sec)");
@@ -58,28 +58,57 @@ void TUCNRateVsTime::CreateHistograms(){
 
 void TUCNRateVsTime::UpdateHistograms(TUCNHitCollection & hits){
 
-  
+
   struct timeval start,stop;
   gettimeofday(&start,NULL);
   
   // Update the histogram every event... but only if the event timestamp is different from last event
   int timestamp = hits.eventTime;
 
-  if(lastTimestamp != timestamp){
+  // update time; offline we only update every couple seconds; only we can update every 2 seconds.
+  int update_time = 2;
+  if(fIsOffline) update_time = 10;
+  
+  if(timestamp >= lastTimestamp+update_time){
 
     for(int j = 0; j < Nchannels; j++){
       GetHistogram(j)->Reset();
 
+      int bin_index = 1;
+      double bin_width = GetHistogram(j)->GetBinWidth(bin_index);
+      double low_bin = GetHistogram(j)->GetBinLowEdge(bin_index);
+      int last_found_bin = 0;
+      int bin_total = 0;
       for(int i = 0; i < fRateVsTime.size(); i++){
         std::pair<int, double> entry = fRateVsTime[i];
-        if( !entry.second) continue;
+        if( !entry.second) continue;        
         int timediff = (entry.first - timestamp);
-        for(int k = 0; k < entry.second; k++){
-          GetHistogram(j)->Fill(timediff);
+
+        // Ignore points that are off the graph
+        if(timediff < low_bin) continue;
+        
+        // Increment bin_index until we find a bin that is lower
+        while(timediff > GetHistogram(j)->GetBinLowEdge(bin_index) + bin_width){
+          bin_index++;
         }
+
+        // Check if we moved onto the next index
+        if(last_found_bin != bin_index && last_found_bin != 0){
+          GetHistogram(j)->SetBinContent(last_found_bin,bin_total);
+          bin_total = 0;
+        }
+        bin_total += entry.second;
+        last_found_bin = bin_index;
+        
       }
+      // Set the last bin
+      if(bin_total != 0){
+        GetHistogram(j)->SetBinContent(last_found_bin,bin_total);
+      }      
+      
       GetHistogram(j)->Scale(1/pow(2,j));
     }
+    lastTimestamp = timestamp;
   }
 
   // Check if the rateVsTime array needs new entry.
@@ -93,7 +122,7 @@ void TUCNRateVsTime::UpdateHistograms(TUCNHitCollection & hits){
       fRateVsTime.erase(fRateVsTime.begin());
     }
   }
-  lastTimestamp = timestamp;
+
 
 
 
