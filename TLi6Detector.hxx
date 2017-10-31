@@ -96,7 +96,8 @@ private:
   double fUCNValveOpenTime;
   double fUCNValveCloseTime;
 
-
+  double fPSDThreshold;
+  double fQLongThreshold;
 
 };
 

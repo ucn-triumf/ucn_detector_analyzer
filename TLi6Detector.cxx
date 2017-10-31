@@ -207,7 +207,6 @@ void TLi6Detector::GetHits(TDataContainer& dataContainer){
           if(ucn_channels[hit.channel]){
 
 	    double PSD = ((Float_t)(hit.chargeLong)-(Float_t)(hit.chargeShort))/((Float_t)(hit.chargeLong));
-	    std::cout << "PSD: " << hit.channel << " " << hit.chargeLong << " " << PSD << std::endl;
 	    if(PSD > fPSDThreshold && hit.chargeLong > fQLongThreshold ){
 	      fHits.push_back(hit);
 	    }
