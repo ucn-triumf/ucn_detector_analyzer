@@ -98,6 +98,10 @@ TLi6Detector::TLi6Detector(bool isOffline):TUCNDetectorBaseClass(isOffline,true)
   fUCNValveOpenTime = 0;
   fUCNValveCloseTime = 0;
  
+  // Preliminary threshold for Qlong and PSD
+  fPSDThreshold = 0.2;
+  fQLongThreshold = 3000.0;
+
 }
 
 void TLi6Detector::BeginRun(int transition,int run,int time){
@@ -203,7 +207,12 @@ void TLi6Detector::GetHits(TDataContainer& dataContainer){
 
           // Is this a real UCN hit or a monitoring hit?
           if(ucn_channels[hit.channel]){
-             fHits.push_back(hit);
+
+	    double PSD = ((Float_t)(hit.chargeLong)-(Float_t)(hit.chargeShort))/((Float_t)(hit.chargeLong));
+	    std::cout << "PSD: " << hit.channel << " " << hit.chargeLong << " " << PSD << std::endl;
+	    if(PSD > fPSDThreshold && hit.chargeLong > fQLongThreshold ){
+	      fHits.push_back(hit);
+	    }
           }else{
             fNonHits.push_back(hit);
           }
