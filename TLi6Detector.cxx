@@ -162,8 +162,6 @@ void TLi6Detector::GetHits(TDataContainer& dataContainer){
     // Decode the data
     fDPP[i].Init(((char*)data->GetData32()));
 
-    if(fDPP[i].GetNEvents() != 1) std::cout <<"WARNING: more than one hit per W200 bank. Not expected by decoder... " << std::endl;
-    
     // Fill the UCN hit structures...
     for (int ichan = 0; ichan < PSD_MAXNCHAN;ichan++) {
       for (int isubev = 0;isubev< fDPP[i].GetNWaves(ichan) ;isubev++) {
