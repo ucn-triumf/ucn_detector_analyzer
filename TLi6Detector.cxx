@@ -8,7 +8,7 @@ const int Nchannels = 16;
 // Keep track of which V1720 have UCN hits and which have monitoring hits
 const bool ucn_channels[16] = { true,  true,  true,  true,
                             true,  true,  true, false,
-                            true, false, false, false,
+                            true, true, false, false,
                             false, false, false, false};
 /// Reset the histograms for this canvas
 TV1720Baselines::TV1720Baselines(){  
@@ -125,7 +125,8 @@ void TLi6Detector::CheckClockRollover(int board, TUCNHit hit, int timestamp){
   lastClockTime[board] = hit.clockTime;  
 
   // We check the initial clock time only with the PPS signals.
-  if(!((board == 0 && hit.channel == 7) || (board == 1 && hit.channel == 9))) return;
+  // These are channel 0-7 and 1-4...
+  if(!((board == 0 && hit.channel == 7) || (board == 1 && hit.channel == 12))) return;
 
 
   // Figure out precise unixTime from clock
