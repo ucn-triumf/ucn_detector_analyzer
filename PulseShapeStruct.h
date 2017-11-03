@@ -17,8 +17,8 @@ typedef struct {
   //uint32_t TimeTag; // Update to 64 bit timestamp -- June 2017
   uint64_t TimeTag;
   int16_t  Channel;
-  int16_t ChargeShort;
-  int16_t ChargeLong;
+  uint16_t ChargeShort;
+  uint16_t ChargeLong;
   int16_t Baseline;
   int16_t Pur;
   int16_t Length;
