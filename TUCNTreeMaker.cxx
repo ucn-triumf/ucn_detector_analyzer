@@ -1,6 +1,7 @@
 
 #include "TUCNTreeMaker.h"
 #include <iostream>
+#include "TGenericData.hxx"
 
 TUCNHitsTree::TUCNHitsTree(std::string name):detector_name(name){
 
@@ -51,9 +52,11 @@ void TUCNHitsTree::FillHits(TUCNHitCollection& hits, int isUCN){
     tChargeL = hit.chargeLong;
     tChargeS = hit.chargeShort;
     tBaseline = hit.baseline;
-    tPSD = hit.psd;
-    std::cout << "PSD : " << tPSD 
-	      << " " << hit.chargeLong << " " << hit.chargeShort << std::endl;
+    if(hit.psd > -2.0)
+      tPSD = hit.psd;
+    else
+      tPSD = -2.0;
+   
     tChannel = hit.channel;
     tIsUCN = isUCN;
     tUCN->Fill();
@@ -61,3 +64,43 @@ void TUCNHitsTree::FillHits(TUCNHitCollection& hits, int isUCN){
   }
 
 }
+
+
+
+TUCNSourceEpicsTree::TUCNSourceEpicsTree(){
+
+  std::cout << "Creating source EPICS tree "<< std::endl;
+
+  tSource = new TTree("SourceEpicsTree", "SourceEpicsTree");
+  tSource->Branch("timestamp", &timestamp, "timestamp/I" );
+  tSource->Branch("UCN_VAC_IGP1_RDVAC", &UCN_VAC_IGP1_RDVAC, "UCN_VAC_IGP1_RDVAC/D" );
+  tSource->Branch("UCN_HE4_FM4_RDFLOW", &UCN_HE4_FM4_RDFLOW, "UCN_HE4_FM4_RDFLOW/D" );
+  tSource->Branch("UCN_D2O_TS7_RDTEMP",&UCN_D2O_TS7_RDTEMP, "UCN_D2O_TS7_RDTEMP/D" );
+  tSource->Branch("UCN_HE4_LVL1_RDLVL",&UCN_HE4_LVL1_RDLVL, "UCN_HE4_LVL1_RDLVL/D" );
+
+};
+
+
+
+void TUCNSourceEpicsTree::FillTree(TDataContainer& dataContainer){
+
+  // Use the sequence bank to see when a new run starts:
+  TGenericData *data = dataContainer.GetEventData<TGenericData>("EPSR");
+
+  if(!data) return;
+
+  // Save the unix timestamp
+  timestamp = dataContainer.GetMidasData().GetTimeStamp();
+
+  // Save EPICS variables
+  // Need to know the semi-random mapping between array index
+  // and EPICS variable to figure out how to fill the Tree variables.
+  // You can see the mapping here:
+  // https://ucndaq01.triumf.ca/Equipment/SourceEpics/Settings  
+  UCN_VAC_IGP1_RDVAC = data->GetFloat()[0];
+  UCN_HE4_FM4_RDFLOW = data->GetFloat()[48];
+  UCN_D2O_TS7_RDTEMP = data->GetFloat()[56];
+  UCN_HE4_LVL1_RDLVL = data->GetFloat()[88];
+  tSource->Fill();
+  
+};

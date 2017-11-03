@@ -75,7 +75,7 @@ void TV1720Baselines::EndRun(int transition,int run,int time){
 
 
 
-TLi6Detector::TLi6Detector(bool isOffline):TUCNDetectorBaseClass(isOffline,true){
+TLi6Detector::TLi6Detector(bool isOffline, bool saveTree):TUCNDetectorBaseClass(isOffline,true,saveTree){
   
   std::cout << "Li6 constructor : " << isOffline << std::endl;  
 

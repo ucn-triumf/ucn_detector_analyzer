@@ -38,7 +38,7 @@ class TV1720Baselines : public THistogramArrayBase {
 class TLi6Detector : public TUCNDetectorBaseClass {
 
 public:
-  TLi6Detector(bool isOffline);
+  TLi6Detector(bool isOffline, bool saveTree = false);
 
   void BeginRun(int transition,int run,int time);
 

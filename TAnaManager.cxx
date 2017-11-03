@@ -2,15 +2,19 @@
 #include "TV1720RawData.h"
 
 
-TAnaManager::TAnaManager(bool isOffline){
+TAnaManager::TAnaManager(bool isOffline, bool saveTree){
 
   fHe3CountsInSequence = new THe3CountsInSequence();
   fHe3CountsInSequence->DisableAutoUpdate();
   
-  fHe3Detector = new THe3Detector(isOffline);
-  fLi6Detector = new TLi6Detector(isOffline);
+  fHe3Detector = new THe3Detector(isOffline,saveTree);
+  fLi6Detector = new TLi6Detector(isOffline,saveTree);
 
-
+  if(saveTree){
+    std::cout << "Creating EPICS tree" << std::endl;
+    fSourceEpicsTree = new TUCNSourceEpicsTree();
+  }
+  
 };
       
 bool insequence = 0;
@@ -22,6 +26,9 @@ int TAnaManager::ProcessMidasEvent(TDataContainer& dataContainer){
   fHe3Detector->ProcessMidasEvent(dataContainer);
   fLi6Detector->ProcessMidasEvent(dataContainer);
   
+  if(fSourceEpicsTree){   
+    fSourceEpicsTree->FillTree(dataContainer);   
+  }
   
   return 1;
 }

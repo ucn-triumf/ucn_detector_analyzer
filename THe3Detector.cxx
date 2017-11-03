@@ -2,7 +2,7 @@
 #include "TV792NData.hxx"
 
 
-THe3Detector::THe3Detector(bool isOffline):TUCNDetectorBaseClass(isOffline,false){
+THe3Detector::THe3Detector(bool isOffline, bool saveTree):TUCNDetectorBaseClass(isOffline,false,saveTree){
   
   std::cout << "He3 constructor : " << isOffline << std::endl;  
   

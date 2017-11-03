@@ -137,7 +137,6 @@ int TUCNAnaViewer3::FindAndFitPulses(TDataContainer& dataContainer, char CutChoi
 	  Float_t tPSD      = 0.0;
 	  if(tChargeL != 0){
 	    tPSD = ((Float_t)(tChargeL)-(Float_t)(tChargeS))/((Float_t)(tChargeL));
-	    std::cout << "PSD2 " << tPSD << std::endl;
 	  }	  
 
 	  // fill histograms

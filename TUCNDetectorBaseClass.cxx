@@ -1,7 +1,7 @@
 #include "TUCNDetectorBaseClass.hxx"
 
 
-TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline, bool isLi6){
+TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline, bool isLi6, bool saveTree){
   
   fHits = TUCNHitCollection();
   fNonHits = TUCNHitCollection();
@@ -63,11 +63,12 @@ TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline, bool isLi6){
 
   // Create trees, if requested
   fHitsTree = 0;
-  if(fIsLi6)
-    fHitsTree = new TUCNHitsTree("Li-6");
-  else
-    fHitsTree = new TUCNHitsTree("He3");
-
+  if(saveTree){
+    if(fIsLi6)
+      fHitsTree = new TUCNHitsTree("Li-6");
+    else
+      fHitsTree = new TUCNHitsTree("He3");
+  }
 
   std::cout << "Finished Detector Setup " << std::endl;
 

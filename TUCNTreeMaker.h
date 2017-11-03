@@ -1,11 +1,15 @@
 #ifndef TUCNTreeMaker_h
 #define TUCNTreeMaker_h
 
-// Use this list here to decide which type of equipment to use.
+// This file contains classes for making
+
+
 #include <string>
 #include "TTree.h"
 #include "TUCNHit.hxx"
+#include "TDataContainer.hxx"
 
+// This class will make the tree of UCN hits and the separate tree of sequence transitions
 class TUCNHitsTree {
  public:
   
@@ -47,6 +51,29 @@ class TUCNHitsTree {
 
 };
 
+
+// This class will make the tree of source epics variables.
+// Currently we only save a small number of EPICS variables.  Others should
+// add more...
+class TUCNSourceEpicsTree {
+ public:
+  
+  TUCNSourceEpicsTree();
+
+  void FillTree(TDataContainer& dataContainer);
+
+  
+ private:
+
+  TTree *tSource;
+
+  int timestamp;
+  double UCN_VAC_IGP1_RDVAC;
+  double UCN_HE4_FM4_RDFLOW;
+  double UCN_D2O_TS7_RDTEMP;
+  double UCN_HE4_LVL1_RDLVL;
+
+};
 
 
 #endif

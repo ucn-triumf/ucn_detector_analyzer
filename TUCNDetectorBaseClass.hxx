@@ -16,7 +16,7 @@
 /// set of plots and data for Li-6 and He-3 detectors
 class TUCNDetectorBaseClass  {
  public:
-  TUCNDetectorBaseClass(bool isOffline, bool isLi6);
+  TUCNDetectorBaseClass(bool isOffline, bool isLi6, bool saveTree = false);
   virtual ~TUCNDetectorBaseClass(){};  
 
 

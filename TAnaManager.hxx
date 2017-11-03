@@ -10,11 +10,12 @@
 
 #include "THe3Detector.hxx"
 #include "TLi6Detector.hxx"
+#include "TUCNTreeMaker.h"
 
 /// This is the main analysis manager program for the UCN detectors.
 class TAnaManager  {
 public:
-  TAnaManager(bool isOffline);
+  TAnaManager(bool isOffline, bool saveTree = false);
   virtual ~TAnaManager(){};
 
   /// Processes the midas event, fills histograms, etc.
@@ -48,6 +49,7 @@ private:
   THe3Detector  *fHe3Detector;
   TLi6Detector  *fLi6Detector;
 
+  TUCNSourceEpicsTree *fSourceEpicsTree;
 };
 
 
