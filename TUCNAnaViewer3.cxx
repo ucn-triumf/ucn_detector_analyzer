@@ -135,9 +135,11 @@ int TUCNAnaViewer3::FindAndFitPulses(TDataContainer& dataContainer, char CutChoi
 	  Short_t tChargeL  = b->ChargeLong;
 	  Short_t tChargeS  = b->ChargeShort;
 	  Float_t tPSD      = 0.0;
-	  if(tChargeL != 0)
+	  if(tChargeL != 0){
 	    tPSD = ((Float_t)(tChargeL)-(Float_t)(tChargeS))/((Float_t)(tChargeL));
-	  
+	    std::cout << "PSD2 " << tPSD << std::endl;
+	  }	  
+
 	  // fill histograms
 	  fV1720QSQLHistograms->UpdateHistogram(iboard, ichan, tChargeS, tChargeL);
 	  fV1720PSDQLHistograms->UpdateHistogram(iboard, ichan, tPSD, (Float_t)tChargeL);

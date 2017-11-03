@@ -5,6 +5,7 @@ TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline, bool isLi6){
   
   fHits = TUCNHitCollection();
   fNonHits = TUCNHitCollection();
+  fBackgroundHits = TUCNHitCollection();
   fIsLi6 = isLi6;
   fIsOffline = isOffline;
 
@@ -59,6 +60,15 @@ TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline, bool isLi6){
       fHitsPerCycle->SetTitle("UCN Counts per Cycle: He-3; Time since now (sec) ; UCN hits in cycle");
       
   }  
+
+  // Create trees, if requested
+  fHitsTree = 0;
+  if(fIsLi6)
+    fHitsTree = new TUCNHitsTree("Li-6");
+  else
+    fHitsTree = new TUCNHitsTree("He3");
+
+
   std::cout << "Finished Detector Setup " << std::endl;
 
 }
@@ -135,6 +145,12 @@ void TUCNDetectorBaseClass::ProcessMidasEvent(TDataContainer& dataContainer){
   fHitsPerCycle->SetMinimum(0);
   fHitsPerCycle->SetMaximum(maxCycle*1.2);
 
+  // Fill the tree, if requested;
+  // save both the 'UCN hits' and the 'background hits'
+  if(fHitsTree){
+    fHitsTree->FillHits(fHits,1);
+    fHitsTree->FillHits(fBackgroundHits,0);     
+  }
 
   // Do detector specific plot filling
   FillSpecificPlots();

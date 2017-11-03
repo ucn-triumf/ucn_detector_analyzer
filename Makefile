@@ -74,14 +74,10 @@ OBJS += TLi6Detector.o
 OBJS += THe3CountsInSequence.o
 OBJS += TAnaManager.o
 OBJS += TV1720Histograms.o
-#OBJS += TUCNAnaManager.o
 OBJS += PulseShapeStruct.o
-# OBJS += TUCNAnaViewer.o
-#OBJS += TUCNRateViewer.o
 OBJS += TUCNAnaViewer3.o
 OBJS += TV1720WaveformDisplay.o
-#OBJS += UCNRateHistogram.o
-#OBJS += TTimeHelper.o
+OBJS += TUCNTreeMaker.o
 
 all: $(OBJS) ana.exe anaDisplay.exe midas2root.exe analyzer_persist.exe
 # UCNAnalyzer.exe UCNDisplay.exe UCNRateMonitor.exe UCNDisplay3.exe

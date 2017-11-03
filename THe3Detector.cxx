@@ -12,6 +12,9 @@ THe3Detector::THe3Detector(bool isOffline):TUCNDetectorBaseClass(isOffline,false
 void THe3Detector::GetHits(TDataContainer& dataContainer){
 
   fHits = TUCNHitCollection();
+  fNonHits = TUCNHitCollection();
+  fBackgroundHits = TUCNHitCollection();
+
   int timestamp = dataContainer.GetMidasData().GetTimeStamp();
   fHits.eventTime = timestamp;
   
@@ -33,6 +36,8 @@ void THe3Detector::GetHits(TDataContainer& dataContainer){
     hit.chargeShort = measurements[i].GetMeasurement();
     if(hit.chargeShort > 450)
       fHits.push_back(hit);
+    else
+      fBackgroundHits.push_back(hit);
   }
 
 

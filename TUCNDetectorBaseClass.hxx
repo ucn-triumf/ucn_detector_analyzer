@@ -10,6 +10,8 @@
 #include "TSimpleHistogramCanvas.hxx"
 #include "TFancyHistogramCanvas.hxx"
 
+#include "TUCNTreeMaker.h"
+
 /// Generic base class that handles producing a consistent 
 /// set of plots and data for Li-6 and He-3 detectors
 class TUCNDetectorBaseClass  {
@@ -92,7 +94,10 @@ protected:
   // List of UCN hits
   TUCNHitCollection fHits;
 
-  // List of non-UCN hits.
+  // List of background hits
+  TUCNHitCollection fBackgroundHits;
+
+   // List of non-UCN hits.
   TUCNHitCollection fNonHits;
 
   // Start time of the current sequence;
@@ -102,6 +107,9 @@ protected:
 
   bool fUsePCTime;
   
+  // Class for making the hit trees
+  TUCNHitsTree *fHitsTree;
+
 private:
 
   // UCN hit charge or pulse height spectrum histograms

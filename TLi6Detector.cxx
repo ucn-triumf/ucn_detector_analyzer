@@ -151,6 +151,7 @@ void TLi6Detector::GetHits(TDataContainer& dataContainer){
 
   fHits = TUCNHitCollection();
   fNonHits = TUCNHitCollection();
+  fBackgroundHits = TUCNHitCollection();
   int timestamp = dataContainer.GetMidasData().GetTimeStamp();
   fHits.eventTime = timestamp;
   
@@ -182,6 +183,7 @@ void TLi6Detector::GetHits(TDataContainer& dataContainer){
 	  hit.chargeLong = out->ChargeLong;
 	  hit.baseline = out->Baseline;
 
+
           // Check for roll overs of the V1720 clock
           CheckClockRollover(i,hit,timestamp);
           
@@ -191,7 +193,7 @@ void TLi6Detector::GetHits(TDataContainer& dataContainer){
           // If requested, we will use this precise time for all the hit timing plots.
           if(UsePreciseSequenceTime()) hit.time = hit.preciseTime;
           
-          if(hit.clockTime % 2000 == 0)
+          if(hit.clockTime % 20000 == 0)
             std::cout << hit.channel << " "
                       << hit.preciseTime << " " <<  initialUnixTime << " " << hit.preciseTime -  initialUnixTime
                       << " " << timestamp - initialUnixTime
@@ -201,15 +203,16 @@ void TLi6Detector::GetHits(TDataContainer& dataContainer){
 	  static long int chan6_time;
 	  if(hit.channel == 6) chan6_time = hit.clockTime;
 
-	  if(0 && hit.channel != 0) std::cout << "Board " << i << " channel " << hit.channel << "has hit at time " 
-					 << hit.clockTime << " diff " << hit.clockTime-chan6_time << std::endl;
-
           // Is this a real UCN hit or a monitoring hit?
           if(ucn_channels[hit.channel]){
 
-	    double PSD = ((Float_t)(hit.chargeLong)-(Float_t)(hit.chargeShort))/((Float_t)(hit.chargeLong));
-	    if(PSD > fPSDThreshold && hit.chargeLong > fQLongThreshold ){
-	      fHits.push_back(hit);
+	    hit.psd = 0;
+	    if(hit.chargeLong != 0)
+	      hit.psd = ((Float_t)(hit.chargeLong)-(Float_t)(hit.chargeShort))/((Float_t)(hit.chargeLong));
+	    if(hit.psd > fPSDThreshold && hit.chargeLong > fQLongThreshold ){
+	      fHits.push_back(hit);		
+	    }else{
+	      fBackgroundHits.push_back(hit);
 	    }
           }else{
             fNonHits.push_back(hit);
