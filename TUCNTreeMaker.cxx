@@ -72,6 +72,7 @@ TUCNSourceEpicsTree::TUCNSourceEpicsTree(){
   std::cout << "Creating source EPICS tree "<< std::endl;
 
   tSource = new TTree("SourceEpicsTree", "SourceEpicsTree");
+  //  tSource->Branch("tEntry",&tEntry, "tEntry/l" );
   tSource->Branch("timestamp", &timestamp, "timestamp/I" );
   tSource->Branch("UCN_VAC_IGP1_RDVAC", &UCN_VAC_IGP1_RDVAC, "UCN_VAC_IGP1_RDVAC/D" );
   tSource->Branch("UCN_HE4_FM4_RDFLOW", &UCN_HE4_FM4_RDFLOW, "UCN_HE4_FM4_RDFLOW/D" );
@@ -102,5 +103,65 @@ void TUCNSourceEpicsTree::FillTree(TDataContainer& dataContainer){
   UCN_D2O_TS7_RDTEMP = data->GetFloat()[56];
   UCN_HE4_LVL1_RDLVL = data->GetFloat()[88];
   tSource->Fill();
+  
+};
+
+
+
+
+TUCNBeamlineEpicsTree::TUCNBeamlineEpicsTree(){
+
+  std::cout << "Creating source EPICS tree "<< std::endl;
+
+  tBeamline = new TTree("BeamlineEpicsTree", "BeamlineEpicsTree");
+  //  tBeamline->Branch("tEntry",&tEntry, "tEntry/l" );
+  tBeamline->Branch("timestamp", &timestamp, "timestamp/I" );
+  tBeamline->Branch("B1U_TNIM2_RAW", &B1U_TNIM2_RAW, "B1U_TNIM2_RAW/D" );
+  tBeamline->Branch("B1U_TNIM2_5MINAVG", &B1U_TNIM2_5MINAVG, "B1U_TNIM2_5MINAVG/D" );
+  tBeamline->Branch("B1U_TNIM2_10MINAVG", &B1U_TNIM2_10MINAVG, "B1U_TNIM2_10MINAVG/D" );
+  tBeamline->Branch("B1V_KSM_RDFRCTN_VAL1", &B1V_KSM_RDFRCTN_VAL1, "B1V_KSM_RDFRCTN_VAL1/D" );
+  tBeamline->Branch("B1V_KSM_BONPRD", &B1V_KSM_BONPRD, "B1V_KSM_BONPRD/D" );
+  tBeamline->Branch("B1V_KSM_INSEQ", &B1V_KSM_INSEQ, "B1V_KSM_INSEQ/D" );
+  tBeamline->Branch("B1V_KSM_INSEQ", &B1V_KSM_INSEQ, "B1V_KSM_INSEQ/D" );
+  tBeamline->Branch("B1V_KSM_RDBEAMON_VAL1", &B1V_KSM_RDBEAMON_VAL1, "B1V_KSM_RDBEAMON_VAL1/D" );
+  tBeamline->Branch("B1V_KSM_RDBEAMOFF_VAL1", &B1V_KSM_RDBEAMOFF_VAL1, "B1V_KSM_RDBEAMOFF_VAL1/D" );
+  tBeamline->Branch("B1V_KSM_PREDCUR", &B1V_KSM_PREDCUR, "B1V_KSM_PREDCUR/D" );
+  tBeamline->Branch("B1V_FOIL_ADJCUR", &B1V_FOIL_ADJCUR, "B1V_FOIL_ADJCUR/D" );
+
+  B1V_KSM_PREDCUR = 0;
+  B1V_FOIL_ADJCUR = 0;
+
+};
+
+
+
+void TUCNBeamlineEpicsTree::FillTree(TDataContainer& dataContainer){
+
+  // Use the sequence bank to see when a new run starts:
+  TGenericData *data = dataContainer.GetEventData<TGenericData>("EPBL");
+
+  if(!data) return;
+
+  // Save the unix timestamp
+  timestamp = dataContainer.GetMidasData().GetTimeStamp();
+
+  // Save EPICS variables
+  // Need to know the semi-random mapping between array index
+  // and EPICS variable to figure out how to fill the Tree variables.
+  // You can see the mapping here:
+  // https://ucndaq01.triumf.ca/Equipment/BeamlineEpics/Settings
+  B1U_TNIM2_RAW = data->GetFloat()[0];
+  B1U_TNIM2_5MINAVG = data->GetFloat()[21];
+  B1U_TNIM2_10MINAVG = data->GetFloat()[22] ;
+  B1V_KSM_RDFRCTN_VAL1 = data->GetFloat()[28];
+  B1V_KSM_BONPRD = data->GetFloat()[29];
+  B1V_KSM_INSEQ = data->GetFloat()[32];
+  B1V_KSM_RDBEAMON_VAL1 = data->GetFloat()[30];
+  B1V_KSM_RDBEAMOFF_VAL1 = data->GetFloat()[31];
+  if(data->GetSize() >= 39){
+    B1V_KSM_PREDCUR = data->GetFloat()[37];
+    B1V_FOIL_ADJCUR = data->GetFloat()[38];
+  }
+  tBeamline->Fill();
   
 };

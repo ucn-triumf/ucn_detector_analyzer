@@ -50,6 +50,7 @@ private:
   TLi6Detector  *fLi6Detector;
 
   TUCNSourceEpicsTree *fSourceEpicsTree;
+  TUCNBeamlineEpicsTree *fBeamlineEpicsTree;
 };
 
 

@@ -9,6 +9,7 @@
 #include "TUCNHit.hxx"
 #include "TDataContainer.hxx"
 
+
 // This class will make the tree of UCN hits and the separate tree of sequence transitions
 class TUCNHitsTree {
  public:
@@ -72,6 +73,41 @@ class TUCNSourceEpicsTree {
   double UCN_HE4_FM4_RDFLOW;
   double UCN_D2O_TS7_RDTEMP;
   double UCN_HE4_LVL1_RDLVL;
+
+};
+
+
+
+
+// This class will make the tree of beamline epics variables.
+// Currently we only save a fraction of EPICS variables.  Others should
+// add more...
+class TUCNBeamlineEpicsTree {
+ public:
+  
+  TUCNBeamlineEpicsTree();
+
+  void FillTree(TDataContainer& dataContainer);
+
+  
+ private:
+
+  TTree *tBeamline;
+
+  int timestamp;
+  double B1U_TNIM2_RAW;
+  double B1U_TNIM2_5MINAVG;
+  double B1U_TNIM2_10MINAVG ;
+  double B1V_KSM_RDFRCTN_VAL1;
+  double B1V_KSM_BONPRD;
+  double B1V_KSM_INSEQ;
+  double B1V_KSM_RDBEAMON_VAL1;
+  double B1V_KSM_RDBEAMOFF_VAL1;
+  double B1V_KSM_PREDCUR;
+  double B1V_FOIL_ADJCUR;
+
+    
+
 
 };
 
