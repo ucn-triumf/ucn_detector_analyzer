@@ -8,7 +8,7 @@ const int Nchannels = 16;
 // Keep track of which V1720 have UCN hits and which have monitoring hits
 const bool ucn_channels[16] = { true,  true,  true,  true,
                             true,  true,  true, false,
-                            true, true, false, false,
+                            true, false, false, false,
                             false, false, false, false};
 /// Reset the histograms for this canvas
 TV1720Baselines::TV1720Baselines(){  

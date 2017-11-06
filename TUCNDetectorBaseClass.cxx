@@ -111,6 +111,7 @@ void TUCNDetectorBaseClass::ProcessMidasEvent(TDataContainer& dataContainer){
     sequence_started = CheckForSequenceStartCrude(dataContainer);
   }
 
+
   // Fill out a bunch of histograms for UCN hit rate with respect to the irradiation sequence.
 
 
@@ -151,6 +152,9 @@ void TUCNDetectorBaseClass::ProcessMidasEvent(TDataContainer& dataContainer){
   if(fHitsTree){
     fHitsTree->FillHits(fHits,1);
     fHitsTree->FillHits(fBackgroundHits,0);     
+    if(sequence_started){
+      fHitsTree->FillTransition(fCycleStartTime);
+    }
   }
 
   // Do detector specific plot filling
