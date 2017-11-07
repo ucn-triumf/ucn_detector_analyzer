@@ -14,6 +14,9 @@ TAnaManager::TAnaManager(bool isOffline, bool saveTree){
     std::cout << "Creating EPICS tree" << std::endl;
     fSourceEpicsTree = new TUCNSourceEpicsTree();
     fBeamlineEpicsTree = new TUCNBeamlineEpicsTree();
+  }else{
+    fSourceEpicsTree = 0;
+    fBeamlineEpicsTree = 0;
   }
   
 };
@@ -26,12 +29,10 @@ int TAnaManager::ProcessMidasEvent(TDataContainer& dataContainer){
   
   fHe3Detector->ProcessMidasEvent(dataContainer);
   fLi6Detector->ProcessMidasEvent(dataContainer);
-  
   if(fSourceEpicsTree){   
     fSourceEpicsTree->FillTree(dataContainer);
     fBeamlineEpicsTree->FillTree(dataContainer);   
   }
-  
   return 1;
 }
 
