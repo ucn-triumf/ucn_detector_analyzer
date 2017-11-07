@@ -103,7 +103,11 @@ void TV1720PSDQLHistograms::CreateHistograms(){
 
       sprintf(title,"V1720 PSD vs qlong (mod, ch = %i,%i)",iBoard,i);	
 
-      TH2F *tmp = new TH2F(name,title,200,-20,14000,200,-1,1);
+      TH2F *tmp;
+      if(iBoard == 1 && i == 4)
+	tmp= new TH2F(name,title,200,-20,80000,200,-1,1);
+      else
+	tmp= new TH2F(name,title,200,-20,14000,200,-1,1);
       tmp->SetDrawOption("colz");
       tmp->SetXTitle("Q Long");
       tmp->SetYTitle("PSD");
