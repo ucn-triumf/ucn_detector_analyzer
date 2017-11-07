@@ -17,17 +17,19 @@ class TUCNHitsTree {
   TUCNHitsTree(std::string name);
 
   void FillHits(TUCNHitCollection& hits, int isUCN);
+  void FillTransition(double cycleStartTime);
 
   
  private:
 
   std::string detector_name;
   
+  
   TTree * tRunTran; // run transitions
   int     tRunNum;
   int     tTime;
-
-
+  double  tUnixTimeTransition;  // time of start of new cycle.
+ 
   // output file
   TTree * tUCN;
 

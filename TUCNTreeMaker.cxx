@@ -14,6 +14,8 @@ TUCNHitsTree::TUCNHitsTree(std::string name):detector_name(name){
   tRunTran->Branch("tRunNum", &tRunNum, "tRunNum/I" );
   tRunTran->Branch("tTime", &tTime, "tTime/I" );
   tRunTran->Branch("tEntry",&tEntry, "tEntry/l" );
+  tRunTran->Branch("tUnixTimeTransition",&tUnixTimeTransition,"tUnixTimeTransition/D");
+
 
   //tRunNum = run;
   //tTime = time;
@@ -35,9 +37,9 @@ TUCNHitsTree::TUCNHitsTree(std::string name):detector_name(name){
   tUCN->Branch("tLength",   &tLength,   "tLength/s");
   tUCN->Branch("tIsUCN",   &tIsUCN,   "tIsUCN/s");
   //tUCN->Branch("tPulse",     tPulse,    "tPulse[tLength]/s");
-
-
-
+  
+  
+  
 }
 
 
@@ -48,7 +50,7 @@ void TUCNHitsTree::FillHits(TUCNHitCollection& hits, int isUCN){
 
     tTimeStamp = hit.clockTime;    
     tUnixTime = hit.time;
-    tUnixTime = hit.preciseTime;
+    tUnixTimePrecise = hit.preciseTime;
     tChargeL = hit.chargeLong;
     tChargeS = hit.chargeShort;
     tBaseline = hit.baseline;
@@ -62,6 +64,17 @@ void TUCNHitsTree::FillHits(TUCNHitCollection& hits, int isUCN){
     tUCN->Fill();
     tEntry++;
   }
+
+  
+
+
+}
+
+void TUCNHitsTree::FillTransition(double cycleStartTime){
+ 
+  tUnixTimeTransition = cycleStartTime; 
+  std::cout << "Switch time: " << tUnixTimeTransition << std::endl;
+  tRunTran->Fill();
 
 }
 
