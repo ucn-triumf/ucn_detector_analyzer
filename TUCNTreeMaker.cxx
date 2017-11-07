@@ -50,7 +50,7 @@ void TUCNHitsTree::FillHits(TUCNHitCollection& hits, int isUCN){
 
     tTimeStamp = hit.clockTime;    
     tUnixTime = hit.time;
-    tUnixTime = hit.preciseTime;
+    tUnixTimePrecise = hit.preciseTime;
     tChargeL = hit.chargeLong;
     tChargeS = hit.chargeShort;
     tBaseline = hit.baseline;
@@ -73,6 +73,7 @@ void TUCNHitsTree::FillHits(TUCNHitCollection& hits, int isUCN){
 void TUCNHitsTree::FillTransition(double cycleStartTime){
  
   tUnixTimeTransition = cycleStartTime; 
+  std::cout << "Switch time: " << tUnixTimeTransition << std::endl;
   tRunTran->Fill();
 
 }
