@@ -71,6 +71,7 @@ TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline, bool isLi6, bool sa
   fHitsPerCycleH->SetYTitle("UCN hits in cycle");
   fHitsPerCycleH->SetXTitle("Cycle Number");
   fHitsPerCycleH->SetMarkerStyle(20);
+  fHitsPerCycleH->SetStats(false);
 
   // Create trees, if requested
   fHitsTree = 0;
