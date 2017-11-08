@@ -80,7 +80,11 @@ class TUCNDetectorBaseClass  {
   }
 
   TSimpleHistogramCanvas* GetHitsPerCycleCanvas(){    
-    return  new TSimpleHistogramCanvas(fHitsPerCycle,"Hits Per Cycle");
+    return  new TSimpleHistogramCanvas(fHitsPerCycle,"Hits Per Cycle (time)");
+  }
+
+  TSimpleHistogramCanvas* GetHitsPerCycleHCanvas(){    
+    return  new TSimpleHistogramCanvas(fHitsPerCycleH,"Hits Per Cycle","P");
   }
   //  TH1D* GetHitsPerCycle(){return fHitsPerCycle;}
 
@@ -119,6 +123,7 @@ private:
   TH1D *fHitsInCycle;
   TH1D *fHitsInCycleCumul;
   TGraph *fHitsPerCycle;
+  TH1D *fHitsPerCycleH;
 
   // UCN hits in this cycle
   int fTotalHitsCycle;

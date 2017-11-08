@@ -60,6 +60,17 @@ TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline, bool isLi6, bool sa
       fHitsPerCycle->SetTitle("UCN Counts per Cycle: He-3; Time since now (sec) ; UCN hits in cycle");
       
   }  
+  if(fIsLi6){
+    sprintf(hname,"hits_per_cycle_li6");
+    sprintf(htitle,"Hits per Cycle: Li-6");
+  }else{
+    sprintf(hname,"hits_per_cycle_he3");
+    sprintf(htitle,"Hits per Cycle: He-3");
+  }
+  fHitsPerCycleH = new TH1D(hname,htitle,50,-49.5,0.5);
+  fHitsPerCycleH->SetYTitle("UCN hits in cycle");
+  fHitsPerCycleH->SetXTitle("Cycle Number");
+  fHitsPerCycleH->SetMarkerStyle(20);
 
   // Create trees, if requested
   fHitsTree = 0;
@@ -146,6 +157,15 @@ void TUCNDetectorBaseClass::ProcessMidasEvent(TDataContainer& dataContainer){
 
   fHitsPerCycle->SetMinimum(0);
   fHitsPerCycle->SetMaximum(maxCycle*1.2);
+
+  fHitsPerCycleH->Reset();
+  for(unsigned int i = 0; i < fHitsPerCycleVector.size(); i++){
+    int bin = 50-fHitsPerCycleVector.size() + i + 1;
+    if(bin < 1) continue;
+    fHitsPerCycleH->SetBinContent(bin,fHitsPerCycleVector[i].second+0.0001);
+  }
+
+
 
   // Fill the tree, if requested;
   // save both the 'UCN hits' and the 'background hits'

@@ -103,6 +103,8 @@ public:
       // UCN Hits Per Cycle
       AddSingleCanvas(detector->GetHitsPerCycleCanvas(),tabname.c_str());
 
+      // UCN Hits Per Cycle histogram
+      AddSingleCanvas(detector->GetHitsPerCycleHCanvas(),tabname.c_str());
     }
 
     // Add detailed specific plots for V1720
