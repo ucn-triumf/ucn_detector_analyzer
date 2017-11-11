@@ -238,6 +238,8 @@ bool TLi6Detector::CheckForSequenceStartPrecise(TDataContainer& dataContainer){
     if(fNonHits[j].channel == 15){ // end of irradiation
       fLastCycleStartTime = fCycleStartTime;
       fCycleStartTime = fNonHits[j].preciseTime;
+      fSeqValveOpenTime = fCycleStartTime + fSeqDelayTime;
+      fSeqValveCloseTime = fSeqValveOpenTime + fSeqOpenInterval;
       fEndOfIrradiationTime = fCycleStartTime;
       fSequenceLength->Fill(fCycleStartTime-fLastCycleStartTime);
       if(fNonHits[j].clockTime %100 == 0)

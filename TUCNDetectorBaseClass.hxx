@@ -31,6 +31,10 @@ class TUCNDetectorBaseClass  {
   bool CheckForSequenceStartCrude(TDataContainer& dataContainer);
   virtual bool CheckForSequenceStartPrecise(TDataContainer& dataContainer){return false;};
 
+  // Check for sequence settings
+  void CheckForSequenceSettings(TDataContainer& dataContainer);
+
+  
   /// Method to decide which sequence time to use.
   virtual bool UsePreciseSequenceTime(){return false;};
   
@@ -72,19 +76,27 @@ class TUCNDetectorBaseClass  {
   TH1D* GetHitsInCycle(){return fHitsInCycle;}
 
   TSimpleHistogramCanvas* GetHitsInCycleCanvas(){    
-    return  new TSimpleHistogramCanvas(fHitsInCycle,"Hits In Current Cycle");
+    TSimpleHistogramCanvas *tmp = new TSimpleHistogramCanvas(fHitsInCycle,"Hits In Current Cycle");
+    tmp->AddExtraHisto(fHitsInCycleIntime);
+    return tmp;
   }
 
   TSimpleHistogramCanvas* GetHitsInCycleCumulCanvas(){    
-    return  new TSimpleHistogramCanvas(fHitsInCycleCumul,"Cumulative Hits In Cycle");
+    TSimpleHistogramCanvas *tmp = new TSimpleHistogramCanvas(fHitsInCycleCumul,"Cumulative Hits In Cycle");
+    tmp->AddExtraHisto(fHitsInCycleCumulIntime);
+    return tmp;
   }
 
   TSimpleHistogramCanvas* GetHitsPerCycleCanvas(){    
-    return  new TSimpleHistogramCanvas(fHitsPerCycle,"Hits Per Cycle (time)");
+    TSimpleHistogramCanvas *tmp = new TSimpleHistogramCanvas(fHitsPerCycle,"Hits Per Cycle (time)");
+    tmp->AddExtraGraph(fHitsPerCycleIntime);
+    return tmp;
   }
 
   TSimpleHistogramCanvas* GetHitsPerCycleHCanvas(){    
-    return  new TSimpleHistogramCanvas(fHitsPerCycleH,"Hits Per Cycle","P");
+    TSimpleHistogramCanvas *tmp = new TSimpleHistogramCanvas(fHitsPerCycleH,"Hits Per Cycle","P");
+    tmp->AddExtraHisto(fHitsPerCycleHIntime);
+    return tmp;
   }
   //  TH1D* GetHitsPerCycle(){return fHitsPerCycle;}
 
@@ -108,7 +120,11 @@ protected:
   double fCycleStartTime;
   double fValueOpenTime;
   double fLastCycleStartTime;
-
+  double fSeqValveOpenTime;
+  double fSeqValveCloseTime;
+  double fSeqDelayTime; // this is the length of time that sequencer waits before opening
+  double fSeqOpenInterval; // this is the time that valve is open
+  
   bool fUsePCTime;
   
   // Class for making the hit trees
@@ -121,15 +137,21 @@ private:
   TUCNRateVsTime *fRateVsTime;
 
   TH1D *fHitsInCycle;
+  TH1D *fHitsInCycleIntime;
   TH1D *fHitsInCycleCumul;
+  TH1D *fHitsInCycleCumulIntime;
   TGraph *fHitsPerCycle;
+  TGraph *fHitsPerCycleIntime;
   TH1D *fHitsPerCycleH;
+  TH1D *fHitsPerCycleHIntime;
 
   // UCN hits in this cycle
   int fTotalHitsCycle;
+  int fTotalHitsCycleIntime;  // hits when valve open
 
   // vector to store the cycle hits in
   std::vector<std::pair<double, double> > fHitsPerCycleVector;
+  std::vector<std::pair<double, double> > fHitsPerCycleVectorIntime;
 };
 
 #endif
