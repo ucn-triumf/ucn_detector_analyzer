@@ -99,8 +99,8 @@ TLi6Detector::TLi6Detector(bool isOffline, bool saveTree):TUCNDetectorBaseClass(
   fUCNValveCloseTime = 0;
  
   // Preliminary threshold for Qlong and PSD
-  fPSDThreshold = 0.2;
-  fQLongThreshold = 3000.0;
+  fPSDThreshold = 0.3;
+  fQLongThreshold = 4000.0;
 
 }
 
