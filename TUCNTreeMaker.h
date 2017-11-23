@@ -17,7 +17,8 @@ class TUCNHitsTree {
   TUCNHitsTree(std::string name);
 
   void FillHits(TUCNHitCollection& hits, int isUCN);
-  void FillTransition(double cycleStartTime);
+  void FillTransition(double icycleStartTime, double icycleValveOpenTime, double icycleValveCloseTime,
+                      double icycleDelayTime, double icycleOpenInterval);
 
   
  private:
@@ -28,8 +29,12 @@ class TUCNHitsTree {
   TTree * tRunTran; // run transitions
   int     tRunNum;
   int     tTime;
-  double  tUnixTimeTransition;  // time of start of new cycle.
- 
+  double  cycleStartTime;      // time of start of new cycle.
+  double  cycleValveOpenTime;  // time that valve opened
+  double  cycleValveCloseTime; // time that valve closed
+  double  cycleDelayTime;      // delay between end of irradiation and opening valve
+  double  cycleOpenInterval;   // length of time that valve is open
+  
   // output file
   TTree * tUCN;
 

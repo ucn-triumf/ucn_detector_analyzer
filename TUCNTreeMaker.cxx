@@ -14,7 +14,11 @@ TUCNHitsTree::TUCNHitsTree(std::string name):detector_name(name){
   tRunTran->Branch("tRunNum", &tRunNum, "tRunNum/I" );
   tRunTran->Branch("tTime", &tTime, "tTime/I" );
   tRunTran->Branch("tEntry",&tEntry, "tEntry/l" );
-  tRunTran->Branch("tUnixTimeTransition",&tUnixTimeTransition,"tUnixTimeTransition/D");
+  tRunTran->Branch("cycleStartTime",&cycleStartTime,"cycleStartTime/D");
+  tRunTran->Branch("cycleValveOpenTime",&cycleValveOpenTime,"cycleValveOpenTime/D");
+  tRunTran->Branch("cycleValveCloseTime",&cycleValveCloseTime,"cycleValveCloseTime/D");
+  tRunTran->Branch("cycleDelayTime",&cycleDelayTime,"cycleDelayTime/D");
+  tRunTran->Branch("cycleOpenInterval",&cycleOpenInterval,"cycleOpenInterval/D");
 
 
   //tRunNum = run;
@@ -70,10 +74,19 @@ void TUCNHitsTree::FillHits(TUCNHitCollection& hits, int isUCN){
 
 }
 
-void TUCNHitsTree::FillTransition(double cycleStartTime){
+void TUCNHitsTree::FillTransition(double icycleStartTime, double icycleValveOpenTime, double icycleValveCloseTime,
+                                  double icycleDelayTime, double icycleOpenInterval){
  
-  tUnixTimeTransition = cycleStartTime; 
-  std::cout << "Switch time: " << tUnixTimeTransition << std::endl;
+  cycleStartTime = icycleStartTime; 
+  cycleValveOpenTime = icycleValveOpenTime;
+  cycleValveCloseTime = icycleValveCloseTime;
+  cycleDelayTime = icycleDelayTime;
+  cycleOpenInterval = icycleOpenInterval;
+  
+
+
+
+  std::cout << "Transition time: " << cycleStartTime << " " << cycleDelayTime << std::endl;
   tRunTran->Fill();
 
 }
