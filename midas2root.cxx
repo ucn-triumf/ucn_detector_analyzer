@@ -70,12 +70,15 @@ public:
     TTree *headerTree = new TTree("headerTree", "headerTree");
 
     std::string shifter_string(odb->odbReadString("/Experiment/Edit on start/Shifters",0,"XXX"));
+    std::string experiment_string(odb->odbReadString("/Experiment/Edit on start/Experiment number",0,"XXX"));
     std::string comment_string(odb->odbReadString("/Experiment/Edit on start/Comment",0,"XXX"));
     headerTree->Branch("shifter", &shifter_string);
     headerTree->Branch("comment", &comment_string);
+    headerTree->Branch("experimentNumber", &experiment_string);
     headerTree->Fill();
  
     std::cout << "Run shifter " << shifter_string << std::endl;
+    std::cout << "Experiment number " << experiment_string << std::endl;
     std::cout << "Run comment " << comment_string << std::endl;
     
     
