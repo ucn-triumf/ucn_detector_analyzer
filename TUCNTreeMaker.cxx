@@ -334,7 +334,8 @@ TUCNBeamlineEpicsTree::TUCNBeamlineEpicsTree(){
 
   tBeamline = new TTree("BeamlineEpicsTree", "BeamlineEpicsTree");
   //  tBeamline->Branch("tEntry",&tEntry, "tEntry/l" );
-
+  tBeamline->Branch("timestamp", &timestamp, "timestamp/I" );
+  
   tBeamline->Branch("B1U_TNIM2_RAW",&B1U_TNIM2_RAW, "B1U_TNIM2_RAW/D");
   tBeamline->Branch("B1U_SEPT_STATON",&B1U_SEPT_STATON, "B1U_SEPT_STATON/D");
   tBeamline->Branch("B1U_YCB0_STATON",&B1U_YCB0_STATON, "B1U_YCB0_STATON/D");
