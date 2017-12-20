@@ -11,6 +11,7 @@
 #include "THe3Detector.hxx"
 #include "TLi6Detector.hxx"
 #include "TUCNTreeMaker.h"
+#include "TV792Histogram.h"
 
 /// This is the main analysis manager program for the UCN detectors.
 class TAnaManager  {
@@ -40,6 +41,9 @@ public:
 
   TUCNDetectorBaseClass* GetHe3DetectorAnalyzer(){return fHe3Detector;}
   TUCNDetectorBaseClass* GetLi6DetectorAnalyzer(){return fLi6Detector;}
+  
+  TV792Histograms* GetV785Histo(){return fV785Charge;}
+
 private:
   
   TV1720Waveform *fV1720Waveform;
@@ -51,6 +55,10 @@ private:
 
   TUCNSourceEpicsTree *fSourceEpicsTree;
   TUCNBeamlineEpicsTree *fBeamlineEpicsTree;
+
+  // Histogram of all V785 Charges
+  TV792Histograms *fV785Charge;
+
 };
 
 
