@@ -113,7 +113,7 @@ void TLNDDetectorTree::FillTree(TDataContainer& dataContainer){
   // Save the unix timestamp
   timestamp = dataContainer.GetMidasData().GetTimeStamp();  
   LND_Reading =  data->GetDouble()[0];
-  std::cout << "PICO reading : " << LND_Reading << std::endl;
+  //  std::cout << "PICO reading : " << LND_Reading << std::endl;
 
   tLND->Fill();
 
