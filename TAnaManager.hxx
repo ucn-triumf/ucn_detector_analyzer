@@ -53,6 +53,7 @@ private:
   THe3Detector  *fHe3Detector;
   TLi6Detector  *fLi6Detector;
 
+  TLNDDetectorTree *fLNDDetectorTree;
   TUCNSourceEpicsTree *fSourceEpicsTree;
   TUCNBeamlineEpicsTree *fBeamlineEpicsTree;
 

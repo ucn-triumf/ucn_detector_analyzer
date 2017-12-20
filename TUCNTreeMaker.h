@@ -60,9 +60,25 @@ class TUCNHitsTree {
 };
 
 
+// This class will make the tree of LND thermal variables.
+class TLNDDetectorTree {
+ public:
+  
+  TLNDDetectorTree();
+
+  void FillTree(TDataContainer& dataContainer);
+
+  
+ private:
+
+  TTree *tLND;
+
+  int timestamp;
+  double LND_Reading;
+};
+
+
 // This class will make the tree of source epics variables.
-// Currently we only save a small number of EPICS variables.  Others should
-// add more...
 class TUCNSourceEpicsTree {
  public:
   
