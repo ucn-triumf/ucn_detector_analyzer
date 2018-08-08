@@ -108,6 +108,9 @@ void TLi6Detector::BeginRun(int transition,int run,int time){
   lastClockTime[0] = 0; lastClockTime[1] = 0;
   initialUnixTime = -1;
   numberRollOvers[0] = 0; numberRollOvers[1] = 0;
+  // Fix the hand
+  if(run == 814) numberRollOvers[1] = 8;
+
   initialClockTime[0] = 0; initialClockTime[1] = 0;
   initClockSet[0] = false; initClockSet[1] = false; 
 }
@@ -119,8 +122,10 @@ void TLi6Detector::CheckClockRollover(int board, TUCNHit hit, int timestamp){
   // Check for roll-over
   if( lastClockTime[board] > hit.clockTime && lastClockTime[board] > 0xd0000000 && hit.clockTime < 0x20000000){
     if(hit.clockTime % 100 == 0)
-      std::cout << "Found roll-over: " << std::hex << lastClockTime[board] << " "<< hit.clockTime << std::endl;
+      std::cout << "XX Found roll-over: " << std::hex << lastClockTime[board] << " "<< hit.clockTime << " "
+                << std::dec << timestamp << std::endl;
     numberRollOvers[board]++;
+    //    std::cout << "XX Number rollovers " << std::dec << board << " " << numberRollOvers[board] << std::endl;
   }              
   lastClockTime[board] = hit.clockTime;  
 
@@ -140,8 +145,11 @@ void TLi6Detector::CheckClockRollover(int board, TUCNHit hit, int timestamp){
   if(!initClockSet[board]){
     initialClockTime[board] = hit.clockTime;
     initClockSet[board] = true;
+    //if(board == 1) numberRollOvers[1] = 8;
     std::cout << "Set initial clock set: " << initialClockTime[board] << " " << hit.channel << " " << board << std::endl;
   }
+
+
   
 }
 
@@ -186,6 +194,8 @@ void TLi6Detector::GetHits(TDataContainer& dataContainer){
 
           // Check for roll overs of the V1720 clock
           CheckClockRollover(i,hit,timestamp);
+          //if(i == 0 && out->Channel == 7) std::cout << "Checking roll-over for board 0, ch 7" << std::endl;
+          //if(i == 1 && out->Channel == 7) std::cout << "Checking roll-over for board 1, ch 7" << std::endl;
           
           // Get the current precise time
           hit.preciseTime = initialUnixTime + ((double)numberRollOvers[i])*17.17986918 + ((double)(hit.clockTime - initialClockTime[i]))/((double)0xffffffff) * 17.17986918;
