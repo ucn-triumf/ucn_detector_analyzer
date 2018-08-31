@@ -34,7 +34,7 @@ void THe3Detector::GetHits(TDataContainer& dataContainer){
     hit.channel = measurements[i].GetChannel();
     hit.chargeLong = measurements[i].GetMeasurement();
     hit.chargeShort = measurements[i].GetMeasurement();
-    if(hit.chargeShort > 450)
+    if(hit.chargeShort > 300)
       fHits.push_back(hit);
     else
       fBackgroundHits.push_back(hit);

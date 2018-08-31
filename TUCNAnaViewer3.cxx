@@ -126,14 +126,22 @@ int TUCNAnaViewer3::FindAndFitPulses(TDataContainer& dataContainer, char CutChoi
 	}
       float PSDCalculated[size];
 
+      //int igch = iboard*8 + ichan;
       for (int i =0; i<nEvents; i++)//added July 5, 2016 to sort the waveforms based on time tag
 	{
 	  wf = fDPP[iboard].GetWaveform(i, ichan );
 	  b  = fDPP[iboard].GetPSD( i, ichan );
 
 	  // Fill the QS vs QL and PSD vs QL plots
-	  UShort_t tChargeL  = b->ChargeLong;
-	  UShort_t tChargeS  = b->ChargeShort;
+	  double fql = b->ChargeLong;
+	  double fqs = b->ChargeShort;
+	  //std::cout<<"iboard="<<iboard<<" ichan="<<ichan<<" fql="<<fql<<std::endl;
+	  UShort_t tChargeL  = qcali.get_q( iboard, ichan, fql, 0.0 );
+	  UShort_t tChargeS  = qcali.get_q( iboard, ichan, fqs, 0.0 );
+	  //std::cout<<" fql="<<fql
+	  //	   <<" tChargeL="<<tChargeL
+	  //		   <<" tChargeS="<<tChargeS
+	  //	   <<std::endl;
 	  Float_t tPSD      = 0.0;
 	  if(tChargeL != 0){
 	    tPSD = ((Float_t)(tChargeL)-(Float_t)(tChargeS))/((Float_t)(tChargeL));
@@ -208,10 +216,11 @@ int TUCNAnaViewer3::FindAndFitPulses(TDataContainer& dataContainer, char CutChoi
 		  {
 		    if (b->Length !=0)
 		      {
+			//int igch = iboard*8 + ichan;
                         //			std::cout<<"tChargeL"<<std::endl;
-			tChargeL  = b->ChargeLong;
+			tChargeL  =  qcali.get_q( iboard, ichan, double(b->ChargeLong), 0.0 );
 			//std::cout<<"tChargeS"<<std::endl;
-			tChargeS  = b->ChargeShort;
+			tChargeS  =qcali.get_q( iboard, ichan, double(b->ChargeShort), 0.0 );
 			//std::cout<<"PSD"<<std::endl;
 			float ql = float(tChargeL);
 			float qs = float(tChargeS);

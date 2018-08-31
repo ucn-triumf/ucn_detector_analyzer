@@ -8,6 +8,7 @@
 #include "PulseShapeStruct.h"
 #include "TCanvas.h"
 #include "TTree.h"
+#include "TLi6GainCalib.h"
 
 /// This is a class for managing the analysis of UCN data.
 /// It creates and fills a TTree of DPP values and a variable
@@ -33,6 +34,7 @@ class TUCNAnaViewer3 {
   TV1720PSDQLHistograms* fV1720PSDQLHistograms;
  
  private:
+  TLi6GainCalib qcali;
   
   double fFirstPulseFittedTime;
 

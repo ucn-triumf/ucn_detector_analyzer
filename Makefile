@@ -78,6 +78,7 @@ OBJS += PulseShapeStruct.o
 OBJS += TUCNAnaViewer3.o
 OBJS += TV1720WaveformDisplay.o
 OBJS += TUCNTreeMaker.o
+OBJS += TLi6GainCalib.o
 
 all: $(OBJS) ana.exe anaDisplay.exe midas2root.exe analyzer_persist.exe
 # UCNAnalyzer.exe UCNDisplay.exe UCNRateMonitor.exe UCNDisplay3.exe

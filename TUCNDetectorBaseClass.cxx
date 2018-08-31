@@ -211,6 +211,22 @@ void TUCNDetectorBaseClass::ProcessMidasEvent(TDataContainer& dataContainer){
   if(sequence_started && fLastCycleStartTime != 0.0){
     fHitsPerCycleVector.push_back(std::pair<double,double>(fLastCycleStartTime,fTotalHitsCycle));
     fHitsPerCycleVectorIntime.push_back(std::pair<double,double>(fLastCycleStartTime,fTotalHitsCycleIntime));
+
+    // print a summary of number of events for this cycle 
+    time_t t = dataContainer.GetMidasData().GetTimeStamp();
+    struct tm * now = localtime ( &t);
+    if(fIsLi6){
+      std::cout << std::dec << "Li6 cycle finished at time " << now->tm_hour << ":" << now->tm_min 
+		<< ":" << now->tm_sec 
+		<< ";  total UCN = " << fTotalHitsCycle 
+		<< ";  UCN in valve open time = " << fTotalHitsCycleIntime  << std::endl;
+    }else{
+      std::cout << std::dec << "He3 cycle finished at time " << now->tm_hour << ":" << now->tm_min 
+		<< ":" << now->tm_sec 
+		<< ";  total UCN = " << fTotalHitsCycle 
+		<< ";  UCN in valve open time = " << fTotalHitsCycleIntime << std::endl;
+    }
+
     fTotalHitsCycle = 0;
     fTotalHitsCycleIntime = 0;
     if(fHitsPerCycleVector.size() > 100){ // Save at most 100 cycles

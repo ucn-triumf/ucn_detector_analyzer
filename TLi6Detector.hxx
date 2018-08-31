@@ -5,6 +5,7 @@
 
 #include "PulseShapeStruct.h"
 #include "TMulticanvas.h"
+#include "TLi6GainCalib.h"
 
 /// Class for making histograms of V1720 baseline
 class TV1720Baselines : public THistogramArrayBase {
@@ -75,6 +76,8 @@ public:
   void FillSpecificPlots();
   
 private:
+  TLi6GainCalib qcali;
+
   TV1720Baselines *fBaselines;
 
   // Decoder for the V1720 bank
