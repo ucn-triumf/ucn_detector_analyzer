@@ -6,10 +6,18 @@ const int Nchannels = 16;
 #include <sys/time.h>
 
 // Keep track of which V1720 have UCN hits and which have monitoring hits
+// VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVvv
+/// Edit below: June 7, 2018 (BJ)
+/// Turn on saving the 1Hz pulser data to the tree
+/// It will mess up histograms, but I want version of tree with 1HZ!!!
 const bool ucn_channels[16] = { true,  true,  true,  true,
-                            true,  true,  true, false,
-                            true, true, false, false,
-                            false, false, false, false};
+                            true,  true,  true, true,
+                            true, true, true, true,
+                            true, true, true, true};
+/// End Edit above: June 7, 2018 (BJ)
+/// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
 /// Reset the histograms for this canvas
 TV1720Baselines::TV1720Baselines(){  
   CreateHistograms();
@@ -118,7 +126,7 @@ void TLi6Detector::CheckClockRollover(int board, TUCNHit hit, int timestamp){
 
   // Check for roll-over
   if( lastClockTime[board] > hit.clockTime && lastClockTime[board] > 0xd0000000 && hit.clockTime < 0x20000000){
-    if(hit.clockTime % 100 == 0)
+    if(hit.clockTime % 100 == 0 && 0)
       std::cout << "Found roll-over: " << std::hex << lastClockTime[board] << " "<< hit.clockTime << std::endl;
     numberRollOvers[board]++;
   }              
@@ -179,8 +187,8 @@ void TLi6Detector::GetHits(TDataContainer& dataContainer){
 	  hit.time = (double)timestamp;
 	  hit.clockTime = (out->TimeTag & 0xffffffff);
 	  hit.channel = out->Channel + i*8;
-	  hit.chargeShort = out->ChargeShort;
-	  hit.chargeLong = out->ChargeLong;
+	  hit.chargeShort = qcali.get_q( hit.channel, out->ChargeShort, 0.0);
+	  hit.chargeLong = qcali.get_q( hit.channel, out->ChargeLong, 0.0 );
 	  hit.baseline = out->Baseline;
 
 
@@ -193,7 +201,7 @@ void TLi6Detector::GetHits(TDataContainer& dataContainer){
           // If requested, we will use this precise time for all the hit timing plots.
           if(UsePreciseSequenceTime()) hit.time = hit.preciseTime;
           
-          if(hit.clockTime % 20000 == 0)
+          if(hit.clockTime % 20000 == 0 && 0)
             std::cout << hit.channel << " "
                       << hit.preciseTime << " " <<  initialUnixTime << " " << hit.preciseTime -  initialUnixTime
                       << " " << timestamp - initialUnixTime
