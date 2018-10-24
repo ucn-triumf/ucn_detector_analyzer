@@ -154,6 +154,7 @@ bool TUCNDetectorBaseClass::CheckForSequenceStartCrude(TDataContainer& dataConta
   // Use the sequence bank to see when a new run starts:
   TGenericData *data = dataContainer.GetEventData<TGenericData>("SEQN");
 
+
   if(data){
     if(data->GetData32()[1] & 2){
       fLastCycleStartTime = fCycleStartTime;
