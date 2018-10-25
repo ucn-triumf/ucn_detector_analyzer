@@ -6,14 +6,10 @@ const int Nchannels = 16;
 #include <sys/time.h>
 
 // Keep track of which V1720 have UCN hits and which have monitoring hits
-// VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVvv
-/// Edit below: June 7, 2018 (BJ)
-/// Turn on saving the 1Hz pulser data to the tree
-/// It will mess up histograms, but I want version of tree with 1HZ!!!
 const bool ucn_channels[16] = { true,  true,  true,  true,
-                            true,  true,  true, true,
-                            true, true, true, true,
-                            true, true, true, true};
+				true,  true,  true, false,
+				true, true, true, false,
+				false, false, false, false};
 /// End Edit above: June 7, 2018 (BJ)
 /// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -95,8 +91,8 @@ TLi6Detector::TLi6Detector(bool isOffline, bool saveTree):TUCNDetectorBaseClass(
   numberRollOvers[0] = 0; numberRollOvers[1] = 0;
   initialClockTime[0] = 0; initialClockTime[1] = 0;
 
-  fSequenceLength = new TH1F("sequencelength_v1720","Sequence Length (by V1720)",1200,0,300);
-  fSequenceLength->SetXTitle("Sequence Length (sec)");
+  fSequenceLength = new TH1F("sequencelength_v1720","Cycle Length (by V1720)",1200,0,300);
+  fSequenceLength->SetXTitle("Cycle Length (sec)");
   fDelayTime = new TH1F("delaytime_v1720","Delay Time (by V1720)",1200,0,300);
   fDelayTime->SetXTitle("Delay Time (sec)");
   fValveOpenTime = new TH1F("valveopentime_v1720","Valve Open Time (by V1720)",1200,0,300);
@@ -259,7 +255,7 @@ bool TLi6Detector::CheckForSequenceStartPrecise(TDataContainer& dataContainer){
       fSeqValveCloseTime = fSeqValveOpenTime + fSeqOpenInterval;
       fEndOfIrradiationTime = fCycleStartTime;
       fSequenceLength->Fill(fCycleStartTime-fLastCycleStartTime);
-      if(fNonHits[j].clockTime %100 == 0)
+      if(fNonHits[j].clockTime %100 == 0 || 1)
 	std::cout << "Li-6 Sequence start: "  << fCycleStartTime <<  " " << fCycleStartTime-fLastCycleStartTime << " " << fEndOfIrradiationTime
 		  << std::endl;
       return true;

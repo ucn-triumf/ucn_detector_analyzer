@@ -74,6 +74,9 @@ public:
     anaViewer->ProcessMidasEvent(dataContainer, 'n', PSDMax, PSDMin);
 
     anaManager->ProcessMidasEvent(dataContainer);
+
+
+
     
     return true;
   }
