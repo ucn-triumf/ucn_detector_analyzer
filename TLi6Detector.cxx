@@ -256,7 +256,7 @@ bool TLi6Detector::CheckForSequenceStartPrecise(TDataContainer& dataContainer){
       fEndOfIrradiationTime = fCycleStartTime;
       fSequenceLength->Fill(fCycleStartTime-fLastCycleStartTime);
       if(fNonHits[j].clockTime %100 == 0 || 1)
-	std::cout << "Li-6 Sequence start: "  << fCycleStartTime <<  " " << fCycleStartTime-fLastCycleStartTime << " " << fEndOfIrradiationTime
+	std::cout << "Li-6 Cycle start: "  << fCycleStartTime <<  " " << fCycleStartTime-fLastCycleStartTime << " " << fEndOfIrradiationTime
 		  << std::endl;
       return true;
     } 
