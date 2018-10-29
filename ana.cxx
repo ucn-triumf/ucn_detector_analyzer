@@ -82,8 +82,43 @@ public:
   assert(status == CM_SUCCESS);
   
   cm_set_watchdog_params(true, 60*1000);
-#endif
 
+
+    // Reset the numbers for the ODB analysis...
+    if(!IsOffline()){
+
+      // Loop over Li6 and He3
+      for(int det = 0; det < 2; det++){
+	char detector[10];
+	if(det == 0){
+	  sprintf(detector,"Li6");
+	}else{
+	  sprintf(detector,"He3");
+	}
+	
+	for(unsigned int i = 0; i < 10; i++){
+	  char date[256];	    
+	  sprintf(date,"N/A ");
+	  char varname[100];
+	  sprintf(varname,"/Analyzer/%s/CycleStartTimes",detector);
+	  int status = db_set_value_index(hDB,0,varname,date,sizeof(date),i,TID_STRING,false);
+	  if (status != DB_SUCCESS){
+	    cm_msg(MERROR,"Analyzer","Couldn't write time to MIDAS");
+	    return ;
+	  }
+	  double nhits = 0;
+	  sprintf(varname,"/Analyzer/%s/UCNHitsPerCycle",detector);
+	  status = db_set_value_index(hDB,0,varname,&nhits,sizeof(nhits),i,TID_DOUBLE,false);
+	  if (status != DB_SUCCESS){
+	    cm_msg(MERROR,"Analyzer","Couldn't write time to MIDAS");
+	    return ;
+	  }
+	   	    
+#endif
+	  
+	}
+      }// End loop over Li6/He3
+    }
   }
 
   void InitManager(){
@@ -143,8 +178,14 @@ public:
 
 	// Get the list of hits per cycle.
 	std::vector<std::pair<double, double> > hitsPerCycle;
-	if(det == 0) hitsPerCycle =  anaManager->GetLi6DetectorAnalyzer()->GetHitsPerCycle(); 
-	else hitsPerCycle         =  anaManager->GetHe3DetectorAnalyzer()->GetHitsPerCycle(); 
+	char detector[10];
+	if(det == 0){
+	  sprintf(detector,"Li6");
+	  hitsPerCycle =  anaManager->GetLi6DetectorAnalyzer()->GetHitsPerCycle(); 
+	}else{
+	  sprintf(detector,"He3");
+	  hitsPerCycle         =  anaManager->GetHe3DetectorAnalyzer()->GetHitsPerCycle(); 
+	}
 	
 	if(!hitsPerCycle.size()) return true;
 	
@@ -168,13 +209,16 @@ public:
 		      << " " << hitsPerCycle[index].second <<  std::endl;	
 	    // Upload the new valuves 
 #ifdef HAVE_MIDAS
-	    int status = db_set_value_index(hDB,0,"/Analyzer/Li6/CycleStartTimes",date,sizeof(date),i,TID_STRING,false);
+	    char varname[100];
+	    sprintf(varname,"/Analyzer/%s/CycleStartTimes",detector);
+	    int status = db_set_value_index(hDB,0,varname,date,sizeof(date),i,TID_STRING,false);
 	    if (status != DB_SUCCESS){
 	      cm_msg(MERROR,"Analyzer","Couldn't write time to MIDAS");
 	      return false;;
 	    }
 	    double nhits = hitsPerCycle[index].second;
-	    status = db_set_value_index(hDB,0,"/Analyzer/Li6/UCNHitsPerCycle",&nhits,sizeof(nhits),i,TID_DOUBLE,false);
+	    sprintf(varname,"/Analyzer/%s/UCNHitsPerCycle",detector);
+	    status = db_set_value_index(hDB,0,varname,&nhits,sizeof(nhits),i,TID_DOUBLE,false);
 	    if (status != DB_SUCCESS){
 	      cm_msg(MERROR,"Analyzer","Couldn't write time to MIDAS");
 	      return false;;
