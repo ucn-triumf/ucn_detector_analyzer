@@ -152,14 +152,16 @@ void TUCNDetectorBaseClass::CheckForSequenceSettings(TDataContainer& dataContain
 bool TUCNDetectorBaseClass::CheckForSequenceStartCrude(TDataContainer& dataContainer){
 
   // Use the sequence bank to see when a new run starts:
-  TGenericData *data = dataContainer.GetEventData<TGenericData>("SEQN");
+  TGenericData *data = dataContainer.GetEventData<TGenericData>("USEQ");
 
 
   if(data){
-    if(data->GetData32()[1] & 2){
+    if(data->GetData32()[4] & 2){
       fLastCycleStartTime = fCycleStartTime;
       double tmp = ((double)dataContainer.GetMidasData().GetTimeStamp());
       fCycleStartTime = tmp;
+      std::cout << "New cycle started: " << tmp << std::endl;
+
       fSeqValveOpenTime = fCycleStartTime + fSeqDelayTime;
       fSeqValveCloseTime = fSeqValveOpenTime + fSeqOpenInterval;
       return true;

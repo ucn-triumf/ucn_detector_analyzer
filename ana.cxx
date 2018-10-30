@@ -155,21 +155,6 @@ public:
 
     anaManager->ProcessMidasEvent(dataContainer);
 
-#ifdef HAVE_MIDAS
-    if(!IsOffline() && 0){
-      int status;
-      char date[256];
-      sprintf(date,"FDSFDSFSF");
-      status = db_set_value_index(hDB,0,"/Analyzer/Li6/CycleStartTimes",date,sizeof(date),0,TID_STRING,false);
-      if (status != DB_SUCCESS){
-	cm_msg(MERROR,"Analyzer","Couldn't write time to MIDAS");
-	return false;;
-      }
-    }
-#endif
-
-
-
     // Update the numbers of hits per cycle (if running online).
     if(!IsOffline()){
 
@@ -184,14 +169,14 @@ public:
 	  hitsPerCycle =  anaManager->GetLi6DetectorAnalyzer()->GetHitsPerCycle(); 
 	}else{
 	  sprintf(detector,"He3");
-	  hitsPerCycle         =  anaManager->GetHe3DetectorAnalyzer()->GetHitsPerCycle(); 
+	  hitsPerCycle =  anaManager->GetHe3DetectorAnalyzer()->GetHitsPerCycle(); 
 	}
 	
 	if(!hitsPerCycle.size()) return true;
 	
-	if(hitsPerCycle[hitsPerCycle.size()-1].first != lastCycleTime[0]){
-	  std::cout << "New cycle!!! " << hitsPerCycle[hitsPerCycle.size()-1].first 
-		    << " " << hitsPerCycle[hitsPerCycle.size()-1].first - lastCycleTime[0]
+	if(hitsPerCycle[hitsPerCycle.size()-1].first != lastCycleTime[det]){
+	  std::cout << "New cycle!!! " << det << " " << hitsPerCycle[hitsPerCycle.size()-1].first 
+		    << " " << hitsPerCycle[hitsPerCycle.size()-1].first - lastCycleTime[det]
 		    << " " << hitsPerCycle[hitsPerCycle.size()-1].second
 		    << std::endl;
 
@@ -204,7 +189,7 @@ public:
 	    char date[256];
 	    
 	    strftime(date,sizeof(date),"%Y/%m/%d %H:%M:%S",tm);
-	    std::cout << i << " time " << hitsPerCycle[i].first 
+	    std::cout << det << " " << i << " time " << hitsPerCycle[i].first 
 		      << " " << date 
 		      << " " << hitsPerCycle[index].second <<  std::endl;	
 	    // Upload the new valuves 
