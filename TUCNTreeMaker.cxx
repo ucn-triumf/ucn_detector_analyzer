@@ -18,8 +18,17 @@ TUCNHitsTree::TUCNHitsTree(std::string name):detector_name(name){
   tRunTran->Branch("cycleValveOpenTime",&cycleValveOpenTime,"cycleValveOpenTime/D");
   tRunTran->Branch("cycleValveCloseTime",&cycleValveCloseTime,"cycleValveCloseTime/D");
   tRunTran->Branch("cycleDelayTime",&cycleDelayTime,"cycleDelayTime/D");
-  tRunTran->Branch("cycleOpenInterval",&cycleOpenInterval,"cycleOpenInterval/D");
-
+  tRunTran->Branch("cycleValveOpenTime",&cycleValveOpenTime,"cycleValveOpenTime/D");
+  tRunTran->Branch("cyclePeriod0EndTime",&cyclePeriod0EndTime,"cyclePeriod0EndTime/D");
+  tRunTran->Branch("cyclePeriod1EndTime",&cyclePeriod1EndTime,"cyclePeriod1EndTime/D");
+  tRunTran->Branch("cyclePeriod2EndTime",&cyclePeriod2EndTime,"cyclePeriod2EndTime/D");
+  tRunTran->Branch("cyclePeriod3EndTime",&cyclePeriod3EndTime,"cyclePeriod3EndTime/D");
+  tRunTran->Branch("cyclePeriod4EndTime",&cyclePeriod4EndTime,"cyclePeriod4EndTime/D");
+  tRunTran->Branch("cyclePeriod5EndTime",&cyclePeriod5EndTime,"cyclePeriod5EndTime/D");
+  tRunTran->Branch("cyclePeriod6EndTime",&cyclePeriod6EndTime,"cyclePeriod6EndTime/D");
+  tRunTran->Branch("cyclePeriod7EndTime",&cyclePeriod7EndTime,"cyclePeriod7EndTime/D");
+  tRunTran->Branch("cyclePeriod8EndTime",&cyclePeriod8EndTime,"cyclePeriod8EndTime/D");
+  tRunTran->Branch("cyclePeriod9EndTime",&cyclePeriod9EndTime,"cyclePeriod9EndTime/D");
 
   //tRunNum = run;
   //tTime = time;
@@ -75,7 +84,8 @@ void TUCNHitsTree::FillHits(TUCNHitCollection& hits, int isUCN){
 }
 
 void TUCNHitsTree::FillTransition(double icycleStartTime, double icycleValveOpenTime, double icycleValveCloseTime,
-                                  double icycleDelayTime, double icycleOpenInterval){
+                                  double icycleDelayTime, double icycleOpenInterval,
+				  TUCNCycleParameters CycleParameters){
  
   cycleStartTime = icycleStartTime; 
   cycleValveOpenTime = icycleValveOpenTime;
@@ -83,10 +93,29 @@ void TUCNHitsTree::FillTransition(double icycleStartTime, double icycleValveOpen
   cycleDelayTime = icycleDelayTime;
   cycleOpenInterval = icycleOpenInterval;
   
-
-
-
   std::cout << "Transition time: " << cycleStartTime << " " << cycleDelayTime << std::endl;
+  // Fill the parameters from the new NSEQ bank...
+
+  std::cout << "periods diff: " << CycleParameters.CycleIndex() << " " 
+	    << CycleParameters.NumberPeriods() << std::endl;
+
+  for(int i = 0; i < 10; i++){
+    std::cout << CycleParameters.GetCumulativeTimeForPeriod(i) << std::endl;
+  }
+
+
+  cyclePeriod0EndTime =  cycleStartTime += CycleParameters.GetCumulativeTimeForPeriod(0);
+  cyclePeriod1EndTime =  cycleStartTime += CycleParameters.GetCumulativeTimeForPeriod(1);
+  cyclePeriod2EndTime =  cycleStartTime += CycleParameters.GetCumulativeTimeForPeriod(2);
+  cyclePeriod3EndTime =  cycleStartTime += CycleParameters.GetCumulativeTimeForPeriod(3);
+  cyclePeriod4EndTime =  cycleStartTime += CycleParameters.GetCumulativeTimeForPeriod(4);
+  cyclePeriod5EndTime =  cycleStartTime += CycleParameters.GetCumulativeTimeForPeriod(5);
+  cyclePeriod6EndTime =  cycleStartTime += CycleParameters.GetCumulativeTimeForPeriod(6);
+  cyclePeriod7EndTime =  cycleStartTime += CycleParameters.GetCumulativeTimeForPeriod(7);
+  cyclePeriod8EndTime =  cycleStartTime += CycleParameters.GetCumulativeTimeForPeriod(8);
+  cyclePeriod9EndTime =  cycleStartTime += CycleParameters.GetCumulativeTimeForPeriod(9);
+
+
   tRunTran->Fill();
 
 }

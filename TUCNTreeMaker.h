@@ -8,6 +8,7 @@
 #include "TTree.h"
 #include "TUCNHit.hxx"
 #include "TDataContainer.hxx"
+#include "TUCNCycleParameters.hxx"
 
 
 // This class will make the tree of UCN hits and the separate tree of sequence transitions
@@ -18,7 +19,7 @@ class TUCNHitsTree {
 
   void FillHits(TUCNHitCollection& hits, int isUCN);
   void FillTransition(double icycleStartTime, double icycleValveOpenTime, double icycleValveCloseTime,
-                      double icycleDelayTime, double icycleOpenInterval);
+                      double icycleDelayTime, double icycleOpenInterval, TUCNCycleParameters CycleParameters);
 
   
  private:
@@ -34,7 +35,18 @@ class TUCNHitsTree {
   double  cycleValveCloseTime; // time that valve closed
   double  cycleDelayTime;      // delay between end of irradiation and opening valve
   double  cycleOpenInterval;   // length of time that valve is open
-  
+  double  cyclePeriod0EndTime; // end of period 0
+  double  cyclePeriod1EndTime; // end of period 1
+  double  cyclePeriod2EndTime; // end of period 2
+  double  cyclePeriod3EndTime; // end of period 3
+  double  cyclePeriod4EndTime; // end of period 4
+  double  cyclePeriod5EndTime; // end of period 5
+  double  cyclePeriod6EndTime; // end of period 6
+  double  cyclePeriod7EndTime; // end of period 7
+  double  cyclePeriod8EndTime; // end of period 8
+  double  cyclePeriod9EndTime; // end of period 9
+
+
   // output file
   TTree * tUCN;
 
