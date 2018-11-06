@@ -124,6 +124,7 @@ TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline, bool isLi6, bool sa
   fHitsPerCycleHIntime->SetXTitle("Cycle Number");
   fHitsPerCycleHIntime->SetMarkerStyle(20);
 
+  CycleParameters = TUCNCycleParameters();
   
   // Create trees, if requested
   fHitsTree = 0;
@@ -150,9 +151,7 @@ void TUCNDetectorBaseClass::CheckForSequenceSettings(TDataContainer& dataContain
   // Use the 2018 sequence bank
   data = dataContainer.GetEventData<TGenericData>("NSEQ");
   if(data){
-    printf("Found the NSEQ bank!!!\n");
-    TUCNCycleParameters par;
-    par.SetCycleParameters(data);
+    CycleParameters.SetCycleParameters(data);
   }
 
 }

@@ -73,5 +73,4 @@ int TUCNCycleParameters::SetCycleParameters(TGenericData *nseq){
 
   return 1;
 
-
 }

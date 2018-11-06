@@ -106,6 +106,9 @@ class TUCNDetectorBaseClass  {
   std::vector<std::pair<double, double> > GetHitsPerCycle(){return fHitsPerCycleVector;};
   std::vector<std::pair<double, double> > GetInTimeHitsPerCycle(){ return fHitsPerCycleVectorIntime;};
 
+  TUCNCycleParameters CycleParameters;
+
+
 protected:
 
   bool fIsLi6; // Is for Li-6 detector
