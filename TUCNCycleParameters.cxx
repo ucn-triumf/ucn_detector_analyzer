@@ -95,3 +95,19 @@ double TUCNCycleParameters::GetCumulativeTimeForPeriod(int period, int cycle){
 
   return cumul;
 }
+
+double TUCNCycleParameters::GetTimeForPeriod(int period, int cycle){
+
+  if(period < 0 && period >= MaxPeriods)return 0;
+  int ucycle;
+  if(cycle < 0 && cycle >= MaxCycles){
+    ucycle = cycleIndex;
+  }else{
+    ucycle = cycle;
+  }
+
+  std::cout << DurationTimePeriod[0][0] << std::endl;
+
+  return DurationTimePeriod[period][ucycle];
+
+}

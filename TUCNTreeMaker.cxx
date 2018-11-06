@@ -101,6 +101,7 @@ void TUCNHitsTree::FillTransition(double icycleStartTime, double icycleValveOpen
 
   for(int i = 0; i < 10; i++){
     std::cout << CycleParameters.GetCumulativeTimeForPeriod(i) << std::endl;
+    std::cout << CycleParameters.GetTimeForPeriod(i) << std::endl;
   }
 
 

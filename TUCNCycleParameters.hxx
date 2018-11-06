@@ -25,26 +25,22 @@ class  TUCNCycleParameters {
      }
    }
    
-  cycleIndex = par.cycleIndex;
-  enable = par.enable;
-  numberPeriodsInCycle = par.numberPeriodsInCycle;
-  numberCyclesInSuper = par.numberCyclesInSuper;
-  infiniteCycles = par.infiniteCycles;
-
-  for(int i = 0; i < MaxPeriods; i++){
-    Valve1State[i] = par.Valve1State[i];
-    Valve2State[i] = par.Valve2State[i];
-    Valve3State[i] = par.Valve3State[i];
-    Valve4State[i] = par.Valve4State[i];
-    Valve5State[i] = par.Valve5State[i];
-    Valve6State[i] = par.Valve6State[i];
-    Valve7State[i] = par.Valve7State[i];
-    Valve8State[i] = par.Valve8State[i];
-  } 
-  
-
-
-
+   cycleIndex = par.cycleIndex;
+   enable = par.enable;
+   numberPeriodsInCycle = par.numberPeriodsInCycle;
+   numberCyclesInSuper = par.numberCyclesInSuper;
+   infiniteCycles = par.infiniteCycles;
+   
+   for(int i = 0; i < MaxPeriods; i++){
+     Valve1State[i] = par.Valve1State[i];
+     Valve2State[i] = par.Valve2State[i];
+     Valve3State[i] = par.Valve3State[i];
+     Valve4State[i] = par.Valve4State[i];
+     Valve5State[i] = par.Valve5State[i];
+     Valve6State[i] = par.Valve6State[i];
+     Valve7State[i] = par.Valve7State[i];
+     Valve8State[i] = par.Valve8State[i];
+   } 
     
   }
  
@@ -53,6 +49,10 @@ class  TUCNCycleParameters {
   // Get the cumulative time of all the periods up to the specified one.
   // Can specify the cycle. Otherwise uses current cycle.
   double GetCumulativeTimeForPeriod(int period, int cycle = -1);
+  
+  // Get the period up to the specified one.
+  // Can specify the cycle. Otherwise uses current cycle.
+  double GetTimeForPeriod(int period, int cycle = -1);  
 
   int CycleIndex(){return cycleIndex;};
   int NumberPeriods(){return numberPeriodsInCycle;};
