@@ -13,8 +13,12 @@ void TLi6GainCalib::add_calib( const std::string& fname, double tmin,double tmax
   in.open( fname );
   if ( !in.is_open() ){
     // failed to open!
-    std::cerr<<"TLi6GainCalib failed to open "<<fname<<std::endl;
-    throw std::runtime_error("TLi6GainCalib::add_calib");
+    // try the default location:
+    in.open("/home/ucn/online/ucn_detector_analyzer/calib_li6_gains.txt");
+    if ( !in.is_open() ){      
+      std::cerr<<"TLi6GainCalib failed to open "<<fname<<std::endl;
+      throw std::runtime_error("TLi6GainCalib::add_calib");
+    }
   }
 
   std::cout<<"TLi6GainCalib::add_calib: tmin="<<tmin<<" tmax="<<tmax<<std::endl;
