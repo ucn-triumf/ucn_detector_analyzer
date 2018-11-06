@@ -11,6 +11,8 @@
 #include "TFancyHistogramCanvas.hxx"
 
 #include "TUCNTreeMaker.h"
+#include "TUCNCycleParameters.hxx"
+
 
 /// Generic base class that handles producing a consistent 
 /// set of plots and data for Li-6 and He-3 detectors

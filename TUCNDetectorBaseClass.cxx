@@ -147,6 +147,14 @@ void TUCNDetectorBaseClass::CheckForSequenceSettings(TDataContainer& dataContain
     fSeqOpenInterval = data->GetData32()[4]/1000.0;
   }
 
+  // Use the 2018 sequence bank
+  data = dataContainer.GetEventData<TGenericData>("NSEQ");
+  if(data){
+    printf("Found the NSEQ bank!!!\n");
+    TUCNCycleParameters par;
+    par.SetCycleParameters(data);
+  }
+
 }
   
 bool TUCNDetectorBaseClass::CheckForSequenceStartCrude(TDataContainer& dataContainer){
