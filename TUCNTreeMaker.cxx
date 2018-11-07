@@ -104,17 +104,23 @@ void TUCNHitsTree::FillTransition(double icycleStartTime, double icycleValveOpen
       std::cout << "NNN " << CycleParameters.GetCumulativeTimeForPeriod(i) << std::endl;
     }
   
-  cyclePeriod0EndTime =  cycleStartTime += CycleParameters.GetCumulativeTimeForPeriod(0);
-  cyclePeriod1EndTime =  cycleStartTime += CycleParameters.GetCumulativeTimeForPeriod(1);
-  cyclePeriod2EndTime =  cycleStartTime += CycleParameters.GetCumulativeTimeForPeriod(2);
-  cyclePeriod3EndTime =  cycleStartTime += CycleParameters.GetCumulativeTimeForPeriod(3);
-  cyclePeriod4EndTime =  cycleStartTime += CycleParameters.GetCumulativeTimeForPeriod(4);
-  cyclePeriod5EndTime =  cycleStartTime += CycleParameters.GetCumulativeTimeForPeriod(5);
-  cyclePeriod6EndTime =  cycleStartTime += CycleParameters.GetCumulativeTimeForPeriod(6);
-  cyclePeriod7EndTime =  cycleStartTime += CycleParameters.GetCumulativeTimeForPeriod(7);
-  cyclePeriod8EndTime =  cycleStartTime += CycleParameters.GetCumulativeTimeForPeriod(8);
-  cyclePeriod9EndTime =  cycleStartTime += CycleParameters.GetCumulativeTimeForPeriod(9);
+  cyclePeriod0EndTime =  cycleStartTime + CycleParameters.GetCumulativeTimeForPeriod(0);
+  cyclePeriod1EndTime =  cycleStartTime + CycleParameters.GetCumulativeTimeForPeriod(1);
+  cyclePeriod2EndTime =  cycleStartTime + CycleParameters.GetCumulativeTimeForPeriod(2);
+  cyclePeriod3EndTime =  cycleStartTime + CycleParameters.GetCumulativeTimeForPeriod(3);
+  cyclePeriod4EndTime =  cycleStartTime + CycleParameters.GetCumulativeTimeForPeriod(4);
+  cyclePeriod5EndTime =  cycleStartTime + CycleParameters.GetCumulativeTimeForPeriod(5);
+  cyclePeriod6EndTime =  cycleStartTime + CycleParameters.GetCumulativeTimeForPeriod(6);
+  cyclePeriod7EndTime =  cycleStartTime + CycleParameters.GetCumulativeTimeForPeriod(7);
+  cyclePeriod8EndTime =  cycleStartTime + CycleParameters.GetCumulativeTimeForPeriod(8);
+  cyclePeriod9EndTime =  cycleStartTime + CycleParameters.GetCumulativeTimeForPeriod(9);
 
+  if(0)std::cout << "NNN "  << CycleParameters.GetCumulativeTimeForPeriod(5) << " " << (int) cyclePeriod5EndTime << " " 
+            << CycleParameters.GetCumulativeTimeForPeriod(6) << " " << (int) cyclePeriod6EndTime << " " 
+            << CycleParameters.GetCumulativeTimeForPeriod(7) << " "<< (int) cyclePeriod7EndTime << " " 
+            << CycleParameters.GetCumulativeTimeForPeriod(8) << " "<< (int) cyclePeriod8EndTime << " " 
+            << CycleParameters.GetCumulativeTimeForPeriod(9) << " "<< (int) cyclePeriod9EndTime << std::endl;
+  
 
   tRunTran->Fill();
 
