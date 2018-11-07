@@ -99,12 +99,11 @@ void TUCNHitsTree::FillTransition(double icycleStartTime, double icycleValveOpen
   std::cout << "periods diff: " << CycleParameters.CycleIndex() << " " 
 	    << CycleParameters.NumberPeriods() << std::endl;
 
-  for(int i = 0; i < 10; i++){
-    std::cout << CycleParameters.GetCumulativeTimeForPeriod(i) << std::endl;
-    std::cout << CycleParameters.GetTimeForPeriod(i) << std::endl;
-  }
-
-
+  if(0)
+    for(int i = 0; i < 3; i++){
+      std::cout << "NNN " << CycleParameters.GetCumulativeTimeForPeriod(i) << std::endl;
+    }
+  
   cyclePeriod0EndTime =  cycleStartTime += CycleParameters.GetCumulativeTimeForPeriod(0);
   cyclePeriod1EndTime =  cycleStartTime += CycleParameters.GetCumulativeTimeForPeriod(1);
   cyclePeriod2EndTime =  cycleStartTime += CycleParameters.GetCumulativeTimeForPeriod(2);

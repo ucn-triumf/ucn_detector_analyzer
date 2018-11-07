@@ -81,7 +81,7 @@ double TUCNCycleParameters::GetCumulativeTimeForPeriod(int period, int cycle){
 
   if(period < 0 && period >= MaxPeriods)return 0;
   int ucycle;
-  if(cycle < 0 && cycle >= MaxCycles){
+  if(cycle < 0 || cycle >= MaxCycles){
     ucycle = cycleIndex;
   }else{
     ucycle = cycle;
@@ -89,8 +89,7 @@ double TUCNCycleParameters::GetCumulativeTimeForPeriod(int period, int cycle){
 
   double cumul = 0.0;
   for(int i = 0; i <= period; i++){
-    cumul += DurationTimePeriod[period][ucycle];
-    std::cout << "SSS " << DurationTimePeriod[period][ucycle] << std::endl;
+    cumul += DurationTimePeriod[i][ucycle];
   }
 
   return cumul;
@@ -100,13 +99,11 @@ double TUCNCycleParameters::GetTimeForPeriod(int period, int cycle){
 
   if(period < 0 && period >= MaxPeriods)return 0;
   int ucycle;
-  if(cycle < 0 && cycle >= MaxCycles){
+  if(cycle < 0 || cycle >= MaxCycles){
     ucycle = cycleIndex;
   }else{
     ucycle = cycle;
   }
-
-  std::cout << DurationTimePeriod[0][0] << std::endl;
 
   return DurationTimePeriod[period][ucycle];
 
