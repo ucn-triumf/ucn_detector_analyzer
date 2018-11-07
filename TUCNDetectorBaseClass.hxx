@@ -155,10 +155,12 @@ private:
   // UCN hits in this cycle
   int fTotalHitsCycle;
   int fTotalHitsCycleIntime;  // hits when valve open
+  int fTotalHitsCyclePeriods[10];  // total hits per period.
 
   // vector to store the cycle hits in
   std::vector<std::pair<double, double> > fHitsPerCycleVector;
   std::vector<std::pair<double, double> > fHitsPerCycleVectorIntime;
+  std::vector<std::vector<std::pair<double, double> > > fHitsPerCycleVectorPeriods;
 };
 
 #endif
