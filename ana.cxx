@@ -131,6 +131,14 @@ public:
 	    cm_msg(MERROR,"Analyzer","Couldn't write time to MIDAS");
 	    return ;
 	  }
+	  for(int per = 0; per < MaxPeriods; per++){
+	    sprintf(varname,"/Analyzer/%s/UCNHitsPerCyclePeriod%i",detector,per);
+	    status = db_set_value_index(hDB,0,varname,&nhits,sizeof(nhits),i,TID_DOUBLE,false);
+	    if (status != DB_SUCCESS){
+	      cm_msg(MERROR,"Analyzer","Couldn't write time to MIDAS");
+	      return ;
+	    }
+	  }
 	   	    
 #endif
 	  
@@ -267,6 +275,15 @@ public:
 	      if (status != DB_SUCCESS){
 		cm_msg(MERROR,"Analyzer","Couldn't write time to MIDAS");
 		return false;;
+	      }
+	      for(int per = 0; per < MaxPeriods; per++){
+		nhits = fHitsPerCyclePerPeriod[det][per][i].second;
+		sprintf(varname,"/Analyzer/%s/UCNHitsPerCyclePeriod%i",detector,per);
+		status = db_set_value_index(hDB,0,varname,&nhits,sizeof(nhits),i,TID_DOUBLE,false);
+		if (status != DB_SUCCESS){
+		  cm_msg(MERROR,"Analyzer","Couldn't write time to MIDAS");
+		  return false;;
+		}
 	      }
 	      
 	    }
