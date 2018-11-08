@@ -41,7 +41,7 @@ TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline, bool isLi6, bool sa
     sprintf(htitle,"Hits Within Current Cycle: He-3");
   }
     
-  fHitsInCycle = new TH1D(hname,htitle,110,-10,100);
+  fHitsInCycle = new TH1D(hname,htitle,210,-10,200);
   fHitsInCycle->SetYTitle("Counts");
   fHitsInCycle->SetXTitle("Time since start of sequence (sec)");
   
@@ -53,7 +53,7 @@ TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline, bool isLi6, bool sa
     sprintf(htitle,"In-time Hits Within Current Cycle: He-3");
   }
     
-  fHitsInCycleIntime = new TH1D(hname,htitle,110,-10,100);
+  fHitsInCycleIntime = new TH1D(hname,htitle,210,-10,200);
   fHitsInCycleIntime->SetYTitle("Counts");
   fHitsInCycleIntime->SetXTitle("Time since start of sequence (sec)");
 
@@ -66,7 +66,7 @@ TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline, bool isLi6, bool sa
     sprintf(htitle,"Cumulative Hits Within Cycles: He-3");
   }
     
-  fHitsInCycleCumul = new TH1D(hname,htitle,550,-10,100);
+  fHitsInCycleCumul = new TH1D(hname,htitle,1050,-10,200);
   fHitsInCycleCumul->SetYTitle("Counts");
   fHitsInCycleCumul->SetXTitle("Time since start of sequence (sec)");
 
@@ -79,7 +79,7 @@ TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline, bool isLi6, bool sa
     sprintf(htitle,"In-time Cumulative Hits Within Cycles: He-3");
   }
     
-  fHitsInCycleCumulIntime = new TH1D(hname,htitle,550,-10,100);
+  fHitsInCycleCumulIntime = new TH1D(hname,htitle,1050,-10,200);
   fHitsInCycleCumulIntime->SetYTitle("Counts");
   fHitsInCycleCumulIntime->SetXTitle("Time since start of sequence (sec)");
 
@@ -256,6 +256,8 @@ void TUCNDetectorBaseClass::ProcessMidasEvent(TDataContainer& dataContainer){
 
     fTotalHitsCycle = 0;
     fTotalHitsCycleIntime = 0;
+    for(int i = 0; i < 10; i++) fTotalHitsCyclePeriods[i] = 0;
+    
     if(fHitsPerCycleVector.size() > 100){ // Save at most 100 cycles
       fHitsPerCycleVector.erase(fHitsPerCycleVector.begin());
       fHitsPerCycleVectorIntime.erase(fHitsPerCycleVectorIntime.begin());      
