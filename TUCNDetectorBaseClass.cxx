@@ -1,20 +1,21 @@
 #include "TUCNDetectorBaseClass.hxx"
 
 
-TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline, bool isLi6, bool saveTree){
+TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline, bool isLi6, bool saveTree, bool is3HEDET1){
   
   fHits = TUCNHitCollection();
   fNonHits = TUCNHitCollection();
   fBackgroundHits = TUCNHitCollection();
   fIsLi6 = isLi6;
+  fIs3HEDET1 = is3HEDET1;
   fIsOffline = isOffline;
 
   fUsePCTime = false;
     
-  fDetectorCharge = new TUCNDetectorCharge(fIsLi6);
+  fDetectorCharge = new TUCNDetectorCharge(fIsLi6,fIs3HEDET1);
   fDetectorCharge->DisableAutoUpdate();
 
-  fRateVsTime = new TUCNRateVsTime(fIsLi6,isOffline);
+  fRateVsTime = new TUCNRateVsTime(fIsLi6,isOffline,fIs3HEDET1);
   fRateVsTime->DisableAutoUpdate();
 
   fCycleStartTime = 0.0;
@@ -37,8 +38,14 @@ TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline, bool isLi6, bool sa
     sprintf(hname,"hitsinsequence_li6");
     sprintf(htitle,"Hits Within Current Cycle: Li-6");
   }else{
-    sprintf(hname,"hitsinsequence_he3");
-    sprintf(htitle,"Hits Within Current Cycle: He-3");
+    if(fIs3HEDET1){
+      sprintf(hname,"hitsinsequence_he3");
+      sprintf(htitle,"Hits Within Current Cycle: He-3 DET1");
+    }else{
+      sprintf(hname,"hitsinsequence_he3_det2");
+      sprintf(htitle,"Hits Within Current Cycle: He-3 DET2");
+ 
+    }
   }
     
   fHitsInCycle = new TH1D(hname,htitle,110,-10,100);
@@ -49,8 +56,14 @@ TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline, bool isLi6, bool sa
     sprintf(hname,"hitsinsequence_li6_intime");
     sprintf(htitle,"In-time Hits Within Current Cycle: Li-6");
   }else{
-    sprintf(hname,"hitsinsequence_he3_intime");
-    sprintf(htitle,"In-time Hits Within Current Cycle: He-3");
+    if(fIs3HEDET1){
+      sprintf(hname,"hitsinsequence_he3_intime");
+      sprintf(htitle,"In-time Hits Within Current Cycle: He-3 DET1");
+    }else{
+      sprintf(hname,"hitsinsequence_he3_det2_intime");
+      sprintf(htitle,"In-time Hits Within Current Cycle: He-3 DET2");
+
+    }
   }
     
   fHitsInCycleIntime = new TH1D(hname,htitle,110,-10,100);
@@ -62,8 +75,13 @@ TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline, bool isLi6, bool sa
     sprintf(hname,"hitsinsequencecumul_li6");
     sprintf(htitle,"Cumulative Hits Within Cycles: Li-6");
   }else{
-    sprintf(hname,"hitsinsequencecumul_he3");
-    sprintf(htitle,"Cumulative Hits Within Cycles: He-3");
+    if(fIs3HEDET1){
+      sprintf(hname,"hitsinsequencecumul_he3");
+      sprintf(htitle,"Cumulative Hits Within Cycles: He-3 DET1 ");
+    }else{
+      sprintf(hname,"hitsinsequencecumul_he3_det2");
+      sprintf(htitle,"Cumulative Hits Within Cycles: He-3 DET2");
+    }
   }
     
   fHitsInCycleCumul = new TH1D(hname,htitle,550,-10,100);
@@ -75,8 +93,14 @@ TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline, bool isLi6, bool sa
     sprintf(hname,"hitsinsequencecumul_li6_intime");
     sprintf(htitle,"In-time Cumulative Hits Within Cycles: Li-6");
   }else{
+    if(fIs3HEDET1){
     sprintf(hname,"hitsinsequencecumul_he3_intime");
-    sprintf(htitle,"In-time Cumulative Hits Within Cycles: He-3");
+    sprintf(htitle,"In-time Cumulative Hits Within Cycles: He-3 DET1");
+    }else{
+    sprintf(hname,"hitsinsequencecumul_he3_intime_det2");
+    sprintf(htitle,"In-time Cumulative Hits Within Cycles: He-3 DET2");
+
+    }
   }
     
   fHitsInCycleCumulIntime = new TH1D(hname,htitle,550,-10,100);
@@ -95,11 +119,21 @@ TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline, bool isLi6, bool sa
     }
   }else{
     if(isOffline){
-      fHitsPerCycle->SetTitle("UCN Counts per Cycle: He-3; Time since last event (sec) ; UCN hits in cycle");
-      fHitsPerCycleIntime->SetTitle("UCN Counts per Cycle: He-3; Time since last event (sec) ; UCN hits in cycle");
+      if(fIs3HEDET1){
+	fHitsPerCycle->SetTitle("UCN Counts per Cycle: He-3 DET1; Time since last event (sec) ; UCN hits in cycle");
+	fHitsPerCycleIntime->SetTitle("UCN Counts per Cycle: He-3 DET1; Time since last event (sec) ; UCN hits in cycle");
+      }else{  
+	fHitsPerCycle->SetTitle("UCN Counts per Cycle: He-3 DET2; Time since last event (sec) ; UCN hits in cycle");
+	fHitsPerCycleIntime->SetTitle("UCN Counts per Cycle: He-3 DET2; Time since last event (sec) ; UCN hits in cycle");	
+      }   
     }else{
-      fHitsPerCycle->SetTitle("UCN Counts per Cycle: He-3; Time since now (sec) ; UCN hits in cycle");
-      fHitsPerCycleIntime->SetTitle("UCN Counts per Cycle: He-3; Time since now (sec) ; UCN hits in cycle");
+      if(fIs3HEDET1){
+	fHitsPerCycle->SetTitle("UCN Counts per Cycle: He-3 DET1; Time since now (sec) ; UCN hits in cycle");
+	fHitsPerCycleIntime->SetTitle("UCN Counts per Cycle: He-3 DET1; Time since now (sec) ; UCN hits in cycle");
+      }else{     
+	fHitsPerCycle->SetTitle("UCN Counts per Cycle: He-3 DET2; Time since now (sec) ; UCN hits in cycle");
+	fHitsPerCycleIntime->SetTitle("UCN Counts per Cycle: He-3 DET2; Time since now (sec) ; UCN hits in cycle");
+      }
     }
   }
 
@@ -108,8 +142,14 @@ TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline, bool isLi6, bool sa
     sprintf(hname,"hits_per_cycle_li6");
     sprintf(htitle,"Hits per Cycle: Li-6");
   }else{
-    sprintf(hname,"hits_per_cycle_he3");
-    sprintf(htitle,"Hits per Cycle: He-3");
+    if(fIs3HEDET1){
+      sprintf(hname,"hits_per_cycle_he3");
+      sprintf(htitle,"Hits per Cycle: He-3 DET1");
+    }else{
+      sprintf(hname,"hits_per_cycle_he3_det2");
+      sprintf(htitle,"Hits per Cycle: He-3 DET2");
+
+    }
   }
   fHitsPerCycleH = new TH1D(hname,htitle,50,-49.5,0.5);
   fHitsPerCycleH->SetYTitle("UCN hits in cycle");
@@ -121,8 +161,13 @@ TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline, bool isLi6, bool sa
     sprintf(hname,"hits_per_cycle_li6_intime");
     sprintf(htitle,"In-time Hits per Cycle: Li-6");
   }else{
-    sprintf(hname,"hits_per_cycle_he3_intime");
-    sprintf(htitle,"In-time Hits per Cycle: He-3");
+    if(fIs3HEDET1){
+      sprintf(hname,"hits_per_cycle_he3_intime");
+      sprintf(htitle,"In-time Hits per Cycle: He-3 DET1");
+    }else{
+      sprintf(hname,"hits_per_cycle_he3_intime_det2");
+      sprintf(htitle,"In-time Hits per Cycle: He-3 DET2");
+    }
   }
   fHitsPerCycleHIntime = new TH1D(hname,htitle,50,-49.5,0.5);
   fHitsPerCycleHIntime->SetYTitle("UCN hits in cycle");
@@ -136,8 +181,13 @@ TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline, bool isLi6, bool sa
   if(saveTree){
     if(fIsLi6)
       fHitsTree = new TUCNHitsTree("Li-6");
-    else
-      fHitsTree = new TUCNHitsTree("He3");
+    else{
+      if(fIs3HEDET1){
+	fHitsTree = new TUCNHitsTree("He3");
+      }else{
+	fHitsTree = new TUCNHitsTree("He3Det2");
+      }
+    }
   }
 
   std::cout << "Finished Detector Setup " << std::endl;

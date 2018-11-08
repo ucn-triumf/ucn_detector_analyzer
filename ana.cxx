@@ -46,7 +46,8 @@ public:
 
     fHitsPerCycle.push_back(std::vector<std::pair<double, double> >());
     fHitsPerCycle.push_back(std::vector<std::pair<double, double> >());
-    for(int det = 0; det < 2; det++){
+    fHitsPerCycle.push_back(std::vector<std::pair<double, double> >());
+    for(int det = 0; det < 3; det++){
       
       fHitsPerCyclePerPeriod.push_back(std::vector<std::vector<std::pair<double, double> > >());
       for(int i = 0; i < MaxPeriods; i++){
@@ -106,12 +107,14 @@ public:
   if(!IsOffline()){
 
       // Loop over Li6 and He3
-      for(int det = 0; det < 2; det++){
+      for(int det = 0; det < 3; det++){
 	char detector[10];
 	if(det == 0){
 	  sprintf(detector,"Li6");
-	}else{
+	}else if(det == 1){
 	  sprintf(detector,"He3");
+	}else{
+	  sprintf(detector,"He3Det2");
 	}
 	
 	for(unsigned int i = 0; i < MaxCycles; i++){
@@ -185,7 +188,7 @@ public:
     if(!IsOffline() || 1){
 
       // Loop over Li6 and He3
-      for(int det = 0; det < 2; det++){
+      for(int det = 0; det < 3; det++){
 
 	// Get the list of hits per cycle.
 	std::vector<std::pair<double, double> > hitsPerCycle;
@@ -196,10 +199,14 @@ public:
 	  sprintf(detector,"Li6");
 	  hitsPerCycle =  anaManager->GetLi6DetectorAnalyzer()->GetHitsPerCycle(); 
 	  idetector = anaManager->GetLi6DetectorAnalyzer();
-	}else{
+	}else if(det == 1){
 	  sprintf(detector,"He3");
 	  hitsPerCycle =  anaManager->GetHe3DetectorAnalyzer()->GetHitsPerCycle(); 
 	  idetector = anaManager->GetHe3DetectorAnalyzer();
+	}else{
+	  sprintf(detector,"He3Det2");
+	  hitsPerCycle =  anaManager->GetHe3Detector2Analyzer()->GetHitsPerCycle(); 
+	  idetector = anaManager->GetHe3Detector2Analyzer();
 	}
 	
 	if(!hitsPerCycle.size()) return true;

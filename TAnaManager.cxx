@@ -8,7 +8,8 @@ TAnaManager::TAnaManager(bool isOffline, bool saveTree){
   fHe3CountsInSequence = new THe3CountsInSequence();
   fHe3CountsInSequence->DisableAutoUpdate();
   
-  fHe3Detector = new THe3Detector(isOffline,saveTree);
+  fHe3Detector = new THe3Detector(isOffline,true,saveTree);
+  fHe3Detector2 = new THe3Detector(isOffline,false,saveTree);
   fLi6Detector = new TLi6Detector(isOffline,saveTree);
 
   if(saveTree){
@@ -36,6 +37,7 @@ int TAnaManager::ProcessMidasEvent(TDataContainer& dataContainer){
   //if(fV1720Waveform && 0)  fV1720Waveform->UpdateHistograms(dataContainer);
   
   fHe3Detector->ProcessMidasEvent(dataContainer);
+  fHe3Detector2->ProcessMidasEvent(dataContainer);
   fLi6Detector->ProcessMidasEvent(dataContainer);
   if(fSourceEpicsTree){   
     fLNDDetectorTree->FillTree(dataContainer);

@@ -9,7 +9,7 @@
 /// either Li6 or He3)
 class TUCNDetectorCharge : public THistogramArrayBase {
  public:
-  TUCNDetectorCharge(bool isLi6);
+  TUCNDetectorCharge(bool isLi6, bool is3HEDET1);
   virtual ~TUCNDetectorCharge(){};
   
   /// We will fill this histogram with separate method

@@ -40,6 +40,7 @@ public:
   THe3CountsInSequence* GetHe3CountsHistograms();
 
   TUCNDetectorBaseClass* GetHe3DetectorAnalyzer(){return fHe3Detector;}
+  TUCNDetectorBaseClass* GetHe3Detector2Analyzer(){return fHe3Detector2;}
   TUCNDetectorBaseClass* GetLi6DetectorAnalyzer(){return fLi6Detector;}
   
   TV792Histograms* GetV785Histo(){return fV785Charge;}
@@ -51,6 +52,7 @@ private:
   THe3CountsInSequence* fHe3CountsInSequence;
   
   THe3Detector  *fHe3Detector;
+  THe3Detector  *fHe3Detector2;
   TLi6Detector  *fLi6Detector;
 
   TLNDDetectorTree *fLNDDetectorTree;
