@@ -30,8 +30,10 @@ public:
 
   // Set of times/UCN counts per cycle for two detectors.
   std::vector<std::vector<std::pair<double, double> > > fHitsPerCycle;
+  // Set of times/UCN counts per cycle per period for two detectors.   
+  std::vector<std::vector<std::vector<std::pair<double, double> > > > fHitsPerCyclePerPeriod;
 
-  const int MaxCycles = 10;
+  const int MaxPeriods = 10;
   
   Analyzer() {
 
@@ -44,7 +46,13 @@ public:
 
     fHitsPerCycle.push_back(std::vector<std::pair<double, double> >());
     fHitsPerCycle.push_back(std::vector<std::pair<double, double> >());
-
+    for(int det = 0; det < 2; det++){
+      
+      fHitsPerCyclePerPeriod.push_back(std::vector<std::vector<std::pair<double, double> > >());
+      for(int i = 0; i < MaxPeriods; i++){
+	fHitsPerCyclePerPeriod[det].push_back(std::vector<std::pair<double, double> >());
+      }
+    }
   };
 
   virtual ~Analyzer() {};
@@ -173,21 +181,21 @@ public:
 
 	// Get the list of hits per cycle.
 	std::vector<std::pair<double, double> > hitsPerCycle;
+	//std::vector<std::vector<std::pair<double, double> > > hitsPerCyclePerPeriod; 
+	TUCNDetectorBaseClass *idetector;
 	char detector[10];
 	if(det == 0){
 	  sprintf(detector,"Li6");
 	  hitsPerCycle =  anaManager->GetLi6DetectorAnalyzer()->GetHitsPerCycle(); 
+	  idetector = anaManager->GetLi6DetectorAnalyzer();
 	}else{
 	  sprintf(detector,"He3");
 	  hitsPerCycle =  anaManager->GetHe3DetectorAnalyzer()->GetHitsPerCycle(); 
+	  idetector = anaManager->GetHe3DetectorAnalyzer();
 	}
 	
 	if(!hitsPerCycle.size()) return true;
 
-	fHitsPerCycle[det];
-	if(0)	std::cout << fHitsPerCycle[det].size() << " "
-		  << hitsPerCycle[hitsPerCycle.size()-1].first << " " 
-		  << fHitsPerCycle[det][hitsPerCycle.size()-1].first << std::endl;
 	if(fHitsPerCycle[det].size() == 0 
 	   || hitsPerCycle[hitsPerCycle.size()-1].first != fHitsPerCycle[det][fHitsPerCycle[det].size()-1].first){
 	  //if(hitsPerCycle[hitsPerCycle.size()-1].first != lastCycleTime[det]){
@@ -209,17 +217,24 @@ public:
 	    
 	  // Add the last entry to our local list
 	  fHitsPerCycle[det].push_back(hitsPerCycle[hitsPerCycle.size()-1]);
-	  std::cout << " Added entry ||| " << hitsPerCycle[hitsPerCycle.size()-1].first 
-		    << " " << hitsPerCycle[hitsPerCycle.size()-1].second << std::endl;
-
-
+	  
+	  for(int i = 0; i < MaxPeriods; i++){	    
+	    std::vector<std::pair<double, double> > tmp = idetector->GetHitsPerCyclePerPeriod(i);
+	    fHitsPerCyclePerPeriod[det][i].push_back(tmp[tmp.size()-1]);
+	  }
+	  
+	  // Erase entries if too many
 	  if(fHitsPerCycle[det].size() > MaxCycles){
 	    std::cout << "|||| eraseing  !!" << std::endl;
 	    fHitsPerCycle[det].erase(fHitsPerCycle[det].begin());
+	    for(int i = 0; i < MaxPeriods; i++){
+	      fHitsPerCyclePerPeriod[det][i].erase(fHitsPerCyclePerPeriod[det][i].begin());
+	    }
 	  }
 
 	  
 	  //	  int index = hitsPerCycle.size()-1;
+	  // Loop over cycles
 	  for(unsigned int i = 0; i < fHitsPerCycle[det].size(); i++){
 	    
 	    time_t t(fHitsPerCycle[det][i].first);
@@ -230,6 +245,12 @@ public:
 	    std::cout << det << " |||| " << i << " time " << fHitsPerCycle[det][i].first 
 		      << " " << date 
 		      << " " << fHitsPerCycle[det][i].second <<  std::endl;	
+	    std::cout << "PPP ||| " ;
+	    // Loop over periods...
+	    for(int j = 0; j < MaxPeriods; j++){
+	      std::cout << fHitsPerCyclePerPeriod[det][j][i].second << ", " ;
+	    }
+	    std::cout << std::endl;
 	    // Upload the new valuves 
 #ifdef HAVE_MIDAS
 	    if(!IsOffline()){

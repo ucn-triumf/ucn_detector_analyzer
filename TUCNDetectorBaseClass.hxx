@@ -105,6 +105,8 @@ class TUCNDetectorBaseClass  {
   // Get Vectors of hits per cycle
   std::vector<std::pair<double, double> > GetHitsPerCycle(){return fHitsPerCycleVector;};
   std::vector<std::pair<double, double> > GetInTimeHitsPerCycle(){ return fHitsPerCycleVectorIntime;};
+  std::vector<std::vector<std::pair<double, double> > > GetHitsPerCyclePerPeriod(){return fHitsPerCycleVectorPeriods;}
+  std::vector<std::pair<double, double> > GetHitsPerCyclePerPeriod(int i){return fHitsPerCycleVectorPeriods[i];}
 
   TUCNCycleParameters CycleParameters;
 

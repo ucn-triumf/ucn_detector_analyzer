@@ -236,7 +236,8 @@ void TUCNDetectorBaseClass::ProcessMidasEvent(TDataContainer& dataContainer){
     fHitsPerCycleVectorIntime.push_back(std::pair<double,double>(fLastCycleStartTime,fTotalHitsCycleIntime));
     for(int i = 0; i < 10; i++){
       fHitsPerCycleVectorPeriods[i].push_back(std::pair<double,double>(fLastCycleStartTime,fTotalHitsCyclePeriods[i]));
-      std::cout << "Hits per period " << i << " " << fTotalHitsCyclePeriods[i] << std::endl;
+      std::cout << "Hits per period " << i << " " << fTotalHitsCyclePeriods[i] 
+		<< " " << fHitsPerCycleVectorPeriods[i][fHitsPerCycleVectorPeriods[i].size()-1].second << std::endl;
     }
       
     // print a summary of number of events for this cycle 
@@ -256,6 +257,7 @@ void TUCNDetectorBaseClass::ProcessMidasEvent(TDataContainer& dataContainer){
 
     fTotalHitsCycle = 0;
     fTotalHitsCycleIntime = 0;
+    for(int i = 0; i < 10; i++) fTotalHitsCyclePeriods[i] = 0;
     if(fHitsPerCycleVector.size() > 100){ // Save at most 100 cycles
       fHitsPerCycleVector.erase(fHitsPerCycleVector.begin());
       fHitsPerCycleVectorIntime.erase(fHitsPerCycleVectorIntime.begin());      
