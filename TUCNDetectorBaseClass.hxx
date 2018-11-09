@@ -18,7 +18,7 @@
 /// set of plots and data for Li-6 and He-3 detectors
 class TUCNDetectorBaseClass  {
  public:
-  TUCNDetectorBaseClass(bool isOffline, bool isLi6, bool saveTree = false);
+  TUCNDetectorBaseClass(bool isOffline, bool isLi6, bool saveTree = false, bool is3HEDET1 = true);
   virtual ~TUCNDetectorBaseClass(){};  
 
 
@@ -105,14 +105,16 @@ class TUCNDetectorBaseClass  {
   // Get Vectors of hits per cycle
   std::vector<std::pair<double, double> > GetHitsPerCycle(){return fHitsPerCycleVector;};
   std::vector<std::pair<double, double> > GetInTimeHitsPerCycle(){ return fHitsPerCycleVectorIntime;};
-  std::vector<std::vector<std::pair<double, double> > > GetHitsPerCyclePerPeriod() {return fHitsPerCycleVectorPeriods;};
-  
+  std::vector<std::vector<std::pair<double, double> > > GetHitsPerCyclePerPeriod(){return fHitsPerCycleVectorPeriods;}
+  std::vector<std::pair<double, double> > GetHitsPerCyclePerPeriod(int i){return fHitsPerCycleVectorPeriods[i];}
+
   TUCNCycleParameters CycleParameters;
 
 
 protected:
 
   bool fIsLi6; // Is for Li-6 detector
+  bool fIs3HEDET1; // Is this 3HEDET1?
   bool fIsOffline;
   
   // List of UCN hits
