@@ -117,7 +117,7 @@ public:
 	  sprintf(detector,"He3Det2");
 	}
 	
-	for(unsigned int i = 0; i < MaxCycles; i++){
+	for(unsigned int i = 0; i < 10; i++){
 	  char date[256];	    
 	  sprintf(date,"N/A ");
 	  char varname[100];
@@ -238,8 +238,8 @@ public:
 	    fHitsPerCyclePerPeriod[det][i].push_back(tmp[tmp.size()-1]);
 	  }
 	  
-	  // Erase entries if too many
-	  if(fHitsPerCycle[det].size() > MaxCycles){
+	  // Erase entries if too many (only 10 slots to display)...
+	  if(fHitsPerCycle[det].size() > 10){
 	    std::cout << "|||| eraseing  !!" << std::endl;
 	    fHitsPerCycle[det].erase(fHitsPerCycle[det].begin());
 	    for(int i = 0; i < MaxPeriods; i++){
