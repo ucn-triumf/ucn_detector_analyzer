@@ -132,27 +132,28 @@ void TLi6Detector::CheckClockRollover(int board, TUCNHit hit, int timestamp){
   }              
   lastClockTime[board] = hit.clockTime;  
 
-  // We check the initial clock time only with the PPS signals.
-  // These are channel 0-7 and 1-4...
-  if(!((board == 0 && hit.channel == 7) || (board == 1 && hit.channel == 12))) return;
-
-
-  // Figure out precise unixTime from clock
-  
-  // Save the unix time for the first event we found
+  // We set the initial unix time only with the PPS signals.
+  // These are channel 0-7, 1-2 and 1-4...
   if(initialUnixTime < 0){
-    initialUnixTime = (double) timestamp;
-    std::cout << "Set initial time: " << initialUnixTime << " " << hit.channel << " " << board << std::endl;
+    if(((board == 0 && hit.channel == 7) || (board == 1 && hit.channel == 10) || (board == 1 && hit.channel == 12))){
+      
+      // Figure out precise unixTime from clock
+      // Save the unix time for the first event we found
+      initialUnixTime = (double) timestamp;
+      std::cout << "Set initial time: " << initialUnixTime << " " << hit.channel << " " << board << std::endl;
+    }
   }
 
-  if(!initClockSet[board]){
-    initialClockTime[board] = hit.clockTime;
-    initClockSet[board] = true;
-    //if(board == 1) numberRollOvers[1] = 8;
-    std::cout << "Set initial clock set: " << initialClockTime[board] << " " << hit.channel << " " << board << std::endl;
+  // Set the initial clock time with any channels, once we have initial clock time from PPS signal.
+  if(initialUnixTime >= 0){
+    
+    if(!initClockSet[board]){
+      initialClockTime[board] = hit.clockTime;
+      initClockSet[board] = true;
+      std::cout << "Set initial clock set: " << initialClockTime[board] << " " << hit.channel << " " << board << std::endl;
+    }
+    
   }
-
-
   
 }
 
