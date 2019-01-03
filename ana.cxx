@@ -66,13 +66,15 @@ public:
 #endif
 
     anaManager = new TAnaManager(IsOffline());
+    std::cout << "Finish manager " << std::endl;
     anaViewer  = new TUCNAnaViewer3();
 
 
 #ifdef HAVE_MIDAS
   int status;
   
-  
+
+  std::cout << "Connecting to ODB... " << std::endl;
   char xhostname[HOST_NAME_LENGTH];
   char xexptname[NAME_LENGTH];
   
