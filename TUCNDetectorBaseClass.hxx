@@ -64,7 +64,7 @@ class TUCNDetectorBaseClass  {
 
   // Method to force analyzer to use simpler PC timestamps
   void UsePCTime(bool usepc = true){
-    fUsePCTime = true;
+    fUsePCTime = usepc;
   }  
 
   TUCNDetectorCharge* GetChargeHistograms(){return fDetectorCharge;}
