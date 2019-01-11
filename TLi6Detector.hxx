@@ -51,7 +51,11 @@ public:
   virtual bool CheckForSequenceStartPrecise(TDataContainer& dataContainer);
 
   virtual bool UsePreciseSequenceTime(){
-    if(fUsePCTime) return false;
+    
+
+    if(fUsePCTime){
+      return false;
+    }
     return true;
   };
 

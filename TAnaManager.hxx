@@ -12,6 +12,7 @@
 #include "TLi6Detector.hxx"
 #include "TUCNTreeMaker.h"
 #include "TV792Histogram.h"
+#include "TUCNChronobox.hxx"
 
 /// This is the main analysis manager program for the UCN detectors.
 class TAnaManager  {
@@ -45,6 +46,8 @@ public:
   
   TV792Histograms* GetV785Histo(){return fV785Charge;}
 
+  TUCNChronobox* GetChronobox(){ return fUCNChronobox;}
+
 private:
   
   TV1720Waveform *fV1720Waveform;
@@ -61,6 +64,8 @@ private:
 
   // Histogram of all V785 Charges
   TV792Histograms *fV785Charge;
+
+  TUCNChronobox *fUCNChronobox;
 
 };
 

@@ -27,6 +27,9 @@ TAnaManager::TAnaManager(bool isOffline, bool saveTree){
   fV785Charge = new TV792Histograms();
   fV785Charge->DisableAutoUpdate();
 
+  std::cout << "Creating chrono" << std::endl;
+
+  fUCNChronobox = new TUCNChronobox();
 
 };
       
@@ -44,7 +47,7 @@ int TAnaManager::ProcessMidasEvent(TDataContainer& dataContainer){
     fSourceEpicsTree->FillTree(dataContainer);
     fBeamlineEpicsTree->FillTree(dataContainer);   
   }
-
+  fUCNChronobox->ProcessMidasEvent(dataContainer);
 
 
   TV792NData *data = dataContainer.GetEventData<TV792NData>("ADC0");

@@ -66,13 +66,15 @@ public:
 #endif
 
     anaManager = new TAnaManager(IsOffline());
+    std::cout << "Finish manager " << std::endl;
     anaViewer  = new TUCNAnaViewer3();
 
 
 #ifdef HAVE_MIDAS
   int status;
   
-  
+
+  std::cout << "Connecting to ODB... " << std::endl;
   char xhostname[HOST_NAME_LENGTH];
   char xexptname[NAME_LENGTH];
   
@@ -117,7 +119,7 @@ public:
 	  sprintf(detector,"He3Det2");
 	}
 	
-	for(unsigned int i = 0; i < MaxCycles; i++){
+	for(unsigned int i = 0; i < 10; i++){
 	  char date[256];	    
 	  sprintf(date,"N/A ");
 	  char varname[100];
@@ -238,8 +240,8 @@ public:
 	    fHitsPerCyclePerPeriod[det][i].push_back(tmp[tmp.size()-1]);
 	  }
 	  
-	  // Erase entries if too many
-	  if(fHitsPerCycle[det].size() > MaxCycles){
+	  // Erase entries if too many (only 10 slots to display)...
+	  if(fHitsPerCycle[det].size() > 10){
 	    std::cout << "|||| eraseing  !!" << std::endl;
 	    fHitsPerCycle[det].erase(fHitsPerCycle[det].begin());
 	    for(int i = 0; i < MaxPeriods; i++){
