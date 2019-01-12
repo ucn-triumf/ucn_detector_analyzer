@@ -101,11 +101,12 @@ TLi6Detector::TLi6Detector(bool isOffline, bool saveTree):TUCNDetectorBaseClass(
   fEndOfIrradiationTime = 0;
   fUCNValveOpenTime = 0;
   fUCNValveCloseTime = 0;
- 
+
+  //was 60445
   // Preliminary threshold for Qlong and PSD
   fPSDThreshold = 0.3;
   fQLongThreshold = 2000.0;
-
+  
 }
 
 void TLi6Detector::BeginRun(int transition,int run,int time){
@@ -137,6 +138,9 @@ void TLi6Detector::CheckClockRollover(int board, TUCNHit hit, int timestamp){
             << std::hex << " " << hit.clockTime << " " << std::dec << std::endl;
  // We set the initial unix time only with the PPS signals.
   // These are channel 0-7, 1-2 and 1-4...
+
+  
+  // Save the unix time for the first event we found
   if(initialUnixTime < 0){
     if(((board == 0 && hit.channel == 7) || (board == 1 && hit.channel == 10) || (board == 1 && hit.channel == 12))){
       

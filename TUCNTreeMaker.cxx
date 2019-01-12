@@ -513,6 +513,8 @@ void TUCNBeamlineEpicsTree::FillTree(TDataContainer& dataContainer){
   B1UT_LM50_RDLVL =  data->GetFloat()[36];
   if(data->GetSize() >= 39){
     B1V_KSM_PREDCUR = data->GetFloat()[37];
+    std::cout << "Beam current: " << data->GetFloat()[37] << std::endl;;
+    
     B1_FOIL_ADJCUR = data->GetFloat()[38];
   }
   tBeamline->Fill();

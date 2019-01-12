@@ -210,7 +210,8 @@ void TUCNDetectorBaseClass::CheckForSequenceSettings(TDataContainer& dataContain
   }
 
 }
-  
+
+ int countcount = 0;
 bool TUCNDetectorBaseClass::CheckForSequenceStartCrude(TDataContainer& dataContainer){
 
   // Use the sequence bank to see when a new run starts:
@@ -218,12 +219,23 @@ bool TUCNDetectorBaseClass::CheckForSequenceStartCrude(TDataContainer& dataConta
 
 
   if(data){
+    int tmp2 = dataContainer.GetMidasData().GetTimeStamp();
+
+    countcount++;
+    if(countcount%20 == 0 || (data->GetData32()[4] & 2))
+      std::cout << "Checking sequence bank: " << data->GetData32()[4] << " " << (data->GetData32()[4] & 2)
+                << " " <<  data->GetData32()[5]  << " " << tmp2 << std::endl;
+    
     if(data->GetData32()[4] & 2){
       fLastCycleStartTime = fCycleStartTime;
       double tmp = ((double)dataContainer.GetMidasData().GetTimeStamp());
       fCycleStartTime = tmp;
-      std::cout << "New cycle started: " << tmp << std::endl;
-
+      if(fIsLi6)
+        std::cout << "New Li-6 cycle started: " << " " << tmp << std::endl;
+      else
+        std::cout << "New He-3 cycle started: " << " " << tmp << std::endl;
+      
+      
       fSeqValveOpenTime = fCycleStartTime + fSeqDelayTime;
       fSeqValveCloseTime = fSeqValveOpenTime + fSeqOpenInterval;
       return true;
