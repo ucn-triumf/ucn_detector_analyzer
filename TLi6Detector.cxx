@@ -132,7 +132,10 @@ void TLi6Detector::CheckClockRollover(int board, TUCNHit hit, int timestamp){
   }              
   lastClockTime[board] = hit.clockTime;  
 
-  // We set the initial unix time only with the PPS signals.
+  if(0)std::cout << "LHits: " << board << " "<< hit.channel << " " << initialUnixTime
+            << " " << initialClockTime[board] << " "
+            << std::hex << " " << hit.clockTime << " " << std::dec << std::endl;
+ // We set the initial unix time only with the PPS signals.
   // These are channel 0-7, 1-2 and 1-4...
   if(initialUnixTime < 0){
     if(((board == 0 && hit.channel == 7) || (board == 1 && hit.channel == 10) || (board == 1 && hit.channel == 12))){
