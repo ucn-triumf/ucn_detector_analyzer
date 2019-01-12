@@ -135,24 +135,38 @@ TLNDDetectorTree::TLNDDetectorTree() {
   tLND->Branch("LND_Reading", &LND_Reading, "LND_Reading/D" );
 }
 
-
-
-
 void TLNDDetectorTree::FillTree(TDataContainer& dataContainer){
-
   // Use the sequence bank to see when a new run starts:
   TGenericData *data = dataContainer.GetEventData<TGenericData>("PICO");
-
   if(!data) return;
 
   // Save the unix timestamp
   timestamp = dataContainer.GetMidasData().GetTimeStamp();  
   LND_Reading =  data->GetDouble()[0];
-  //  std::cout << "PICO reading : " << LND_Reading << std::endl;
-
   tLND->Fill();
-
 }
+
+TSCMTree::TSCMTree() {
+  std::cout << "Creating SCM tree "<< std::endl;
+  tSCM = new TTree("SCMTree", "SCMTree");
+  tSCM->Branch("timestamp", &timestamp, "timestamp/I" );
+  tSCM->Branch("SCMTemps", SCMTemps, "SCMTemps[8]/F" );
+}
+
+void TSCMTree::FillTree(TDataContainer& dataContainer){
+  // Use the sequence bank to see when a new run starts:
+  TGenericData *data = dataContainer.GetEventData<TGenericData>("TEMP");
+  if(!data) return;
+
+  // Save the unix timestamp and SCM temperatures
+  timestamp = dataContainer.GetMidasData().GetTimeStamp();  
+  for(int i = 0; i < 8; i++) SCMTemps[i] =  data->GetFloat()[i];
+  tSCM->Fill();
+}
+
+
+  int timestamp;
+  double SCMTemps[8];
 
   
 
@@ -406,7 +420,7 @@ UCN_HE3_HTR12_STATON =  data->GetFloat()[106];
 
 TUCNBeamlineEpicsTree::TUCNBeamlineEpicsTree(){
 
-  std::cout << "Creating source EPICS tree "<< std::endl;
+  std::cout << "Creating beamline EPICS tree "<< std::endl;
 
   tBeamline = new TTree("BeamlineEpicsTree", "BeamlineEpicsTree");
   //  tBeamline->Branch("tEntry",&tEntry, "tEntry/l" );
@@ -513,8 +527,6 @@ void TUCNBeamlineEpicsTree::FillTree(TDataContainer& dataContainer){
   B1UT_LM50_RDLVL =  data->GetFloat()[36];
   if(data->GetSize() >= 39){
     B1V_KSM_PREDCUR = data->GetFloat()[37];
-    std::cout << "Beam current: " << data->GetFloat()[37] << std::endl;;
-    
     B1_FOIL_ADJCUR = data->GetFloat()[38];
   }
   tBeamline->Fill();

@@ -222,7 +222,7 @@ bool TUCNDetectorBaseClass::CheckForSequenceStartCrude(TDataContainer& dataConta
     int tmp2 = dataContainer.GetMidasData().GetTimeStamp();
 
     countcount++;
-    if(countcount%20 == 0 || (data->GetData32()[4] & 2))
+    if(0 && (countcount%20 == 0 || (data->GetData32()[4] & 2)))
       std::cout << "Checking sequence bank: " << data->GetData32()[4] << " " << (data->GetData32()[4] & 2)
                 << " " <<  data->GetData32()[5]  << " " << tmp2 << std::endl;
     

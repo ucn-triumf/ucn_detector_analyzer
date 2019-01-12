@@ -90,6 +90,25 @@ class TLNDDetectorTree {
 };
 
 
+
+// This class will make the tree of SCM variables.
+class TSCMTree {
+ public:
+  
+  TSCMTree();
+
+  void FillTree(TDataContainer& dataContainer);
+
+  
+ private:
+
+  TTree *tSCM;
+
+  int timestamp;
+  float SCMTemps[8];
+};
+
+
 // This class will make the tree of source epics variables.
 class TUCNSourceEpicsTree {
  public:

@@ -15,12 +15,14 @@ TAnaManager::TAnaManager(bool isOffline, bool saveTree){
   if(saveTree){
     std::cout << "Creating EPICS tree" << std::endl;
     fLNDDetectorTree = new TLNDDetectorTree();
+    fSCMTree = new TSCMTree();
     fSourceEpicsTree = new TUCNSourceEpicsTree();
     fBeamlineEpicsTree = new TUCNBeamlineEpicsTree();
   }else{
     fSourceEpicsTree = 0;
     fBeamlineEpicsTree = 0;
     fLNDDetectorTree = 0;
+    fSCMTree = 0;
   }
   
   //fV785Charge = new TUCNDetectorCharge(false)
@@ -44,46 +46,50 @@ int TAnaManager::ProcessMidasEvent(TDataContainer& dataContainer){
   fLi6Detector->ProcessMidasEvent(dataContainer);
   if(fSourceEpicsTree){   
     fLNDDetectorTree->FillTree(dataContainer);
+    fSCMTree->FillTree(dataContainer);
     fSourceEpicsTree->FillTree(dataContainer);
     fBeamlineEpicsTree->FillTree(dataContainer);   
   }
   fUCNChronobox->ProcessMidasEvent(dataContainer);
 
 
-  TGenericData *data2 = dataContainer.GetEventData<TGenericData>("EPBL");
 
-  if(data2){
-    std::cout << "Beam current: " << data2->GetFloat()[29]*data2->GetFloat()[37] << " "
-              << data2->GetFloat()[38] << " " << data2->GetFloat()[18]
-              << " " << data2->GetFloat()[27]  << std::endl;;
-
-  }
-
- TGenericData *data3 = dataContainer.GetEventData<TGenericData>("EPSR");
-
-  if(data3){
-    std::cout << "Source EPICS: ";
-
-    if(data3->GetFloat()[42]){
-      std::cout << "IV1 open! ************";
-    }else{
-      std::cout << "IV1 closed";
+  if(0){
+    TGenericData *data2 = dataContainer.GetEventData<TGenericData>("EPBL");
+    
+    if(data2){
+      std::cout << "Beam current: " << data2->GetFloat()[29]*data2->GetFloat()[37] << " "
+                << data2->GetFloat()[38] << " " << data2->GetFloat()[18]
+                << " " << data2->GetFloat()[27]  << std::endl;;
+      
     }
-    std::cout          << std::endl;
+    
+    TGenericData *data3 = dataContainer.GetEventData<TGenericData>("EPSR");
+    
+    if(data3){
+      std::cout << "Source EPICS: ";
       
-
-  }
-
-
-  TGenericData *data4 = dataContainer.GetEventData<TGenericData>("NSEQ");
-
-  if(data4){
-    std::cout << ">>>>>>>>>>>>>>>>>>>>>>>> GOT THE NSEQ BANK <<<<<<<<<<<<<<<<<<<<<<<<<< ";
-
-
-    std::cout          << std::endl;
+      if(data3->GetFloat()[42]){
+        std::cout << "IV1 open! ************";
+      }else{
+        std::cout << "IV1 closed";
+      }
+      std::cout          << std::endl;
       
-
+      
+    }
+    
+    
+    TGenericData *data4 = dataContainer.GetEventData<TGenericData>("NSEQ");
+    
+    if(data4){
+      std::cout << ">>>>>>>>>>>>>>>>>>>>>>>> GOT THE NSEQ BANK <<<<<<<<<<<<<<<<<<<<<<<<<< ";
+      
+      
+      std::cout          << std::endl;
+      
+      
+    }
   }
 
 

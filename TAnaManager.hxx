@@ -59,6 +59,7 @@ private:
   TLi6Detector  *fLi6Detector;
 
   TLNDDetectorTree *fLNDDetectorTree;
+  TSCMTree *fSCMTree;
   TUCNSourceEpicsTree *fSourceEpicsTree;
   TUCNBeamlineEpicsTree *fBeamlineEpicsTree;
 
