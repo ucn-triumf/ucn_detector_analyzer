@@ -29,6 +29,16 @@ TUCNHitsTree::TUCNHitsTree(std::string name):detector_name(name){
   tRunTran->Branch("cyclePeriod7EndTime",&cyclePeriod7EndTime,"cyclePeriod7EndTime/D");
   tRunTran->Branch("cyclePeriod8EndTime",&cyclePeriod8EndTime,"cyclePeriod8EndTime/D");
   tRunTran->Branch("cyclePeriod9EndTime",&cyclePeriod9EndTime,"cyclePeriod9EndTime/D");
+  tRunTran->Branch("valveStatePeriod0",valveStatePeriod0,"valveStatePeriod0[8]/I");
+  tRunTran->Branch("valveStatePeriod1",valveStatePeriod1,"valveStatePeriod1[8]/I");
+  tRunTran->Branch("valveStatePeriod2",valveStatePeriod2,"valveStatePeriod2[8]/I");
+  tRunTran->Branch("valveStatePeriod3",valveStatePeriod3,"valveStatePeriod3[8]/I");
+  tRunTran->Branch("valveStatePeriod4",valveStatePeriod4,"valveStatePeriod4[8]/I");
+  tRunTran->Branch("valveStatePeriod5",valveStatePeriod5,"valveStatePeriod5[8]/I");
+  tRunTran->Branch("valveStatePeriod6",valveStatePeriod6,"valveStatePeriod6[8]/I");
+  tRunTran->Branch("valveStatePeriod7",valveStatePeriod7,"valveStatePeriod7[8]/I");
+  tRunTran->Branch("valveStatePeriod8",valveStatePeriod8,"valveStatePeriod8[8]/I");
+  tRunTran->Branch("valveStatePeriod9",valveStatePeriod9,"valveStatePeriod9[8]/I");
 
   //tRunNum = run;
   //tTime = time;
@@ -120,6 +130,19 @@ void TUCNHitsTree::FillTransition(double icycleStartTime, double icycleValveOpen
             << CycleParameters.GetCumulativeTimeForPeriod(7) << " "<< (int) cyclePeriod7EndTime << " " 
             << CycleParameters.GetCumulativeTimeForPeriod(8) << " "<< (int) cyclePeriod8EndTime << " " 
             << CycleParameters.GetCumulativeTimeForPeriod(9) << " "<< (int) cyclePeriod9EndTime << std::endl;
+
+  for(int i = 0; i < 8; i++){
+    valveStatePeriod0[i] = CycleParameters.GetValveState(0,i);
+    valveStatePeriod1[i] = CycleParameters.GetValveState(1,i);
+    valveStatePeriod2[i] = CycleParameters.GetValveState(2,i);
+    valveStatePeriod3[i] = CycleParameters.GetValveState(3,i);
+    valveStatePeriod4[i] = CycleParameters.GetValveState(4,i);
+    valveStatePeriod5[i] = CycleParameters.GetValveState(5,i);
+    valveStatePeriod6[i] = CycleParameters.GetValveState(6,i);
+    valveStatePeriod7[i] = CycleParameters.GetValveState(7,i);
+    valveStatePeriod8[i] = CycleParameters.GetValveState(8,i);
+    valveStatePeriod9[i] = CycleParameters.GetValveState(9,i);
+  }
   
 
   tRunTran->Fill();

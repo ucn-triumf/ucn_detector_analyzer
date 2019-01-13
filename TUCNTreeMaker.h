@@ -45,7 +45,18 @@ class TUCNHitsTree {
   double  cyclePeriod7EndTime; // end of period 7
   double  cyclePeriod8EndTime; // end of period 8
   double  cyclePeriod9EndTime; // end of period 9
+  int valveStatePeriod0[8]; // state of the 8 valves for period 0. array index = 0 means valve 1.
+  int valveStatePeriod1[8]; // state of the 8 valves for period 1. array index = 0 means valve 1.
+  int valveStatePeriod2[8]; // state of the 8 valves for period 2. array index = 0 means valve 1.
+  int valveStatePeriod3[8]; // state of the 8 valves for period 3. array index = 0 means valve 1.
+  int valveStatePeriod4[8]; // state of the 8 valves for period 4. array index = 0 means valve 1.
+  int valveStatePeriod5[8]; // state of the 8 valves for period 5. array index = 0 means valve 1.
+  int valveStatePeriod6[8]; // state of the 8 valves for period 6. array index = 0 means valve 1.
+  int valveStatePeriod7[8]; // state of the 8 valves for period 7. array index = 0 means valve 1.
+  int valveStatePeriod8[8]; // state of the 8 valves for period 8. array index = 0 means valve 1.
+  int valveStatePeriod9[8]; // state of the 8 valves for period 9. array index = 0 means valve 1.
 
+  
 
   // output file
   TTree * tUCN;

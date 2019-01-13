@@ -108,3 +108,23 @@ double TUCNCycleParameters::GetTimeForPeriod(int period, int cycle){
   return DurationTimePeriod[period][ucycle];
 
 }
+
+
+int TUCNCycleParameters::GetValveState(int period, int valve){
+  
+  if(period < 0 || period > MaxPeriods || valve < 0 || valve > 8){
+    return -1;
+  }
+  
+  if(valve == 0) return Valve1State[period];
+  if(valve == 1) return Valve2State[period];
+  if(valve == 2) return Valve3State[period];
+  if(valve == 3) return Valve4State[period];
+  if(valve == 4) return Valve5State[period];
+  if(valve == 5) return Valve6State[period];
+  if(valve == 6) return Valve7State[period];
+  if(valve == 7) return Valve8State[period];
+  
+  return -1;
+
+}

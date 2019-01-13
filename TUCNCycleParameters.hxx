@@ -54,6 +54,9 @@ class  TUCNCycleParameters {
   // Can specify the cycle. Otherwise uses current cycle.
   double GetTimeForPeriod(int period, int cycle = -1);  
 
+  // Get each valve state for each period
+  int GetValveState(int period, int valve);
+  
   int CycleIndex(){return cycleIndex;};
   int NumberPeriods(){return numberPeriodsInCycle;};
 
@@ -65,7 +68,6 @@ private:
   int numberCyclesInSuper; // number of cycles in super-cycle
   int numberSuperCycles; // number of super-cycles to do
   bool infiniteCycles; // Should we just continue super-cycles infinitely?
-  //bool Valve1State[MaxPeriods]; // valve 1 state for each period in a cycle.
   double DurationTimePeriod[MaxPeriods][MaxCycles]; // Time in seconds for periods for each cycle.
   int Valve1State[MaxPeriods]; // valve 1 state for each period in a cycle.
   int Valve2State[MaxPeriods];
