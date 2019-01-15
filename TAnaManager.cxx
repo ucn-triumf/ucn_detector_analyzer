@@ -16,6 +16,7 @@ TAnaManager::TAnaManager(bool isOffline, bool saveTree){
     std::cout << "Creating EPICS tree" << std::endl;
     fLNDDetectorTree = new TLNDDetectorTree();
     fSCMTree = new TSCMTree();
+    fSequencerTree = new TSequencerTree();
     fSourceEpicsTree = new TUCNSourceEpicsTree();
     fBeamlineEpicsTree = new TUCNBeamlineEpicsTree();
   }else{
@@ -23,6 +24,7 @@ TAnaManager::TAnaManager(bool isOffline, bool saveTree){
     fBeamlineEpicsTree = 0;
     fLNDDetectorTree = 0;
     fSCMTree = 0;
+    fSequencerTree = 0;
   }
   
   //fV785Charge = new TUCNDetectorCharge(false)
@@ -47,6 +49,7 @@ int TAnaManager::ProcessMidasEvent(TDataContainer& dataContainer){
   if(fSourceEpicsTree){   
     fLNDDetectorTree->FillTree(dataContainer);
     fSCMTree->FillTree(dataContainer);
+    fSequencerTree->FillTree(dataContainer);
     fSourceEpicsTree->FillTree(dataContainer);
     fBeamlineEpicsTree->FillTree(dataContainer);   
   }

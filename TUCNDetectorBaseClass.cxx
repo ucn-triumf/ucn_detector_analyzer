@@ -28,7 +28,7 @@ TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline, bool isLi6, bool sa
   fSeqValveCloseTime = 0.0;
   fSeqDelayTime = 0.0;
   fSeqOpenInterval = 0.0;
-
+  
   for(int i = 0; i < 10; i++){
     fHitsPerCycleVectorPeriods.push_back(std::vector<std::pair<double, double> >());
   }
@@ -225,6 +225,7 @@ bool TUCNDetectorBaseClass::CheckForSequenceStartCrude(TDataContainer& dataConta
     if(0 && (countcount%20 == 0 || (data->GetData32()[4] & 2)))
       std::cout << "Checking sequence bank: " << data->GetData32()[4] << " " << (data->GetData32()[4] & 2)
                 << " " <<  data->GetData32()[5]  << " " << tmp2 << std::endl;
+
     
     if(data->GetData32()[4] & 2){
       fLastCycleStartTime = fCycleStartTime;

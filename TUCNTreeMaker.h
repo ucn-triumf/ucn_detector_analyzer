@@ -122,6 +122,25 @@ class TSCMTree {
 };
 
 
+
+// This class will make the tree of Sequencer variables.
+class TSequencerTree {
+ public:
+  TSequencerTree();
+
+  void FillTree(TDataContainer& dataContainer);
+  
+ private:
+
+  TTree *tSequencer;
+
+  int timestamp;
+  int sequencerEnabled; // Is sequencer enabled
+  int inCycle; // Are we in a cycle
+  int cycleStarted; // Did cycleJust start?
+};
+
+
 // This class will make the tree of source epics variables.
 class TUCNSourceEpicsTree {
  public:

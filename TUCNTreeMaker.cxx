@@ -94,6 +94,8 @@ void TUCNHitsTree::FillHits(TUCNHitCollection& hits, int isUCN){
 
 }
 
+
+
 void TUCNHitsTree::FillTransition(double icycleStartTime, double icycleValveOpenTime, double icycleValveCloseTime,
                                   double icycleDelayTime, double icycleOpenInterval,
 				  TUCNCycleParameters CycleParameters){
@@ -110,11 +112,6 @@ void TUCNHitsTree::FillTransition(double icycleStartTime, double icycleValveOpen
 
   std::cout << "periods diff: " << CycleParameters.CycleIndex() << " " 
 	    << CycleParameters.NumberPeriods() << std::endl;
-
-  if(0)
-    for(int i = 0; i < 3; i++){
-      std::cout << "NNN " << CycleParameters.GetCumulativeTimeForPeriod(i) << std::endl;
-    }
   
   cyclePeriod0EndTime =  cycleStartTime + CycleParameters.GetCumulativeTimeForPeriod(0);
   cyclePeriod1EndTime =  cycleStartTime + CycleParameters.GetCumulativeTimeForPeriod(1);
@@ -171,7 +168,35 @@ void TLNDDetectorTree::FillTree(TDataContainer& dataContainer){
   tLND->Fill();
 }
 
+
+TSequencerTree::TSequencerTree(){
+  std::cout << "Creating Sequencer tree "<< std::endl;
+  tSequencer = new TTree("SequencerTree", "SequencerTree");
+  tSequencer->Branch("timestamp", &timestamp, "timestamp/I" );
+  tSequencer->Branch("sequencerEnabled", &sequencerEnabled, "sequencerEnabled/I" );
+  tSequencer->Branch("inCycle", &inCycle, "inCycle/I" );
+  tSequencer->Branch("cycleStarted", &cycleStarted, "cycleStarted/I" );
+};
+
+
+void TSequencerTree::FillTree(TDataContainer& dataContainer){
+
+  // Use the sequence bank to see when a new run starts:
+  TGenericData *data = dataContainer.GetEventData<TGenericData>("USEQ");
+  if(!data) return;
+
+  timestamp = dataContainer.GetMidasData().GetTimeStamp();
+  sequencerEnabled = data->GetData32()[5];
+  inCycle = (data->GetData32()[4] & 1);
+  cycleStarted = (data->GetData32()[4] & 2);
+  
+  tSequencer->Fill();
+
+};
+
+
 TSCMTree::TSCMTree() {
+
   std::cout << "Creating SCM tree "<< std::endl;
   tSCM = new TTree("SCMTree", "SCMTree");
   tSCM->Branch("timestamp", &timestamp, "timestamp/I" );
@@ -181,7 +206,6 @@ TSCMTree::TSCMTree() {
 }
 
 void TSCMTree::FillTree(TDataContainer& dataContainer){
-
   
   // Grab the temperature data if it is available.
   TGenericData *data = dataContainer.GetEventData<TGenericData>("TEMP");
@@ -202,13 +226,7 @@ void TSCMTree::FillTree(TDataContainer& dataContainer){
 
   tSCM->Fill();
 
-
 }
-
-
-  int timestamp;
-  double SCMTemps[8];
-
   
 
 TUCNSourceEpicsTree::TUCNSourceEpicsTree(){
