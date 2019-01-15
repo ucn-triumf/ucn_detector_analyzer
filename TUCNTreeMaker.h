@@ -118,6 +118,7 @@ class TSCMTree {
 
   int timestamp;
   float SCMTemps[8];
+  float SCMVoltages[4];
 };
 
 
