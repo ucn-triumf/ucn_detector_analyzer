@@ -45,6 +45,7 @@ TUCNHitsTree::TUCNHitsTree(std::string name):detector_name(name){
   //tRunNum = run;
   //tTime = time;
   tEntry=0;
+  superCycleIndex = -9999; // need to have default value, to fix a bug in how this data is stored.
   
   // tree for runtime event data
   sprintf(tree_name,"UCNHits_%s",detector_name.c_str());
@@ -102,13 +103,21 @@ void TUCNHitsTree::FillTransition(double icycleStartTime, double icycleValveOpen
 				  TUCNCycleParameters CycleParameters){
  
   cycleIndex = CycleParameters.CycleIndex();
-  superCycleIndex = CycleParameters.SuperCycleIndex();
   cycleStartTime = icycleStartTime; 
   cycleValveOpenTime = icycleValveOpenTime;
   cycleValveCloseTime = icycleValveCloseTime;
   cycleDelayTime = icycleDelayTime;
   cycleOpenInterval = icycleOpenInterval;
+
+  /// Need to treat the super-cycle in a strange way.
+  /// Problems with how the data is stored means that the data needs to be modified
+  if(superCycleIndex == -9999){
+    superCycleIndex = CycleParameters.SuperCycleIndex();
+  }else{
+    superCycleIndex = CycleParameters.SuperCycleIndex() + 1;
+  }
   
+  std::cout << "Setting super cycle (fixed): " << superCycleIndex << std::endl;
   std::cout << "Transition time: " << cycleStartTime << " " << cycleDelayTime << std::endl;
   // Fill the parameters from the new NSEQ bank...
 
