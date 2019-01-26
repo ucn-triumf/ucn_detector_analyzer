@@ -104,8 +104,6 @@ void TUCNHitsTree::FillTransition(double icycleStartTime, double icycleValveOpen
 				  TUCNCycleParameters CycleParameters){
 
   // Look for cases where it seems we finished a super-cycle.
-  std::cout << "!!! Setting super cycle (fixed): " << superCycleIndex << " " << CycleParameters.CycleIndex()
-            << " " << cycleIndex << " " << finishedFirstSuperCycle << std::endl;
   if(CycleParameters.CycleIndex() <= cycleIndex){
     finishedFirstSuperCycle = true;
   }
@@ -127,7 +125,7 @@ void TUCNHitsTree::FillTransition(double icycleStartTime, double icycleValveOpen
   }
   
   std::cout << "Setting super cycle (fixed): " << superCycleIndex << " "
-            << CycleParameters.SuperCycleIndex() << std::endl;
+            << std::endl;
   std::cout << "Transition time: " << cycleStartTime << " " << cycleDelayTime << std::endl;
   // Fill the parameters from the new NSEQ bank...
 
