@@ -26,6 +26,7 @@ class  TUCNCycleParameters {
    }
    
    cycleIndex = par.cycleIndex;
+   superCycleIndex = par.superCycleIndex;
    enable = par.enable;
    numberPeriodsInCycle = par.numberPeriodsInCycle;
    numberCyclesInSuper = par.numberCyclesInSuper;
@@ -46,6 +47,9 @@ class  TUCNCycleParameters {
  
   int SetCycleParameters(TGenericData *nseq);
 
+  // Set the super cycle index
+  void SetSuperCycle(int superIndex){ superCycleIndex = superIndex;};
+  
   // Get the cumulative time of all the periods up to the specified one.
   // Can specify the cycle. Otherwise uses current cycle.
   double GetCumulativeTimeForPeriod(int period, int cycle = -1);
@@ -58,11 +62,14 @@ class  TUCNCycleParameters {
   int GetValveState(int period, int valve);
   
   int CycleIndex(){return cycleIndex;};
+  int SuperCycleIndex(){return superCycleIndex;};
   int NumberPeriods(){return numberPeriodsInCycle;};
 
+  
 private:
   
   int cycleIndex;
+  int superCycleIndex;
   bool enable;  // enable the sequencing
   int numberPeriodsInCycle; // number of periods in cycle.
   int numberCyclesInSuper; // number of cycles in super-cycle

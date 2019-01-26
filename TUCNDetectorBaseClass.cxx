@@ -207,6 +207,11 @@ void TUCNDetectorBaseClass::CheckForSequenceSettings(TDataContainer& dataContain
   data = dataContainer.GetEventData<TGenericData>("NSEQ");
   if(data){
     CycleParameters.SetCycleParameters(data);
+    // Grab the superCycleIndex, which is not stored in the NSEQ bank
+    TGenericData *data2 = dataContainer.GetEventData<TGenericData>("USEQ");
+    if(data2){   
+      CycleParameters.SetSuperCycle(data2->GetData32()[7]);
+    }
   }
 
 }

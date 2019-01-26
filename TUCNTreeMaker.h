@@ -31,6 +31,7 @@ class TUCNHitsTree {
   int     tRunNum;
   int     tTime;
   int     cycleIndex;          // cycle index
+  int     superCycleIndex;          // super cycle index
   double  cycleStartTime;      // time of start of new cycle.
   double  cycleValveOpenTime;  // time that valve opened
   double  cycleValveCloseTime; // time that valve closed

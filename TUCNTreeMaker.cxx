@@ -15,6 +15,7 @@ TUCNHitsTree::TUCNHitsTree(std::string name):detector_name(name){
   tRunTran->Branch("tTime", &tTime, "tTime/I" );
   tRunTran->Branch("tEntry",&tEntry, "tEntry/l" );
   tRunTran->Branch("cycleIndex",&cycleIndex,"cycleIndex/I");
+  tRunTran->Branch("superCycleIndex",&superCycleIndex,"superCycleIndex/I");
   tRunTran->Branch("cycleStartTime",&cycleStartTime,"cycleStartTime/D");
   tRunTran->Branch("cycleValveOpenTime",&cycleValveOpenTime,"cycleValveOpenTime/D");
   tRunTran->Branch("cycleValveCloseTime",&cycleValveCloseTime,"cycleValveCloseTime/D");
@@ -101,6 +102,7 @@ void TUCNHitsTree::FillTransition(double icycleStartTime, double icycleValveOpen
 				  TUCNCycleParameters CycleParameters){
  
   cycleIndex = CycleParameters.CycleIndex();
+  superCycleIndex = CycleParameters.SuperCycleIndex();
   cycleStartTime = icycleStartTime; 
   cycleValveOpenTime = icycleValveOpenTime;
   cycleValveCloseTime = icycleValveCloseTime;

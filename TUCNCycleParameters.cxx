@@ -4,6 +4,7 @@
 TUCNCycleParameters::TUCNCycleParameters(){
 
   cycleIndex = 0;
+  superCycleIndex = 0;
   enable = 0;
   numberPeriodsInCycle = 0;
   numberCyclesInSuper = 0;
