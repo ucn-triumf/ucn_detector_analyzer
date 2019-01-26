@@ -45,7 +45,8 @@ TUCNHitsTree::TUCNHitsTree(std::string name):detector_name(name){
   //tRunNum = run;
   //tTime = time;
   tEntry=0;
-  superCycleIndex = -9999; // need to have default value, to fix a bug in how this data is stored.
+  cycleIndex = -9999;
+  finishedFirstSuperCycle = false;
   
   // tree for runtime event data
   sprintf(tree_name,"UCNHits_%s",detector_name.c_str());
@@ -101,7 +102,14 @@ void TUCNHitsTree::FillHits(TUCNHitCollection& hits, int isUCN){
 void TUCNHitsTree::FillTransition(double icycleStartTime, double icycleValveOpenTime, double icycleValveCloseTime,
                                   double icycleDelayTime, double icycleOpenInterval,
 				  TUCNCycleParameters CycleParameters){
- 
+
+  // Look for cases where it seems we finished a super-cycle.
+  std::cout << "!!! Setting super cycle (fixed): " << superCycleIndex << " " << CycleParameters.CycleIndex()
+            << " " << cycleIndex << " " << finishedFirstSuperCycle << std::endl;
+  if(CycleParameters.CycleIndex() <= cycleIndex){
+    finishedFirstSuperCycle = true;
+  }
+  
   cycleIndex = CycleParameters.CycleIndex();
   cycleStartTime = icycleStartTime; 
   cycleValveOpenTime = icycleValveOpenTime;
@@ -109,15 +117,17 @@ void TUCNHitsTree::FillTransition(double icycleStartTime, double icycleValveOpen
   cycleDelayTime = icycleDelayTime;
   cycleOpenInterval = icycleOpenInterval;
 
-  /// Need to treat the super-cycle in a strange way.
-  /// Problems with how the data is stored means that the data needs to be modified
-  if(superCycleIndex == -9999){
+  /// Problems with how the data is stored means that the data needs to be modified.
+  /// Need to hack it...
+  /// This variable can't really be trusted...
+  if(!finishedFirstSuperCycle){
     superCycleIndex = CycleParameters.SuperCycleIndex();
   }else{
     superCycleIndex = CycleParameters.SuperCycleIndex() + 1;
   }
   
-  std::cout << "Setting super cycle (fixed): " << superCycleIndex << std::endl;
+  std::cout << "Setting super cycle (fixed): " << superCycleIndex << " "
+            << CycleParameters.SuperCycleIndex() << std::endl;
   std::cout << "Transition time: " << cycleStartTime << " " << cycleDelayTime << std::endl;
   // Fill the parameters from the new NSEQ bank...
 

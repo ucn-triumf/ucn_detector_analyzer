@@ -31,7 +31,7 @@ class TUCNHitsTree {
   int     tRunNum;
   int     tTime;
   int     cycleIndex;          // cycle index
-  int     superCycleIndex;          // super cycle index
+  int     superCycleIndex;          // super cycle index  
   double  cycleStartTime;      // time of start of new cycle.
   double  cycleValveOpenTime;  // time that valve opened
   double  cycleValveCloseTime; // time that valve closed
@@ -58,8 +58,7 @@ class TUCNHitsTree {
   int valveStatePeriod8[8]; // state of the 8 valves for period 8. array index = 0 means valve 1.
   int valveStatePeriod9[8]; // state of the 8 valves for period 9. array index = 0 means valve 1.
 
-  
-
+  bool finishedFirstSuperCycle;
   // output file
   TTree * tUCN;
 
