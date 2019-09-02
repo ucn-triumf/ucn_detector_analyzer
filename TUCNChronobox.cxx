@@ -1,5 +1,5 @@
 #include "TUCNChronobox.hxx"
-
+#include "TH1D.h"
 
 TUCNChronobox::TUCNChronobox(){
 
@@ -11,6 +11,9 @@ TUCNChronobox::TUCNChronobox(){
     fTimestamps[i][1] = 0;
   }
 
+  fLeadingDiff = new TH1D("LeadingDiff","LeadingDiff",1000,-10,10);
+  fFallingDiff = new TH1D("FallingDiff","FallingDiff",1000,-10,10);
+  fChronoWidth= new TH1D("ChronoWidth","ChronoDiff",1000,-10,10);
 
 }
 
@@ -52,16 +55,25 @@ int TUCNChronobox::ProcessMidasEvent(TDataContainer& dataContainer){
 	//	if(topeight == 128){std::cout << "Sub " << std::endl; rollovers -= 1;}
 	double full_time = ((double)timestamp)*time_precision 
 	  + ((double)0x7fffff)*time_precision*((double) rollovers);
+	
+	if(ch == 4){
+	  if(leading){
+	    fLeadingDiff->Fill(full_time - fTimestamps[ch][leading]);
+	    fChronoWidth->Fill(full_time - fTimestamps[ch][0]);
+	  }else{
+	    fFallingDiff->Fill(full_time - fTimestamps[ch][leading]);
+	    fChronoWidth->Fill(full_time - fTimestamps[ch][1]);
+	  }
 
-	std::cout << "Time differences: " << full_time - fTimestamps[ch][leading] << " "
-		  << full_time - fTimestamps[0][0] << " ch=" << ch << " leading="<<leading <<std::endl;
-	if(1)	std::cout << full_time - fTimestamps[ch][leading] << " " << i << " |||" << ch << "||| " << std::dec << timestamp << " "
-		  <<" " << rollovers << " " 
-		  << full_time << " " << fTimestamps[ch][leading] << " " 
-		  << full_time - fTimestamps[ch][leading] << " " 
-		  << maxmax << std::dec << std::endl;
-	fTimestamps[ch][leading] = full_time;
-      
+	  std::cout << "Time differences: " << full_time - fTimestamps[ch][leading] << " "
+		    << full_time - fTimestamps[0][0] << " ch=" << ch << " leading="<<leading <<std::endl;
+	  if(1)	std::cout << full_time - fTimestamps[ch][leading] << " " << i << " |||" << ch << "||| " << std::dec << timestamp << " "
+			  <<" " << rollovers << " " 
+			  << full_time << " " << fTimestamps[ch][leading] << " " 
+			  << full_time - fTimestamps[ch][leading] << " " 
+			  << maxmax << std::dec << std::endl;
+	  fTimestamps[ch][leading] = full_time;
+	}
       }
     }
   }

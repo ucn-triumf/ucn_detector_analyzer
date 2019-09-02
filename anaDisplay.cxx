@@ -82,6 +82,7 @@ public:
     // Add the common plots, for He3 and Li6 detectors
 
     for(int i = 0; i < 3; i++){
+      std::cout << "Step " << i << std::endl;
       TUCNDetectorBaseClass* detector = anaManager->GetHe3DetectorAnalyzer();
       std::string tabname = std::string("He3 Analysis");
       if(i==1){
@@ -110,6 +111,10 @@ public:
       AddSingleCanvas(detector->GetHitsPerCycleHCanvas(),tabname.c_str());
     }
 
+    // Add for chronobox
+    AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->fUCNChronobox->fLeadingDiff,"Leading Diff"),"Chronobox");
+
+
     // Add detailed specific plots for V1720
     //    TLi6Detector* li6detector = dynamic_cast<TLi6Detector*>(anaManager->GetLi6DetectorAnalyzer());
     //if(li6detector) AddSingleCanvas(li6detector->GetV1720BaselineCanvas(),"V1720 Details");
@@ -124,6 +129,9 @@ public:
     // Add plots about sequencing checks
     TLi6Detector* li6detector = dynamic_cast<TLi6Detector*>(anaManager->GetLi6DetectorAnalyzer());
     if(li6detector) AddSingleCanvas(li6detector->GetV1720SequenceCanvas(),"Sequencing");
+
+
+
    
   };
 

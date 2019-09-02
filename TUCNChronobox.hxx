@@ -6,6 +6,7 @@
 
 #include <string>
 #include "TDataContainer.hxx"
+#include "TH1D.h"
 
 class TUCNChronobox {
 
@@ -25,6 +26,10 @@ class TUCNChronobox {
     return fTimestamps[ch][leading];
   };
 
+
+  TH1D *fLeadingDiff;
+  TH1D *fFallingDiff;
+  TH1D *fChronoWidth;
 
  private:
 

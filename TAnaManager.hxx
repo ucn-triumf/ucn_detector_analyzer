@@ -48,6 +48,8 @@ public:
 
   TUCNChronobox* GetChronobox(){ return fUCNChronobox;}
 
+
+  TUCNChronobox *fUCNChronobox;
 private:
   
   TV1720Waveform *fV1720Waveform;
@@ -67,7 +69,6 @@ private:
   // Histogram of all V785 Charges
   TV792Histograms *fV785Charge;
 
-  TUCNChronobox *fUCNChronobox;
 
 };
 
