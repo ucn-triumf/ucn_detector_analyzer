@@ -11,9 +11,9 @@ TUCNChronobox::TUCNChronobox(){
     fTimestamps[i][1] = 0;
   }
 
-  fLeadingDiff = new TH1D("LeadingDiff","LeadingDiff",1000,-10,10);
-  fFallingDiff = new TH1D("FallingDiff","FallingDiff",1000,-10,10);
-  fChronoWidth= new TH1D("ChronoWidth","ChronoDiff",1000,-10,10);
+  fLeadingDiff = new TH1D("LeadingDiff","LeadingDiff",500000,-1,2);
+  fFallingDiff = new TH1D("FallingDiff","FallingDiff",500000,-1,2);
+  fChronoWidth= new TH1D("ChronoWidth","ChronoDiff",500000,-1,2);
 
 }
 

@@ -111,10 +111,6 @@ public:
       AddSingleCanvas(detector->GetHitsPerCycleHCanvas(),tabname.c_str());
     }
 
-    // Add for chronobox
-    AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->fUCNChronobox->fLeadingDiff,"Leading Diff"),"Chronobox");
-
-
     // Add detailed specific plots for V1720
     //    TLi6Detector* li6detector = dynamic_cast<TLi6Detector*>(anaManager->GetLi6DetectorAnalyzer());
     //if(li6detector) AddSingleCanvas(li6detector->GetV1720BaselineCanvas(),"V1720 Details");
@@ -129,6 +125,14 @@ public:
     // Add plots about sequencing checks
     TLi6Detector* li6detector = dynamic_cast<TLi6Detector*>(anaManager->GetLi6DetectorAnalyzer());
     if(li6detector) AddSingleCanvas(li6detector->GetV1720SequenceCanvas(),"Sequencing");
+
+
+    // Add for chronobox
+    AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->fUCNChronobox->fLeadingDiff,"Leading Diff"),"Chronobox");
+    AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->fUCNChronobox->fFallingDiff,"Falling Diff"),"Chronobox");
+    AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->fUCNChronobox->fChronoWidth,"Chrono Width"),"Chronobox");
+
+
 
 
 
