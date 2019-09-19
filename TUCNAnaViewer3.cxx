@@ -234,9 +234,9 @@ int TUCNAnaViewer3::FindAndFitPulses(TDataContainer& dataContainer, char CutChoi
                         //			std::cout<<"timet "<<timet<<std::endl;
 			//std::cout<<"BL="<<b->Baseline<<" QL="<<tChargeL<<" PSD="<<tPSD<<" Evno="<<sample.GetEventId()
 			//	 <<" WF="<<isubev<<" / "<<nEvents<<std::endl;
-			sprintf( htitle, "%s BL=% 5d QS=% 5d QL=% 5d PSD=%6.2f WF=%5d/%5d",
+			sprintf( htitle, "%s BL=% 5d QS=% 5d QL=% 5d PSD=%6.2f WF=%5d/%5d %i",
 				 ctime( &tt ),
-				 b->Baseline, tChargeS, tChargeL, tPSD,  /*q+1*/isubev+1, nEvents );  
+				 b->Baseline, tChargeS, tChargeL, tPSD,  /*q+1*/isubev+1, nEvents,b->Length );  
 			//std::cout<<" htitle ="<<htitle<<std::endl;
 
 			if (CutChoice == 'y')//passes wave info to UpdateHistograms if a cut is put on PSD values

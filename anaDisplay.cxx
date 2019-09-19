@@ -128,11 +128,11 @@ public:
 
 
     // Add for chronobox
-    AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->fUCNChronobox->fLeadingDiff,"Leading Diff"),"Chronobox");
-    AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->fUCNChronobox->fFallingDiff,"Falling Diff"),"Chronobox");
-    AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->fUCNChronobox->fChronoWidth,"Chrono Width"),"Chronobox");
     AddSingleCanvas(new TFancyHistogramCanvas(anaManager->fUCNChronobox->fRisingEdgeDiff,"Rising Edge Differences"),"Chronobox");
+    AddSingleCanvas(new TFancyHistogramCanvas(anaManager->fUCNChronobox->fFallingEdgeDiff,"Falling Edge Differences"),"Chronobox");   
+    AddSingleCanvas(new TFancyHistogramCanvas(anaManager->fUCNChronobox->fPulseWidths,"Pulse Widths"),"Chronobox");
    
+
   };
 
 

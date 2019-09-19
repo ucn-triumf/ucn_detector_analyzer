@@ -277,7 +277,7 @@ bool TLi6Detector::CheckForSequenceStartPrecise(TDataContainer& dataContainer){
     if(fNonHits[j].channel == 13){ // UCN valve closed
       fUCNValveCloseTime = fNonHits[j].preciseTime;
       fValveOpenTime->Fill(fUCNValveCloseTime - fUCNValveOpenTime);
-      std::cout << " SDFDF " << fUCNValveCloseTime - fUCNValveOpenTime << std::endl;
+      //      std::cout << " SDFDF " << fUCNValveCloseTime - fUCNValveOpenTime << std::endl;
     }
 
   }

@@ -9,10 +9,10 @@
 #include "TDataContainer.hxx"
 #include "TH1D.h"
 
-class TUCNRisingEdgeDiff : public THistogramArrayBase {
+class TUCNChronoDiffArray : public THistogramArrayBase {
  public:
-  TUCNRisingEdgeDiff();
-  virtual ~TUCNRisingEdgeDiff(){};
+  TUCNChronoDiffArray(std::string name);
+  virtual ~TUCNChronoDiffArray(){};
   
   void UpdateHistograms(TDataContainer& data);
 
@@ -23,6 +23,8 @@ class TUCNRisingEdgeDiff : public THistogramArrayBase {
   void EndRun(int transition,int run,int time);
 
  private:
+
+  std::string fName;
 
   void CreateHistograms();
     
@@ -47,12 +49,10 @@ class TUCNChronobox {
     return fTimestamps[ch][leading];
   };
 
+  TUCNChronoDiffArray *fRisingEdgeDiff;
+  TUCNChronoDiffArray *fFallingEdgeDiff;
+  TUCNChronoDiffArray *fPulseWidths;
 
-  TH1D *fLeadingDiff;
-  TH1D *fFallingDiff;
-  TH1D *fChronoWidth;
-
-  TUCNRisingEdgeDiff *fRisingEdgeDiff;
 
  private:
 
