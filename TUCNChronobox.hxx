@@ -3,10 +3,31 @@
 
 // This file contains class for analyzing the chronobox
 
-
+#include "THistogramArrayBase.h"
+#include "TUCNHit.hxx"
 #include <string>
 #include "TDataContainer.hxx"
 #include "TH1D.h"
+
+class TUCNRisingEdgeDiff : public THistogramArrayBase {
+ public:
+  TUCNRisingEdgeDiff();
+  virtual ~TUCNRisingEdgeDiff(){};
+  
+  void UpdateHistograms(TDataContainer& data);
+
+  /// Take actions at begin run
+  void BeginRun(int transition,int run,int time);
+
+  /// Take actions at end run  
+  void EndRun(int transition,int run,int time);
+
+ private:
+
+  void CreateHistograms();
+    
+};
+
 
 class TUCNChronobox {
 
@@ -30,6 +51,8 @@ class TUCNChronobox {
   TH1D *fLeadingDiff;
   TH1D *fFallingDiff;
   TH1D *fChronoWidth;
+
+  TUCNRisingEdgeDiff *fRisingEdgeDiff;
 
  private:
 
