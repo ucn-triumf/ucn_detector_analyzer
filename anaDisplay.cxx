@@ -118,6 +118,7 @@ public:
     AddSingleCanvas(new TFancyHistogramCanvas(anaViewer->fV1720WaveformDisplay, "V1720 Waveform",9,false),"V1720 Details");
     AddSingleCanvas(new TFancyHistogramCanvas(anaViewer->fV1720QSQLHistograms, "Q Short vs Q Long",16,false),"V1720 Details");
     AddSingleCanvas(new TFancyHistogramCanvas(anaViewer->fV1720PSDQLHistograms, "PSD vs Q Long",16,false),"V1720 Details");
+    AddSingleCanvas(new TFancyHistogramCanvas(anaViewer->fV1720_PH, "Pulse Height",16,false),"V1720 Details");
 
     // Add plots for V785 charge
     AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetV785Histo(),"V785 Charge"),"V785 Details");

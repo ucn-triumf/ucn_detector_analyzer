@@ -28,6 +28,10 @@ TUCNAnaViewer3::TUCNAnaViewer3(){
   fV1720PSDQLHistograms = new TV1720PSDQLHistograms();
   fV1720PSDQLHistograms->DisableAutoUpdate();
 
+  // Pulse Height Histograms
+  fV1720_PH = new TV1720_PH();
+  fV1720_PH->DisableAutoUpdate();
+
 }
 
 TUCNAnaViewer3::~TUCNAnaViewer3(){
@@ -239,6 +243,18 @@ int TUCNAnaViewer3::FindAndFitPulses(TDataContainer& dataContainer, char CutChoi
 				 b->Baseline, tChargeS, tChargeL, tPSD,  /*q+1*/isubev+1, nEvents,b->Length );  
 			//std::cout<<" htitle ="<<htitle<<std::endl;
 
+		        // Calculate the pulse height for each waveform and plot the pulse height (3750 - minium ADC value);
+			uint32_t min_value = 99999;
+			for (int i = 0; i < b->Length; i++){
+			  if(wf[i] < min_value) min_value = wf[i];
+			}
+			int pulse_height = 3750 - (int)min_value;
+
+			//if(iboard == 1 and ichan ==4)
+			//std::cout << "PPH " << min_value << " " << pulse_height << std::endl;
+			fV1720_PH->UpdateHistogram(iboard, ichan, pulse_height);
+
+
 			if (CutChoice == 'y')//passes wave info to UpdateHistograms if a cut is put on PSD values
 			  {
 			    if(tPSD <= PSDMax && tPSD >= PSDMin)
@@ -249,13 +265,15 @@ int TUCNAnaViewer3::FindAndFitPulses(TDataContainer& dataContainer, char CutChoi
 			else 
 			  {
                             //  			std::cout<<"Passing to UpdateHistograms"<<std::endl;
-						fV1720WaveformDisplay->UpdateHistogram(iboard, ichan, wf, b->Length,htitle);
+			    if(ichan != 4 or iboard != 1 or pulse_height > 400)
+			    fV1720WaveformDisplay->UpdateHistogram(iboard, ichan, wf, b->Length,htitle);
 			  }
 		        
 			//fV1720QLQL->UpdateHistogram(iboard, ichan, qlCalculated, QLBoard, nEvents);
 			//fV1720QSQS->UpdateHistogram(iboard, ichan, qsCalculated, QSBoard, nEvents);
 			//std::cout<<"After Update Histograms"<<std::endl;
-		        
+
+
 
 		      }//if (b->length != 0)
 		  }//if (b->length)

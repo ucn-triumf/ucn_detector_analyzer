@@ -98,4 +98,20 @@ class TV1720QSQS : public THistogramArrayBase//added Aug 10, 2016
 
   void CreateHistograms();
   };
+
+class TV1720_PH : public THistogramArrayBase//added Aug 10, 2016
+{
+ public: 
+  TV1720_PH();
+  virtual ~TV1720_PH(){};
+
+  void UpdateHistograms(TDataContainer&){};
+  void UpdateHistogram(int board, int chan, uint32_t pulseHeight);
+
+  void BeginRun(int transition, int run, int time);
+  
+  void EndRun(int transition, int run, int time);
+
+  void CreateHistograms();
+  };
 #endif

@@ -219,3 +219,68 @@ void TV1720WaveformDisplay::BeginRun(int transition,int run,int time){
 void TV1720WaveformDisplay::EndRun(int transition,int run,int time){
 
 }
+
+
+
+TV1720_PH::TV1720_PH(){
+
+  SetNumberChannelsInGroup(PSD_MAXNCHAN);
+  SetGroupName("Module");
+  SetChannelName("Channel");
+    
+  CreateHistograms();
+}
+
+
+void TV1720_PH::CreateHistograms(){
+
+  // check if we already have histogramss.
+  char tname[100];
+  sprintf(tname,"TV1720_PH_%i",0);
+
+  TH1D *tmp = (TH1D*)gDirectory->Get(tname);
+  if (tmp) return;
+
+  //Otherwise make histograms
+  clear();
+
+
+  for(int iBoard=0; iBoard<NDPPBOARDS; iBoard++){
+	for(int i = 0; i < PSD_MAXNCHAN; i++){ // loop over 8 channels		
+		char name[100];
+		char title[100];
+		sprintf(name,"TV1720_PH_%i_%i",i,iBoard);
+
+		sprintf(title,"V1720 PH for channel=%i Board=%i",i,iBoard);	
+		
+		TH1D *tmp = new TH1D(name, title, 400, 0., 4000);
+		tmp->SetXTitle("Pulse Height (ADC)");
+		
+		push_back(tmp);
+	}
+  }
+}
+
+
+
+/// Update the histograms for this canvas 
+void TV1720_PH::UpdateHistogram(int board, int chan, uint32_t pulseHeight){
+
+  int index = board*PSD_MAXNCHAN + chan;
+  GetHistogram(index)->Fill(pulseHeight);     
+}
+
+
+
+
+/// Take actions at begin run
+void TV1720_PH::BeginRun(int transition,int run,int time){
+
+  CreateHistograms();
+}
+
+/// Take actions at end run  
+void TV1720_PH::EndRun(int transition,int run,int time){
+
+}
+

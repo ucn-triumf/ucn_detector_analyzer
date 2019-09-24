@@ -29,7 +29,8 @@ class TUCNAnaViewer3 {
   TV1720WaveformDisplay* fV1720WaveformDisplay;
   TV1720QLQL * fV1720QLQL;
   TV1720QSQS * fV1720QSQS;
- 
+  TV1720_PH *fV1720_PH;
+
   TV1720QSQLHistograms*  fV1720QSQLHistograms;
   TV1720PSDQLHistograms* fV1720PSDQLHistograms;
  
