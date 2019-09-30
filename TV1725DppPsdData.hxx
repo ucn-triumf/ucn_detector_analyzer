@@ -13,48 +13,67 @@ class ChannelMeasurement {
 
 public:
   
-	/// See CAEN DPP manual for definition of all these variables
-	bool GetDualTraceEnabled(){return (header1 & 0x80000000) >> 31;}
-	bool GetChargeEnabled(){return (header1 & 0x40000000) >> 30;}
-	bool GetTimeEnabled(){return (header1 & 0x20000000) >> 29;}
-	bool GetBaselineEnabled(){return (header1 & 0x10000000) >> 28;}
-	bool GetSamplesEnabled(){return (header1 & 0x08000000) >> 27;}
-	int GetNSamples(){
-		int header_size = (header1 & 0xfff)*8;
-		if(header_size != fSamples.size())
-			std::cerr << "v17390::ChannelMeasurement N samples doesn't match!!" 
-								<< header_size << " " << fSamples.size() <<std::endl;
-		return header_size;
-	}
-	
-	int GetChannel(){ return fChan;}
+  /// See CAEN DPP manual for definition of all these variables
+  bool GetDualTraceEnabled(){return (header1 & 0x80000000) >> 31;}
+  bool GetChargeEnabled(){return (header1 & 0x40000000) >> 30;}
+  bool GetTimeEnabled(){return (header1 & 0x20000000) >> 29;}
+  bool GetBaselineEnabled(){return (header1 & 0x10000000) >> 28;}
+  bool GetSamplesEnabled(){return (header1 &  0x08000000) >> 27;}
+  long int GetExtendedTimeTag(){
+    return 0;
+  }
 
+  int GetNSamples(){
+    int header_size = (header1 & 0xffff)*8;
+    if((unsigned int)header_size != fSamples.size())
+      std::cerr << "v1725::ChannelMeasurement N samples doesn't match!!" 
+		<< header_size << " " << fSamples.size() <<std::endl;
+    return header_size;
+  }
+  
+  int GetChannel(){ return fChan;}
+  
   /// Get Errors
   uint32_t GetSample(int i){
-		if(i >= 0 && i < fSamples.size())
-			return fSamples[i];
-		return 9999999;
-	}
+    if(i >= 0 && (unsigned int)i < fSamples.size())
+      return fSamples[i];
+    return 9999999;
+  }
+  
+  void AddSamples(std::vector<uint32_t> Samples){
+    fSamples = Samples;
+  }
 
-	void AddSamples(std::vector<uint32_t> Samples){
-		fSamples = Samples;
-	}
+  void AddQs(uint32_t iqs){
+    qs = iqs;
+  }
+
+  void AddExtra(uint32_t iextras){
+    extras = iextras;
+  }
+
+  uint32_t GetQlong(){return (qs & 0xffff0000) >> 16;};
+  uint32_t GetQshort(){return (qs & 0x7fff);};
 
 private:
-
-	int fChan; // channel number
-	uint32_t header0;
-	uint32_t header1;
-
+  
+  int fChan; // channel number
+  uint32_t header0;
+  uint32_t header1;
+  uint32_t header2;
+  uint32_t extras;
+  uint32_t qs;
+  
   /// Constructor; need to pass in header and measurement.
-  ChannelMeasurement(int chan, uint32_t iheader0, uint32_t iheader1){
-		fChan = chan;
-		header0 = iheader0;
-		header1 = iheader1;
-	}
+  ChannelMeasurement(int chan, uint32_t iheader0, uint32_t iheader1, uint32_t iheader2){
+    fChan = chan*2 + ((iheader2 & 0x80000000) >> 31);
+    header0 = iheader0;
+    header1 = iheader1;
+  }
+  
 
-	std::vector<uint32_t> fSamples;
-
+  std::vector<uint32_t> fSamples;
+  
 
 };
 
@@ -77,8 +96,8 @@ public:
   /// Get the extended trigger time tag
   uint32_t GetTriggerTimeTag() const {return fGlobalHeader[3];};
 
-	/// Get channel mask
-	uint32_t GetChMask(){return (fGlobalHeader[1] & 0xff);};
+  /// Get channel mask
+  uint32_t GetChMask(){return (fGlobalHeader[1] & 0xff);};
 
   void Print();
 

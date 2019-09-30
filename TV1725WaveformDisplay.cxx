@@ -198,11 +198,19 @@ void TV1725WaveformDisplay::UpdateHistograms(TDataContainer& dataContainer){
   TV1725DppPsdData *data = dataContainer.GetEventData<TV1725DppPsdData>("W500");
   if(!data) return;
   
+  
   /// Get the Vector of ADC Measurements.
-  //std::vector<VADCNMeasurement> measurements = data->GetMeasurements();
-  //for(unsigned int i = 0; i < measurements.size(); i++){ // loop over measurements	
+  std::vector<ChannelMeasurement> measurements = data->GetMeasurements();
+  std::cout << "N measurements: " << measurements.size() << std::endl;
+  for(unsigned int i = 0; i < measurements.size(); i++){
+    ChannelMeasurement meas = measurements[i];
+    std::cout << meas.GetChannel() << " " 
+	      << meas.GetQlong() << " " 
+	      << meas.GetQshort() << " " 
+	      << std::endl;
+    
+  }
 
-  //  }
 
 };
 
