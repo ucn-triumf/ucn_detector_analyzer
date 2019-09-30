@@ -12,6 +12,7 @@
 #include "TLi6Detector.hxx"
 #include "TUCNTreeMaker.h"
 #include "TV792Histogram.h"
+#include "TV1725WaveformDisplay.h"
 #include "TUCNChronobox.hxx"
 
 /// This is the main analysis manager program for the UCN detectors.
@@ -68,6 +69,8 @@ private:
 
   // Histogram of all V785 Charges
   TV792Histograms *fV785Charge;
+
+  TV1725WaveformDisplay *fV1750WaveformDisplay;
 
 
 };
