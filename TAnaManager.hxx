@@ -46,7 +46,7 @@ public:
   TUCNDetectorBaseClass* GetLi6DetectorAnalyzer(){return fLi6Detector;}
   
   TV792Histograms* GetV785Histo(){return fV785Charge;}
-
+  TV1725WaveformDisplay* GetV1725Waveform(){return fV1750WaveformDisplay;}
   TUCNChronobox* GetChronobox(){ return fUCNChronobox;}
 
 

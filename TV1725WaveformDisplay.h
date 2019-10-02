@@ -15,6 +15,8 @@
 
 #include "time.h"
 
+#define V1725_MAXCHAN 16
+
 class TV1725WaveformDisplay : public THistogramArrayBase//added June 10, 2016
 {
  public: 

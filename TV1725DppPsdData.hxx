@@ -20,7 +20,9 @@ public:
   bool GetBaselineEnabled(){return (header1 & 0x10000000) >> 28;}
   bool GetSamplesEnabled(){return (header1 &  0x08000000) >> 27;}
   long int GetExtendedTimeTag(){
-    return 0;
+    //std::cout << std::hex << (long int)(header2 & 0x7fffffff) << " " 
+    //	      <<  (((long int)(0xffff0000 & extras)) << 15) << std::dec << std::endl;    
+    return (long int)(header2 & 0x7fffffff) + (((long int)(0xffff0000 & extras)) << 15);
   }
 
   int GetNSamples(){
@@ -51,6 +53,11 @@ public:
   void AddExtra(uint32_t iextras){
     extras = iextras;
   }
+  
+  uint32_t GetHeader0(){return header0;}
+  uint32_t GetHeader1(){return header1;}
+  uint32_t GetHeader2(){return header2;}
+  uint32_t GetExtras(){return extras;}
 
   uint32_t GetQlong(){return (qs & 0xffff0000) >> 16;};
   uint32_t GetQshort(){return (qs & 0x7fff);};
@@ -66,9 +73,10 @@ private:
   
   /// Constructor; need to pass in header and measurement.
   ChannelMeasurement(int chan, uint32_t iheader0, uint32_t iheader1, uint32_t iheader2){
-    fChan = chan*2 + ((iheader2 & 0x80000000) >> 31);
     header0 = iheader0;
     header1 = iheader1;
+    header2 = iheader2;
+    fChan = chan*2 + ((header2 & 0x80000000) >> 31);
   }
   
 

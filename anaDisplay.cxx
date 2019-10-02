@@ -114,6 +114,8 @@ public:
     // Add detailed specific plots for V1720
     //    TLi6Detector* li6detector = dynamic_cast<TLi6Detector*>(anaManager->GetLi6DetectorAnalyzer());
     //if(li6detector) AddSingleCanvas(li6detector->GetV1720BaselineCanvas(),"V1720 Details");
+
+    AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetV1725Waveform(),"V1725 Waveform"),"V1725 Details");
     
     AddSingleCanvas(new TFancyHistogramCanvas(anaViewer->fV1720WaveformDisplay, "V1720 Waveform",9,false),"V1720 Details");
     AddSingleCanvas(new TFancyHistogramCanvas(anaViewer->fV1720QSQLHistograms, "Q Short vs Q Long",16,false),"V1720 Details");

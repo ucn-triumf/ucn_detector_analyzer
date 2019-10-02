@@ -16,7 +16,7 @@
 /// Reset the histograms for this canvas
 TV1725QLQL::TV1725QLQL(){
 
-  SetNumberChannelsInGroup(PSD_MAXNCHAN);
+  SetNumberChannelsInGroup(V1725_MAXCHAN);
   SetGroupName("Module");
   SetChannelName("Channel");
     
@@ -37,7 +37,7 @@ void TV1725QLQL::CreateHistograms(){
   clear();
 
   for(int iBoard=0; iBoard<NDPPBOARDS; iBoard++){// Loop over V1725 boards        
-    for(int i = 0; i < PSD_MAXNCHAN; i++){ // loop over 8 channels
+    for(int i = 0; i < V1725_MAXCHAN; i++){ // loop over 8 channels
 
       char name[100];
       char title[100];
@@ -61,7 +61,7 @@ void TV1725QLQL::UpdateHistogram(int board, int chan, uint16_t QLCal[], uint16_t
 
 
   std::cout << "Filling histograms" << std::endl;
-  int index = board*PSD_MAXNCHAN + chan;
+  int index = board*V1725_MAXCHAN + chan;
   for (int i=0; i<nEvents; i++)
     {
       GetHistogram(index)->Fill(QLBoard[i],QLCal[i]);     
@@ -85,7 +85,7 @@ void TV1725QLQL::EndRun(int transition,int run,int time){
 ///////////////////////////////////////////////////////////
 TV1725QSQS::TV1725QSQS(){
 
-  SetNumberChannelsInGroup(PSD_MAXNCHAN);
+  SetNumberChannelsInGroup(V1725_MAXCHAN);
   SetGroupName("Module");
   SetChannelName("Channel");
     
@@ -106,7 +106,7 @@ void TV1725QSQS::CreateHistograms(){
   clear();
 
   for(int iBoard=0; iBoard<NDPPBOARDS; iBoard++){// Loop over V1725 boards        
-    for(int i = 0; i < PSD_MAXNCHAN; i++){ // loop over 8 channels
+    for(int i = 0; i < V1725_MAXCHAN; i++){ // loop over 8 channels
 
       char name[100];
       char title[100];
@@ -128,7 +128,7 @@ void TV1725QSQS::CreateHistograms(){
 /// Update the histograms for this canvas 
 void TV1725QSQS::UpdateHistogram(int board, int chan, uint16_t QSCal[], uint16_t QSBoard[], int nEvents){
 
-  int index = board*PSD_MAXNCHAN + chan;
+  int index = board*V1725_MAXCHAN + chan;
   for (int i=0; i<nEvents; i++)
     {
       GetHistogram(index)->Fill(QSBoard[i],QSCal[i]);     
@@ -154,7 +154,7 @@ void TV1725QSQS::EndRun(int transition,int run,int time){
 
 TV1725WaveformDisplay::TV1725WaveformDisplay(){
 
-  SetNumberChannelsInGroup(PSD_MAXNCHAN);
+  SetNumberChannelsInGroup(V1725_MAXCHAN);
   SetGroupName("Module");
   SetChannelName("Channel");
     
@@ -176,7 +176,7 @@ void TV1725WaveformDisplay::CreateHistograms(){
 
 
   for(int iBoard=0; iBoard<NDPPBOARDS; iBoard++){
-	for(int i = 0; i < PSD_MAXNCHAN; i++){ // loop over 8 channels		
+	for(int i = 0; i < V1725_MAXCHAN; i++){ // loop over 8 channels		
 		char name[100];
 		char title[100];
 		sprintf(name,"V1725_%i_%i",i,iBoard);
@@ -201,14 +201,32 @@ void TV1725WaveformDisplay::UpdateHistograms(TDataContainer& dataContainer){
   
   /// Get the Vector of ADC Measurements.
   std::vector<ChannelMeasurement> measurements = data->GetMeasurements();
-  std::cout << "N measurements: " << measurements.size() << std::endl;
+
+  
   for(unsigned int i = 0; i < measurements.size(); i++){
+    
     ChannelMeasurement meas = measurements[i];
+    double timestamp = meas.GetExtendedTimeTag();
+    timestamp *= 0.000000004;
     std::cout << meas.GetChannel() << " " 
 	      << meas.GetQlong() << " " 
 	      << meas.GetQshort() << " " 
-	      << std::endl;
+	      << meas.GetExtendedTimeTag() << " ";
+    printf("%f ",timestamp);    
+    std::cout << timestamp  << " "
+	      << std::hex << meas.GetHeader0() << " "
+	      << meas.GetHeader2() << " "
+	      << std::dec << std::endl;
+    int ch = meas.GetChannel();
+    int nsamples = meas.GetNSamples();
     
+    TH1* tmp = GetHistogram(ch);
+    if ( tmp->GetNbinsX() != nsamples ) tmp->SetBins(nsamples,0.,nsamples*4.0);
+    for (int b = 0; b<nsamples; b++){
+      GetHistogram(ch)->SetBinContent(b+1,meas.GetSample(b));
+    }
+    //    GetHistogram(ch)->SetTitle(ctag);
+
   }
 
 
@@ -218,7 +236,7 @@ void TV1725WaveformDisplay::UpdateHistograms(TDataContainer& dataContainer){
 /// Update the histograms for this canvas 
 void TV1725WaveformDisplay::UpdateHistogram(int board, int chan, uint16_t * wf, int tLength,  char * ctag){
 
-  int index = board*PSD_MAXNCHAN + chan;
+  int index = board*V1725_MAXCHAN + chan;
 
 
   TH1* tmp = GetHistogram(index);
@@ -247,7 +265,7 @@ void TV1725WaveformDisplay::EndRun(int transition,int run,int time){
 
 TV1725_PH::TV1725_PH(){
 
-  SetNumberChannelsInGroup(PSD_MAXNCHAN);
+  SetNumberChannelsInGroup(V1725_MAXCHAN);
   SetGroupName("Module");
   SetChannelName("Channel");
     
@@ -269,7 +287,7 @@ void TV1725_PH::CreateHistograms(){
 
 
   for(int iBoard=0; iBoard<NDPPBOARDS; iBoard++){
-	for(int i = 0; i < PSD_MAXNCHAN; i++){ // loop over 8 channels		
+	for(int i = 0; i < V1725_MAXCHAN; i++){ // loop over 8 channels		
 		char name[100];
 		char title[100];
 		sprintf(name,"TV1725_PH_%i_%i",i,iBoard);
@@ -289,7 +307,7 @@ void TV1725_PH::CreateHistograms(){
 /// Update the histograms for this canvas 
 void TV1725_PH::UpdateHistogram(int board, int chan, uint32_t pulseHeight){
 
-  int index = board*PSD_MAXNCHAN + chan;
+  int index = board*V1725_MAXCHAN + chan;
   GetHistogram(index)->Fill(pulseHeight);     
 }
 
