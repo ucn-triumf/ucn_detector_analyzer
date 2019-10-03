@@ -73,6 +73,7 @@ private:
   TV1725WaveformDisplay *fV1750WaveformDisplay;
 
 
+
 };
 
 
