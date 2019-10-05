@@ -142,6 +142,7 @@ public:
     AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->GetLi6StorageGraph(), "Li6 counts"), "Storage lifetime without monitor");
     AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->GetHe3StorageBackgroundGraph(), "He3 background during storage"), "Storage lifetime without monitor");
     AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->GetHe3StorageGraph(), "He3 counts"), "Storage lifetime without monitor");
+    AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->GetLi6StorageBackgroundGraph(), "Li6 background during storage"), "Storage lifetime with monitor");
     AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->GetStorageWithMonitorDuringIrradiation(), "Li6 counts/He3 counts during irradiation"), "Storage lifetime with monitor");
     AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->GetStorageWithMonitorAfterIrradiation(), "Li6 counts/He3 counts after irradiation"), "Storage lifetime with monitor");
   };

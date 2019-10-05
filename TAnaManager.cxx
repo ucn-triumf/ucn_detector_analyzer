@@ -118,11 +118,16 @@ int TAnaManager::ProcessMidasEvent(TDataContainer& dataContainer){
           fTransmissionDuringIrradiationGraph->SetPointError(i, 0., transmissionerr);
 
           // calculate background rate during storage period in a storage measurement (exclude cycles with 0s storage time)
-          if (CycleParameters.GetTimeForPeriod(1, i) > 0) {
-              fLi6StorageBackgroundGraph->SetPoint(i, i, Li6Hits[1][i].second / CycleParameters.GetTimeForPeriod(1, i));
-              fLi6StorageBackgroundGraph->SetPointError(i, 0., std::sqrt(Li6Hits[1][i].second) / CycleParameters.GetTimeForPeriod(1, i));
-              fHe3StorageBackgroundGraph->SetPoint(i, i, He3Hits[1][i].second / CycleParameters.GetTimeForPeriod(1, i));
-              fHe3StorageBackgroundGraph->SetPointError(i, 0., std::sqrt(He3Hits[1][i].second) / CycleParameters.GetTimeForPeriod(1, i));
+          double storagetime = CycleParameters.GetTimeForPeriod(1, i % CycleParameters.GetNumberCyclesInSuper());
+          if (storagetime > 0) {
+              fLi6StorageBackgroundGraph->SetPoint(i, i, Li6Hits[1][i].second / storagetime);
+              fLi6StorageBackgroundGraph->SetPointError(i, 0., std::sqrt(Li6Hits[1][i].second) / storagetime);
+              fHe3StorageBackgroundGraph->SetPoint(i, i, He3Hits[1][i].second / storagetime);
+              fHe3StorageBackgroundGraph->SetPointError(i, 0., std::sqrt(He3Hits[1][i].second) / storagetime);
+          }
+          else{
+              fLi6StorageBackgroundGraph->SetPoint(i,i,0.);
+              fHe3StorageBackgroundGraph->SetPoint(i,i,0.);
           }
 
       }
@@ -151,8 +156,8 @@ int TAnaManager::ProcessMidasEvent(TDataContainer& dataContainer){
       fexpo.SetParName(1, "#tau");
 
       for (size_t i = 0; i < n_cycles; ++i){
-          double storagetime = CycleParameters.GetTimeForPeriod(1, i);
-          double countingtime = CycleParameters.GetTimeForPeriod(2, i);
+          double storagetime = CycleParameters.GetTimeForPeriod(1, i % CycleParameters.GetNumberCyclesInSuper());
+          double countingtime = CycleParameters.GetTimeForPeriod(2, i % CycleParameters.GetNumberCyclesInSuper());
 
           // subtract background from Li6/He3 counts, plot vs. storage time
           double Li6corrected = Li6Hits[2][i].second - Li6backgroundrate*countingtime;
