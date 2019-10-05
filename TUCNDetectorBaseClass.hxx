@@ -109,6 +109,7 @@ class TUCNDetectorBaseClass  {
   std::vector<std::pair<double, double> > GetInTimeHitsPerCycle(){ return fHitsPerCycleVectorIntime;};
   std::vector<std::vector<std::pair<double, double> > > GetHitsPerCyclePerPeriod(){return fHitsPerCycleVectorPeriods;}
   std::vector<std::pair<double, double> > GetHitsPerCyclePerPeriod(int i){return fHitsPerCycleVectorPeriods[i];}
+  std::vector<std::pair<double, double> > GetMonitorCountsAfterIrradiationPerCycle(){ return fMonitorCountsAfterIrradiationPerCycle; }
 
   TUCNCycleParameters CycleParameters;
 
@@ -164,11 +165,13 @@ private:
   int fTotalHitsCycle;
   int fTotalHitsCycleIntime;  // hits when valve open
   int fTotalHitsCyclePeriods[10];  // total hits per period.
+  int fTotalMonitorCountsAfterIrradiation; // hits between end of irradiation and (end of irradiation)+(counting time)
 
   // vector to store the cycle hits in
   std::vector<std::pair<double, double> > fHitsPerCycleVector;
   std::vector<std::pair<double, double> > fHitsPerCycleVectorIntime;
   std::vector<std::vector<std::pair<double, double> > > fHitsPerCycleVectorPeriods;
+  std::vector<std::pair<double, double> > fMonitorCountsAfterIrradiationPerCycle;
 };
 
 #endif
