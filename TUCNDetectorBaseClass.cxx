@@ -265,11 +265,10 @@ void TUCNDetectorBaseClass::ProcessMidasEvent(TDataContainer& dataContainer){
 
   // Check for sequence start time
   CheckForSequenceSettings(dataContainer);
-  bool cycle_started = false;
   if(UsePreciseSequenceTime()){
-    cycle_started = CheckForSequenceStartPrecise(dataContainer);
+    fcycle_started = CheckForSequenceStartPrecise(dataContainer);
   }else{
-    cycle_started = CheckForSequenceStartCrude(dataContainer);
+    fcycle_started = CheckForSequenceStartCrude(dataContainer);
   }
 
 
@@ -299,7 +298,7 @@ void TUCNDetectorBaseClass::ProcessMidasEvent(TDataContainer& dataContainer){
   }
   
   // If new sequence started, update information for the cumulative sequence plot
-  if(cycle_started && fLastCycleStartTime != 0.0){
+  if(fcycle_started && fLastCycleStartTime != 0.0){
     fHitsPerCycleVector.push_back(std::pair<double,double>(fLastCycleStartTime,fTotalHitsCycle));
     fHitsPerCycleVectorIntime.push_back(std::pair<double,double>(fLastCycleStartTime,fTotalHitsCycleIntime));
     for(int i = 0; i < 10; i++){
@@ -366,7 +365,7 @@ void TUCNDetectorBaseClass::ProcessMidasEvent(TDataContainer& dataContainer){
   if(fHitsTree){
     fHitsTree->FillHits(fHits,1);
     fHitsTree->FillHits(fBackgroundHits,0);     
-    if(cycle_started){
+    if(fcycle_started){
       fHitsTree->FillTransition(fCycleStartTime,fSeqValveOpenTime,fSeqValveCloseTime,
                                 fSeqDelayTime,fSeqOpenInterval,CycleParameters);
     }

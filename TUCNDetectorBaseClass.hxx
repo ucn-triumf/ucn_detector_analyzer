@@ -55,6 +55,8 @@ class TUCNDetectorBaseClass  {
   
   bool IsLi6(){ return fIsLi6;};
   bool IsHe3(){ return !fIsLi6;};
+
+  bool CycleStarted() const { return fcycle_started; };
   
   std::string GetDetectorName(){
     if(IsLi6()) return std::string("Li6");
@@ -155,7 +157,10 @@ private:
   TH1D *fHitsPerCycleH;
   TH1D *fHitsPerCycleHIntime;
 
-  // UCN hits in this cycle
+    // true if last processed event started a new cycle
+    bool fcycle_started;
+
+    // UCN hits in this cycle
   int fTotalHitsCycle;
   int fTotalHitsCycleIntime;  // hits when valve open
   int fTotalHitsCyclePeriods[10];  // total hits per period.
