@@ -55,6 +55,10 @@ public:
 
   TGraphErrors* GetTransmissionDuringCountingGraph() const { return fTransmissionDuringCountingGraph; }
   TGraphErrors* GetTransmissionDuringIrradiationGraph() const { return fTransmissionDuringIrradiationGraph; }
+  TGraphErrors* GetTransmissionWithPreStorageGraph() const { return fTransmissionWithPreStorage; }
+  TGraphErrors* GetHe3DuringIrradiationGraph() const { return fHe3DuringIrradiationGraph; }
+  TGraphErrors* GetHe3DuringStorageGraph() const { return fHe3DuringStorageGraph; }
+  TGraphErrors* GetHe3AfterIrradiationGraph() const { return fHe3AfterIrradiationGraph; }
   TGraphErrors* GetLi6StorageBackgroundGraph() const { return fLi6StorageBackgroundGraph; }
   TGraphErrors* GetHe3StorageBackgroundGraph() const { return fHe3StorageBackgroundGraph; }
   TGraphErrors* GetLi6StorageGraph() const { return fLi6StorageGraph; }
@@ -84,6 +88,10 @@ private:
 
   TGraphErrors *fTransmissionDuringCountingGraph; // transmission with normalization during counting
   TGraphErrors *fTransmissionDuringIrradiationGraph; // transmission with normalization during irradiation
+  TGraphErrors *fTransmissionWithPreStorage; // transmission with a pre-storage period
+  TGraphErrors *fHe3DuringIrradiationGraph; // He3 monitor counts during irradiation period
+  TGraphErrors *fHe3DuringStorageGraph; // He3 monitor counts during storage period
+  TGraphErrors *fHe3AfterIrradiationGraph; // He3 monitor counts after irradiation
   TGraphErrors *fLi6StorageBackgroundGraph; // Li6 background during storage periods
   TGraphErrors *fHe3StorageBackgroundGraph; // He3 background during storage periods
   TGraphErrors *fLi6StorageGraph; // background-corrected Li6 counts vs. storage time
