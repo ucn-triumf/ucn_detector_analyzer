@@ -100,39 +100,45 @@ int TAnaManager::ProcessMidasEvent(TDataContainer& dataContainer){
   size_t n_cycles = Li6Hits[0].size();
   // update histograms when a new cycle is started
   if ((fHe3Detector->CycleStarted() or fLi6Detector->CycleStarted()) and n_cycles > 0 and n_cycles == He3Hits[0].size()){
-      auto &CycleParameters = fLi6Detector->CycleParameters;
+
+      /****** TRANSMISSION ******/
       fTransmissionDuringCountingGraph->Set(n_cycles);
       fTransmissionDuringIrradiationGraph->Set(n_cycles);
       fLi6StorageBackgroundGraph->Set(n_cycles);
-      for (size_t i = 0; i < n_cycles; ++i) {
-          // transmission = Li6 counts / He3 counts during counting
-          double transmission = Li6Hits[1][i].second / He3Hits[1][i].second;
-          double transmissionerr = std::sqrt(1. / Li6Hits[1][i].second + 1. / He3Hits[1][i].second) * transmission;
-          fTransmissionDuringCountingGraph->SetPoint(i, i, transmission);
-          fTransmissionDuringCountingGraph->SetPointError(i, 0., transmissionerr);
+      size_t i = n_cycles - 1;
 
-          // transmission = Li6 counts / He3 counts during irradiation
-          transmission = Li6Hits[1][i].second / He3Hits[0][i].second;
-          transmissionerr = std::sqrt(1. / Li6Hits[1][i].second + 1. / He3Hits[0][i].second) * transmission;
-          fTransmissionDuringIrradiationGraph->SetPoint(i, i, transmission);
-          fTransmissionDuringIrradiationGraph->SetPointError(i, 0., transmissionerr);
-
-          // calculate background rate during storage period in a storage measurement (exclude cycles with 0s storage time)
-          double storagetime = CycleParameters.GetTimeForPeriod(1, i % CycleParameters.GetNumberCyclesInSuper());
-          if (storagetime > 0) {
-              fLi6StorageBackgroundGraph->SetPoint(i, i, Li6Hits[1][i].second / storagetime);
-              fLi6StorageBackgroundGraph->SetPointError(i, 0., std::sqrt(Li6Hits[1][i].second) / storagetime);
-              fHe3StorageBackgroundGraph->SetPoint(i, i, He3Hits[1][i].second / storagetime);
-              fHe3StorageBackgroundGraph->SetPointError(i, 0., std::sqrt(He3Hits[1][i].second) / storagetime);
-          }
-          else{
-              fLi6StorageBackgroundGraph->SetPoint(i,i,0.);
-              fHe3StorageBackgroundGraph->SetPoint(i,i,0.);
-          }
-
-      }
+      // transmission = Li6 counts / He3 counts during counting
+      double transmission = Li6Hits[1][i].second / He3Hits[1][i].second;
+      double transmissionerr = std::sqrt(1. / Li6Hits[1][i].second + 1. / He3Hits[1][i].second) * transmission;
+      fTransmissionDuringCountingGraph->SetPoint(i, i, transmission);
+      fTransmissionDuringCountingGraph->SetPointError(i, 0., transmissionerr);
       fTransmissionDuringCountingGraph->Fit("pol0", "Q");
+
+      // transmission = Li6 counts / He3 counts during irradiation
+      transmission = Li6Hits[1][i].second / He3Hits[0][i].second;
+      transmissionerr = std::sqrt(1. / Li6Hits[1][i].second + 1. / He3Hits[0][i].second) * transmission;
+      fTransmissionDuringIrradiationGraph->SetPoint(i, i, transmission);
+      fTransmissionDuringIrradiationGraph->SetPointError(i, 0., transmissionerr);
       fTransmissionDuringIrradiationGraph->Fit("pol0", "Q");
+
+
+      /******** BACKGROUND DURING STORAGE PERIOD ********/
+      // if new cycle has index 0, use timing from last cycle in supercycle, else decrement index by 1
+      int cycle_index = fLi6Detector->CycleParameters.CycleIndex();
+      int last_cycle_index = cycle_index > 0 ? cycle_index - 1 : fLi6Detector->CycleParameters.GetNumberCyclesInSuper() - 1;
+      double storagetime = fLi6Detector->CycleParameters.GetTimeForPeriod(1, last_cycle_index);
+
+      // calculate background rate during storage period in a storage measurement (exclude cycles with 0s storage time)
+      if (storagetime > 0) {
+          fLi6StorageBackgroundGraph->SetPoint(i, i, Li6Hits[1][i].second / storagetime);
+          fLi6StorageBackgroundGraph->SetPointError(i, 0., std::sqrt(Li6Hits[1][i].second) / storagetime);
+          fHe3StorageBackgroundGraph->SetPoint(i, i, He3Hits[1][i].second / storagetime);
+          fHe3StorageBackgroundGraph->SetPointError(i, 0., std::sqrt(He3Hits[1][i].second) / storagetime);
+      }
+      else{
+          fLi6StorageBackgroundGraph->SetPoint(i,i,0.);
+          fHe3StorageBackgroundGraph->SetPoint(i,i,0.);
+      }
 
       // get background rate averaged over all cycles
       auto Li6result = fLi6StorageBackgroundGraph->Fit("pol0", "QS");
@@ -148,40 +154,44 @@ int TAnaManager::ProcessMidasEvent(TDataContainer& dataContainer){
           He3backgroundrateerr = He3result->ParError(0);
       }
 
-      fLi6StorageGraph->Set(n_cycles);
-      fHe3StorageGraph->Set(n_cycles);
-      fStorageWithMonitorDuringIrradiation->Set(n_cycles);
+      /******** STORAGE WITH LI6 ONLY *********/
       TF1 fexpo("fexpo", "[0]*exp(-x/[1])");
       fexpo.SetParName(0, "N_{0}");
       fexpo.SetParName(1, "#tau");
 
-      for (size_t i = 0; i < n_cycles; ++i){
-          double storagetime = CycleParameters.GetTimeForPeriod(1, i % CycleParameters.GetNumberCyclesInSuper());
-          double countingtime = CycleParameters.GetTimeForPeriod(2, i % CycleParameters.GetNumberCyclesInSuper());
+      double countingtime = fLi6Detector->CycleParameters.GetTimeForPeriod(2, last_cycle_index);
 
-          // subtract background from Li6/He3 counts, plot vs. storage time
-          double Li6corrected = Li6Hits[2][i].second - Li6backgroundrate*countingtime;
-          double Li6correctederr = std::sqrt(Li6Hits[2][i].second + std::pow(Li6backgroundrateerr*countingtime, 2));
-          fLi6StorageGraph->SetPoint(i, storagetime, Li6corrected);
-          fLi6StorageGraph->SetPointError(i, 0., Li6correctederr);
-          fHe3StorageGraph->SetPoint(i, storagetime, He3Hits[2][i].second - He3backgroundrate*countingtime);
-          fHe3StorageGraph->SetPointError(i, 0., std::sqrt(He3Hits[2][i].second + std::pow(He3backgroundrateerr*countingtime, 2)));
-
-          // subtract background from Li6 counts, normalize to He3 counts during irradiation, plot vs. storage time
-          fStorageWithMonitorDuringIrradiation->SetPoint(i, storagetime, Li6corrected/He3Hits[0][i].second);
-          fStorageWithMonitorDuringIrradiation->SetPointError(i, 0., std::sqrt(std::pow(Li6correctederr/Li6corrected, 2) + 1./He3Hits[0][i].second)*Li6corrected/He3Hits[0][i].second);
-
-          double monitorcounts = fHe3Detector->GetMonitorCountsAfterIrradiationPerCycle()[i].second;
-          // subtract background from Li6 counts, normalize to He3 counts after irradiation, plot vs. storage time
-          fStorageWithMonitorAfterIrradiation->SetPoint(i, storagetime, Li6corrected / monitorcounts);
-          fStorageWithMonitorAfterIrradiation->SetPointError(i, 0., std::sqrt(std::pow(Li6correctederr/Li6corrected, 2) + 1./monitorcounts) * Li6corrected / monitorcounts);
-      }
+      // subtract background from Li6/He3 counts, plot vs. storage time
+      double Li6corrected = Li6Hits[2][i].second - Li6backgroundrate*countingtime;
+      double Li6correctederr = std::sqrt(Li6Hits[2][i].second + std::pow(Li6backgroundrateerr*countingtime, 2));
+      fLi6StorageGraph->Set(n_cycles);
+      fLi6StorageGraph->SetPoint(i, storagetime, Li6corrected);
+      fLi6StorageGraph->SetPointError(i, 0., Li6correctederr);
       fexpo.SetParameters(10000, 10);
       fLi6StorageGraph->Fit(&fexpo,"Q");
+
+
+      /******** STORAGE WITH HE3 ONLY *********/
+      fHe3StorageGraph->Set(n_cycles);
+      fHe3StorageGraph->SetPoint(i, storagetime, He3Hits[2][i].second - He3backgroundrate*countingtime);
+      fHe3StorageGraph->SetPointError(i, 0., std::sqrt(He3Hits[2][i].second + std::pow(He3backgroundrateerr*countingtime, 2)));
       fexpo.SetParameters(1000, 10);
       fHe3StorageGraph->Fit(&fexpo,"Q");
+
+
+      /******* STORAGE WITH MONITOR ********/
+      // subtract background from Li6 counts, normalize to He3 counts during irradiation, plot vs. storage time
+      fStorageWithMonitorDuringIrradiation->Set(n_cycles);
+      fStorageWithMonitorDuringIrradiation->SetPoint(i, storagetime, Li6corrected/He3Hits[0][i].second);
+      fStorageWithMonitorDuringIrradiation->SetPointError(i, 0., std::sqrt(std::pow(Li6correctederr/Li6corrected, 2) + 1./He3Hits[0][i].second)*Li6corrected/He3Hits[0][i].second);
       fexpo.SetParameters(10, 10);
       fStorageWithMonitorDuringIrradiation->Fit(&fexpo, "Q");
+
+      double monitorcounts = fHe3Detector->GetMonitorCountsAfterIrradiationPerCycle()[i].second;
+      // subtract background from Li6 counts, normalize to He3 counts after irradiation, plot vs. storage time
+      fStorageWithMonitorAfterIrradiation->Set(n_cycles);
+      fStorageWithMonitorAfterIrradiation->SetPoint(i, storagetime, Li6corrected / monitorcounts);
+      fStorageWithMonitorAfterIrradiation->SetPointError(i, 0., std::sqrt(std::pow(Li6correctederr/Li6corrected, 2) + 1./monitorcounts) * Li6corrected / monitorcounts);
       fexpo.SetParameters(10, 10);
       fStorageWithMonitorAfterIrradiation->Fit(&fexpo, "Q");
   }
