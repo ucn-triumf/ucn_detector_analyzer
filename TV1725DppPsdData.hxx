@@ -20,9 +20,10 @@ public:
   bool GetBaselineEnabled(){return (header1 & 0x10000000) >> 28;}
   bool GetSamplesEnabled(){return (header1 &  0x08000000) >> 27;}
   long int GetExtendedTimeTag(){
-    //std::cout << std::hex << (long int)(header2 & 0x7fffffff) << " " 
-    //	      <<  (((long int)(0xffff0000 & extras)) << 15) << std::dec << std::endl;    
     return (long int)(header2 & 0x7fffffff) + (((long int)(0xffff0000 & extras)) << 15);
+  }
+  long int GetTimeTag(){
+    return (long int)(header2 & 0x7fffffff);
   }
 
   int GetNSamples(){

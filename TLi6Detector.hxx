@@ -7,6 +7,8 @@
 #include "TMulticanvas.h"
 #include "TLi6GainCalib.h"
 
+#define USING_V1725_READOUT_LI6 1
+
 /// Class for making histograms of V1720 baseline
 class TV1720Baselines : public THistogramArrayBase {
  public:
