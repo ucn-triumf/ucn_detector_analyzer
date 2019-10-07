@@ -19,7 +19,7 @@ TV1725DppPsdData::TV1725DppPsdData(int bklen, int bktype, const char* name, void
   fGlobalHeader.push_back(GetData32()[2]);
   fGlobalHeader.push_back(GetData32()[3]);
   
-  std::cout << "bklen: " << bklen << std::endl;
+  //  std::cout << "bklen: " << bklen << std::endl;
   // Do some sanity checking.  
   // Make sure first word has right identifier
   if( (GetData32()[0] & 0xf0000000) != 0xa0000000) 
@@ -71,7 +71,7 @@ TV1725DppPsdData::TV1725DppPsdData(int bklen, int bktype, const char* name, void
       
     }
   }
-  std::cout << "Number of measurements: " << fMeasurements.size() << std::endl;
+  //std::cout << "Number of measurements: " << fMeasurements.size() << std::endl;
 
   // Check that the final counter seems to match the expected aggregate size.
   if((unsigned int)counter != (0xfffffff & GetData32()[0])){
