@@ -66,6 +66,25 @@ TAnaManager::TAnaManager(bool isOffline, bool saveTree){
   fStorageWithMonitorAfterIrradiation = new TGraphErrors();
   fStorageWithMonitorAfterIrradiation->SetTitle("Storage with normalization after irradiation;Storage time(s);Background-corrected Li6-He3 ratio");
 };
+
+void TAnaManager::BeginRun(int transition,int run,int time) {
+    if(fLi6Detector) fLi6Detector->BeginRun(transition,run,time);
+
+    // reset histograms
+    fTransmissionDuringCountingGraph->Set(0);
+    fTransmissionDuringIrradiationGraph->Set(0);
+    fTransmissionWithPreStorage->Set(0);
+    fHe3DuringIrradiationGraph->Set(0);
+    fHe3DuringStorageGraph->Set(0);
+    fHe3AfterIrradiationGraph->Set(0);
+    fLi6StorageBackgroundGraph->Set(0);
+    fHe3StorageBackgroundGraph->Set(0);
+    fLi6StorageGraph->Set(0);
+    fHe3StorageGraph->Set(0);
+    fStorageWithMonitorDuringIrradiation->Set(0);
+    fStorageWithMonitorAfterIrradiation->Set(0);
+}
+
       
 bool insequence = 0;
 

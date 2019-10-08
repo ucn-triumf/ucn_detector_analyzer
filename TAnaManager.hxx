@@ -25,9 +25,7 @@ public:
   /// Processes the midas event, fills histograms, etc.
   int ProcessMidasEvent(TDataContainer& dataContainer);
   
-  void BeginRun(int transition,int run,int time) {
-    if(fLi6Detector) fLi6Detector->BeginRun(transition,run,time);
-  }
+  void BeginRun(int transition,int run,int time);
 
   // Method to force analyzer to use simpler PC timestamps
   void UsePCTime(){
