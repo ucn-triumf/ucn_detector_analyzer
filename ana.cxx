@@ -19,8 +19,6 @@ HNDLE hDB;
 class Analyzer: public TRootanaEventLoop {
 
 
-
-
 public:
 
   // Two analysis managers.  Define and fill histograms in 
