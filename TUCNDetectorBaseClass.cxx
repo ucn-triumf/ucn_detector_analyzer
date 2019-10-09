@@ -292,7 +292,7 @@ void TUCNDetectorBaseClass::ProcessMidasEvent(TDataContainer& dataContainer){
     for(int i = 0; i < 10; i++){
       double cycle_start = fCycleStartTime + CycleParameters.GetCumulativeTimeForPeriod(i-1);
       double cycle_end = fCycleStartTime + CycleParameters.GetCumulativeTimeForPeriod(i);
-      if(hittime >= cycle_start && hittime < cycle_end){
+            if(hittime >= cycle_start && hittime < cycle_end){
         fTotalHitsCyclePeriods[i]++;
       }
     }

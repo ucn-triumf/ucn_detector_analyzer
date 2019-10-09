@@ -203,7 +203,7 @@ void TLi6Detector::GetHits(TDataContainer& dataContainer){
 
     // Save
     TUCNHit hit = TUCNHit();
-    hit.time = hittime;
+    hit.time = initialUnixTime + hittime;
     hit.preciseTime = initialUnixTime + hittime;    
     hit.clockTime = meas.GetTimeTag();
     hit.channel = meas.GetChannel();
