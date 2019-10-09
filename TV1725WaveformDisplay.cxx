@@ -208,15 +208,17 @@ void TV1725WaveformDisplay::UpdateHistograms(TDataContainer& dataContainer){
     ChannelMeasurement meas = measurements[i];
     double timestamp = meas.GetExtendedTimeTag();
     timestamp *= 0.000000004;
-    std::cout << meas.GetChannel() << " " 
-	      << meas.GetQlong() << " " 
-	      << meas.GetQshort() << " " 
-	      << meas.GetExtendedTimeTag() << " ";
-    printf("%f ",timestamp);    
-    std::cout << timestamp  << " "
-	      << std::hex << meas.GetHeader0() << " "
-	      << meas.GetHeader2() << " "
-	      << std::dec << std::endl;
+    if(meas.GetChannel() == 11 || meas.GetChannel() == 10){
+      std::cout << "V1725: " << meas.GetChannel() << " " 
+		<< meas.GetQlong() << " " 
+		<< meas.GetQshort() << " " 
+		<< meas.GetExtendedTimeTag() << " ";
+      printf("%f ",timestamp);    
+      std::cout << timestamp  << " "
+		<< std::hex << meas.GetHeader0() << " "
+		<< meas.GetHeader2() << " "
+		<< std::dec << std::endl;
+    }
     int ch = meas.GetChannel();
     int nsamples = meas.GetNSamples();
     
@@ -225,10 +227,8 @@ void TV1725WaveformDisplay::UpdateHistograms(TDataContainer& dataContainer){
     for (int b = 0; b<nsamples; b++){
       GetHistogram(ch)->SetBinContent(b+1,meas.GetSample(b));
     }
-    //    GetHistogram(ch)->SetTitle(ctag);
 
   }
-
 
 };
 

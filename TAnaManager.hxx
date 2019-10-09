@@ -84,6 +84,7 @@ private:
 
   TV1725WaveformDisplay *fV1750WaveformDisplay;
 
+
   TGraphErrors *fTransmissionDuringCountingGraph; // transmission with normalization during counting
   TGraphErrors *fTransmissionDuringIrradiationGraph; // transmission with normalization during irradiation
   TGraphErrors *fTransmissionWithPreStorage; // transmission with a pre-storage period
@@ -96,6 +97,7 @@ private:
   TGraphErrors *fHe3StorageGraph; // background-corrected He3 counts vs. storage time
   TGraphErrors *fStorageWithMonitorDuringIrradiation; // background-corrected Li6 counts normalized to He3 counts during irradiation vs. storage time
   TGraphErrors *fStorageWithMonitorAfterIrradiation; // background-corrected Li6 counts normalized to He3 counts after irradiation vs. storage time
+
 };
 
 

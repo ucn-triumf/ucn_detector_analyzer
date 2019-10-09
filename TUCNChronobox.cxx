@@ -128,8 +128,8 @@ int TUCNChronobox::ProcessMidasEvent(TDataContainer& dataContainer){
 	}
 
 
-	if(0)
-	  std::cout << std::hex << " Chan " << ch << " ("<<falling<< ") timestamp=0x"<< timestamp << " bit 0x200000 = " << ((word & 0x00200000) >> 21) << std::dec 
+	if(1 and ch != 0 and !falling)
+	  std::cout << std::hex << "Chrono: Chan " << ch << " ("<<falling<< ") timestamp=0x"<< timestamp << " bit 0x200000 = " << ((word & 0x00200000) >> 21) << std::dec 
 		    << " time diff=" << full_time - fTimestamps[ch][falling] 
 		    << std::endl;
 	
