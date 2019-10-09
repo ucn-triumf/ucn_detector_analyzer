@@ -38,7 +38,7 @@ public:
     SetOutputFilename("ucn_analyzer_output");
     DisableAutoMainWindow();
     UseBatchMode();
-    SetOnlineName("jsroot_server_current");
+    SetOnlineName("online UCN counting");
     anaManager = 0;
     anaViewer = 0;
 
@@ -152,13 +152,15 @@ public:
 
   void InitManager(){
     
+    std::cout << "Deleting and creating anaManager " << std::endl;
     if(anaManager)
       delete anaManager;
     anaManager = new TAnaManager(IsOffline());
+    std::cout << "Deleting and creating anaViewer " << std::endl;
     if(anaViewer)
       delete anaViewer;
     anaViewer  = new TUCNAnaViewer3();
-    
+    std::cout << "Finished Deleting and creating " << std::endl;
     
   }
   
@@ -166,7 +168,9 @@ public:
   void BeginRun(int transition,int run,int time){
     
     InitManager();
+    std::cout << "BeginRun Ana" << std::endl;
     anaManager->BeginRun(transition, run, time);
+    std::cout << "Finished BeginRun Ana" << std::endl;
     
   }
 
@@ -175,15 +179,13 @@ public:
   bool ProcessMidasEvent(TDataContainer& dataContainer){
 
     if(!anaManager) InitManager();
-
-
+    
 
 
     float PSDMax, PSDMin;   
     anaViewer->ProcessMidasEvent(dataContainer, 'n', PSDMax, PSDMin);
 
     anaManager->ProcessMidasEvent(dataContainer);
-
     // Update the numbers of hits per cycle (if running online).
     if(!IsOffline() || 1){
 

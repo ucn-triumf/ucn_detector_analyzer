@@ -30,6 +30,7 @@ TAnaManager::TAnaManager(bool isOffline, bool saveTree){
   }
 
 
+  std::cout << "Making V1725 plots " << std::endl;
   // event histograms for runtime window
   fV1750WaveformDisplay = new TV1725WaveformDisplay();
   fV1750WaveformDisplay->DisableAutoUpdate();
@@ -65,6 +66,7 @@ TAnaManager::TAnaManager(bool isOffline, bool saveTree){
   fStorageWithMonitorDuringIrradiation->SetTitle("Storage with normalization during irradiation;Storage time (s);Background-corrected Li6-He3 ratio");
   fStorageWithMonitorAfterIrradiation = new TGraphErrors();
   fStorageWithMonitorAfterIrradiation->SetTitle("Storage with normalization after irradiation;Storage time(s);Background-corrected Li6-He3 ratio");
+  std::cout << "Finished TAnaManager constructor" << std::endl;
 };
 
 void TAnaManager::BeginRun(int transition,int run,int time) {
