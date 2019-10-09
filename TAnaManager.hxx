@@ -14,6 +14,7 @@
 #include "TV792Histogram.h"
 #include "TV1725WaveformDisplay.h"
 #include "TUCNChronobox.hxx"
+#include "TGraphErrors.h"
 
 /// This is the main analysis manager program for the UCN detectors.
 class TAnaManager  {
@@ -24,9 +25,7 @@ public:
   /// Processes the midas event, fills histograms, etc.
   int ProcessMidasEvent(TDataContainer& dataContainer);
   
-  void BeginRun(int transition,int run,int time) {
-    if(fLi6Detector) fLi6Detector->BeginRun(transition,run,time);
-  }
+  void BeginRun(int transition,int run,int time);
 
   // Method to force analyzer to use simpler PC timestamps
   void UsePCTime(){
@@ -51,6 +50,19 @@ public:
 
 
   TUCNChronobox *fUCNChronobox;
+
+  TGraphErrors* GetTransmissionDuringCountingGraph() const { return fTransmissionDuringCountingGraph; }
+  TGraphErrors* GetTransmissionDuringIrradiationGraph() const { return fTransmissionDuringIrradiationGraph; }
+  TGraphErrors* GetTransmissionWithPreStorageGraph() const { return fTransmissionWithPreStorage; }
+  TGraphErrors* GetHe3DuringIrradiationGraph() const { return fHe3DuringIrradiationGraph; }
+  TGraphErrors* GetHe3DuringStorageGraph() const { return fHe3DuringStorageGraph; }
+  TGraphErrors* GetHe3AfterIrradiationGraph() const { return fHe3AfterIrradiationGraph; }
+  TGraphErrors* GetLi6StorageBackgroundGraph() const { return fLi6StorageBackgroundGraph; }
+  TGraphErrors* GetHe3StorageBackgroundGraph() const { return fHe3StorageBackgroundGraph; }
+  TGraphErrors* GetLi6StorageGraph() const { return fLi6StorageGraph; }
+  TGraphErrors* GetHe3StorageGraph() const { return fHe3StorageGraph; }
+  TGraphErrors* GetStorageWithMonitorDuringIrradiation() const { return fStorageWithMonitorDuringIrradiation; }
+  TGraphErrors* GetStorageWithMonitorAfterIrradiation() const { return fStorageWithMonitorAfterIrradiation; }
 private:
   
   TV1720Waveform *fV1720Waveform;
@@ -73,6 +85,18 @@ private:
   TV1725WaveformDisplay *fV1750WaveformDisplay;
 
 
+  TGraphErrors *fTransmissionDuringCountingGraph; // transmission with normalization during counting
+  TGraphErrors *fTransmissionDuringIrradiationGraph; // transmission with normalization during irradiation
+  TGraphErrors *fTransmissionWithPreStorage; // transmission with a pre-storage period
+  TGraphErrors *fHe3DuringIrradiationGraph; // He3 monitor counts during irradiation period
+  TGraphErrors *fHe3DuringStorageGraph; // He3 monitor counts during storage period
+  TGraphErrors *fHe3AfterIrradiationGraph; // He3 monitor counts after irradiation
+  TGraphErrors *fLi6StorageBackgroundGraph; // Li6 background during storage periods
+  TGraphErrors *fHe3StorageBackgroundGraph; // He3 background during storage periods
+  TGraphErrors *fLi6StorageGraph; // background-corrected Li6 counts vs. storage time
+  TGraphErrors *fHe3StorageGraph; // background-corrected He3 counts vs. storage time
+  TGraphErrors *fStorageWithMonitorDuringIrradiation; // background-corrected Li6 counts normalized to He3 counts during irradiation vs. storage time
+  TGraphErrors *fStorageWithMonitorAfterIrradiation; // background-corrected Li6 counts normalized to He3 counts after irradiation vs. storage time
 
 };
 

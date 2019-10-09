@@ -23,6 +23,7 @@ TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline, bool isLi6, bool sa
   fTotalHitsCycle = 0;
   fTotalHitsCycleIntime = 0;
   for(int i = 0; i < 10; i++) fTotalHitsCyclePeriods[i] = 0;
+  fTotalMonitorCountsAfterIrradiation = 0;
 
   fSeqValveOpenTime = 0.0;
   fSeqValveCloseTime = 0.0;
@@ -265,11 +266,10 @@ void TUCNDetectorBaseClass::ProcessMidasEvent(TDataContainer& dataContainer){
 
   // Check for sequence start time
   CheckForSequenceSettings(dataContainer);
-  bool cycle_started = false;
   if(UsePreciseSequenceTime()){
-    cycle_started = CheckForSequenceStartPrecise(dataContainer);
+    fcycle_started = CheckForSequenceStartPrecise(dataContainer);
   }else{
-    cycle_started = CheckForSequenceStartCrude(dataContainer);
+    fcycle_started = CheckForSequenceStartCrude(dataContainer);
   }
 
 
@@ -288,6 +288,9 @@ void TUCNDetectorBaseClass::ProcessMidasEvent(TDataContainer& dataContainer){
       fHitsInCycleIntime->Fill(time_in_cycle);
       fHitsInCycleCumulIntime->Fill(time_in_cycle);
     }
+    if (time_in_cycle >= CycleParameters.GetTimeForPeriod(0) and time_in_cycle < CycleParameters.GetTimeForPeriod(0) + CycleParameters.GetTimeForPeriod(2)){
+        ++fTotalMonitorCountsAfterIrradiation;
+    }
     // Add the total number of events in each period
     for(int i = 0; i < 10; i++){
       double cycle_start = fCycleStartTime + CycleParameters.GetCumulativeTimeForPeriod(i-1);
@@ -299,7 +302,7 @@ void TUCNDetectorBaseClass::ProcessMidasEvent(TDataContainer& dataContainer){
   }
   
   // If new sequence started, update information for the cumulative sequence plot
-  if(cycle_started && fLastCycleStartTime != 0.0){
+  if(fcycle_started && fLastCycleStartTime != 0.0){
     fHitsPerCycleVector.push_back(std::pair<double,double>(fLastCycleStartTime,fTotalHitsCycle));
     fHitsPerCycleVectorIntime.push_back(std::pair<double,double>(fLastCycleStartTime,fTotalHitsCycleIntime));
     for(int i = 0; i < 10; i++){
@@ -307,7 +310,8 @@ void TUCNDetectorBaseClass::ProcessMidasEvent(TDataContainer& dataContainer){
       std::cout << "Hits per period " << i << " " << fTotalHitsCyclePeriods[i] 
 		<< " " << fHitsPerCycleVectorPeriods[i][fHitsPerCycleVectorPeriods[i].size()-1].second << std::endl;
     }
-      
+    fMonitorCountsAfterIrradiationPerCycle.push_back(std::pair<double,double>(fLastCycleStartTime, fTotalMonitorCountsAfterIrradiation));
+
     // print a summary of number of events for this cycle 
     time_t t = dataContainer.GetMidasData().GetTimeStamp();
     struct tm * now = localtime ( &t);
@@ -326,10 +330,12 @@ void TUCNDetectorBaseClass::ProcessMidasEvent(TDataContainer& dataContainer){
     fTotalHitsCycle = 0;
     fTotalHitsCycleIntime = 0;
     for(int i = 0; i < 10; i++) fTotalHitsCyclePeriods[i] = 0;
+    fTotalMonitorCountsAfterIrradiation = 0;
     if(fHitsPerCycleVector.size() > 100){ // Save at most 100 cycles
       fHitsPerCycleVector.erase(fHitsPerCycleVector.begin());
       fHitsPerCycleVectorIntime.erase(fHitsPerCycleVectorIntime.begin());      
-      for(int i = 0; i < 10; i++) fHitsPerCycleVectorPeriods[i].erase(fHitsPerCycleVectorPeriods[i].begin());      
+      for(int i = 0; i < 10; i++) fHitsPerCycleVectorPeriods[i].erase(fHitsPerCycleVectorPeriods[i].begin());
+      fMonitorCountsAfterIrradiationPerCycle.erase(fMonitorCountsAfterIrradiationPerCycle.begin());
     }
     // Reset the hits in cycle histogram
     fHitsInCycle->Reset();
@@ -366,7 +372,7 @@ void TUCNDetectorBaseClass::ProcessMidasEvent(TDataContainer& dataContainer){
   if(fHitsTree){
     fHitsTree->FillHits(fHits,1);
     fHitsTree->FillHits(fBackgroundHits,0);     
-    if(cycle_started){
+    if(fcycle_started){
       fHitsTree->FillTransition(fCycleStartTime,fSeqValveOpenTime,fSeqValveCloseTime,
                                 fSeqDelayTime,fSeqOpenInterval,CycleParameters);
     }

@@ -55,6 +55,8 @@ class TUCNDetectorBaseClass  {
   
   bool IsLi6(){ return fIsLi6;};
   bool IsHe3(){ return !fIsLi6;};
+
+  bool CycleStarted() const { return fcycle_started; };
   
   std::string GetDetectorName(){
     if(IsLi6()) return std::string("Li6");
@@ -107,6 +109,7 @@ class TUCNDetectorBaseClass  {
   std::vector<std::pair<double, double> > GetInTimeHitsPerCycle(){ return fHitsPerCycleVectorIntime;};
   std::vector<std::vector<std::pair<double, double> > > GetHitsPerCyclePerPeriod(){return fHitsPerCycleVectorPeriods;}
   std::vector<std::pair<double, double> > GetHitsPerCyclePerPeriod(int i){return fHitsPerCycleVectorPeriods[i];}
+  std::vector<std::pair<double, double> > GetMonitorCountsAfterIrradiationPerCycle(){ return fMonitorCountsAfterIrradiationPerCycle; }
 
   TUCNCycleParameters CycleParameters;
 
@@ -155,15 +158,20 @@ private:
   TH1D *fHitsPerCycleH;
   TH1D *fHitsPerCycleHIntime;
 
-  // UCN hits in this cycle
+    // true if last processed event started a new cycle
+    bool fcycle_started;
+
+    // UCN hits in this cycle
   int fTotalHitsCycle;
   int fTotalHitsCycleIntime;  // hits when valve open
   int fTotalHitsCyclePeriods[10];  // total hits per period.
+  int fTotalMonitorCountsAfterIrradiation; // hits between end of irradiation and (end of irradiation)+(counting time)
 
   // vector to store the cycle hits in
   std::vector<std::pair<double, double> > fHitsPerCycleVector;
   std::vector<std::pair<double, double> > fHitsPerCycleVectorIntime;
   std::vector<std::vector<std::pair<double, double> > > fHitsPerCycleVectorPeriods;
+  std::vector<std::pair<double, double> > fMonitorCountsAfterIrradiationPerCycle;
 };
 
 #endif

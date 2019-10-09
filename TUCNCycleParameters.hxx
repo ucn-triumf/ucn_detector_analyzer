@@ -64,6 +64,7 @@ class  TUCNCycleParameters {
   int CycleIndex(){return cycleIndex;};
   int SuperCycleIndex(){return superCycleIndex;};
   int NumberPeriods(){return numberPeriodsInCycle;};
+  int GetNumberCyclesInSuper() const { return numberCyclesInSuper; }
 
   
 private:
