@@ -28,6 +28,7 @@ TV1725DppPsdData::TV1725DppPsdData(int bklen, int bktype, const char* name, void
   
   int counter = 4;
   
+
   // Loop over dual channel data
   for(int ch = 0; ch < 8; ch++){
     
@@ -72,6 +73,12 @@ TV1725DppPsdData::TV1725DppPsdData(int bklen, int bktype, const char* name, void
     }
   }
   //std::cout << "Number of measurements: " << fMeasurements.size() << std::endl;
+  if(GetChMask() == 99999){
+    std::cout << "Bank chanmask == 8" << std::endl;
+    for(int i = 0; i < bklen; i++){
+      std::cout << i <<  std::hex << " 0x" << GetData32()[i] << std::dec << std::endl;
+    }
+  }
 
   // Check that the final counter seems to match the expected aggregate size.
   if((unsigned int)counter != (0xfffffff & GetData32()[0])){

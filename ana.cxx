@@ -10,11 +10,11 @@
 #ifdef HAVE_MIDAS
 #include "midas.h"
 #include "msystem.h"
+HNDLE hDB;
 #endif
 #include <vector>
 
 
-HNDLE hDB;
 
 class Analyzer: public TRootanaEventLoop {
 
