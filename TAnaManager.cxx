@@ -31,9 +31,12 @@ TAnaManager::TAnaManager(bool isOffline, bool saveTree){
 
 
   std::cout << "Making V1725 plots " << std::endl;
+
   // event histograms for runtime window
   fV1750WaveformDisplay = new TV1725WaveformDisplay();
   fV1750WaveformDisplay->DisableAutoUpdate();
+  fV1725PSDQL = new TV1725PSDQL();
+  fV1725PSDQL->DisableAutoUpdate();
 
   fV785Charge = new TV792Histograms();
   fV785Charge->DisableAutoUpdate();
@@ -106,7 +109,7 @@ int TAnaManager::ProcessMidasEvent(TDataContainer& dataContainer){
   }
   fUCNChronobox->ProcessMidasEvent(dataContainer);
   fV1750WaveformDisplay->UpdateHistograms(dataContainer);
-
+  fV1725PSDQL->UpdateHistograms(dataContainer);
   
   TV792NData *data = dataContainer.GetEventData<TV792NData>("ADC0");
   if(data) {

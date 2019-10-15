@@ -17,15 +17,13 @@
 
 #define V1725_MAXCHAN 16
 
-class TV1725WaveformDisplay : public THistogramArrayBase//added June 10, 2016
+class TV1725WaveformDisplay : public THistogramArrayBase
 {
  public: 
   TV1725WaveformDisplay();
   virtual ~TV1725WaveformDisplay(){};
 
   void UpdateHistograms(TDataContainer&);
-  void UpdateHistogram(int board, int chan, uint16_t * wf, int tLength,
-		       char * ctag);
 
   void BeginRun(int transition, int run, int time);
   
@@ -35,48 +33,14 @@ class TV1725WaveformDisplay : public THistogramArrayBase//added June 10, 2016
   };
 
 
-/*class TV1725CLQEvNum : public THistogramArrayBase//added Aug 9, 2016
+
+class TV1725PSDQL : public THistogramArrayBase
 {
  public: 
-  TV1725CLQEvNum();
-  virtual ~TV1725CLQEvNum(){};
+  TV1725PSDQL();
+  virtual ~TV1725PSDQL(){};
 
-  void UpdateHistograms(TDataContainer&){};
-  void UpdateHistogram(int board, int chan, float QLDifference[], int nEvents,
-		       char * ctag );
-
-  void BeginRun(int transition, int run, int time);
-  
-  void EndRun(int transition, int run, int time);
-
-  void CreateHistograms();
-  };*/
-
-/*class TV1725CSQEvNum : public THistogramArrayBase//added Aug 9, 2016
-{
- public: 
-  TV1725CSQEvNum();
-  virtual ~TV1725CSQEvNum(){};
-
-  void UpdateHistograms(TDataContainer&){};
-  void UpdateHistogram(int board, int chan, float QSDifference[], int nEvents,
-		       char * ctag );
-
-  void BeginRun(int transition, int run, int time);
-  
-  void EndRun(int transition, int run, int time);
-
-  void CreateHistograms();
-  };*/
-
-class TV1725QLQL : public THistogramArrayBase//added Aug 10, 2016
-{
- public: 
-  TV1725QLQL();
-  virtual ~TV1725QLQL(){};
-
-  void UpdateHistograms(TDataContainer&){};
-  void UpdateHistogram(int board, int chan, uint16_t QLCal[], uint16_t QLBoard[], int nEvents);
+  void UpdateHistograms(TDataContainer&);
 
   void BeginRun(int transition, int run, int time);
   

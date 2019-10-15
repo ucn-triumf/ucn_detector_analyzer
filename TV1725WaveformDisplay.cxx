@@ -14,7 +14,7 @@
 
 
 /// Reset the histograms for this canvas
-TV1725QLQL::TV1725QLQL(){
+TV1725PSDQL::TV1725PSDQL(){
 
   SetNumberChannelsInGroup(V1725_MAXCHAN);
   SetGroupName("Module");
@@ -24,7 +24,7 @@ TV1725QLQL::TV1725QLQL(){
 }
 
 
-void TV1725QLQL::CreateHistograms(){
+void TV1725PSDQL::CreateHistograms(){
   
   // check if we already have histograms.
   char tname[100];
@@ -41,43 +41,52 @@ void TV1725QLQL::CreateHistograms(){
 
       char name[100];
       char title[100];
-      sprintf(name,"V1725QLQL_%i_%i",iBoard,i);
+      sprintf(name,"V1725PSD_VS_QL_%i_%i",iBoard,i);
 
-      sprintf(title,"V1725 Gate Values for module = %i, channel=%i",iBoard,i);	
+      sprintf(title,"V1725 PSD vs Qlong module = %i, channel=%i",iBoard,i);	
 
-      TH2F *tmp = new TH2F(name,title,320,-20,40000,320,-20,30000);
+      TH2F *tmp = new TH2F(name,title,200,-20,160000,200,-1,1);
       tmp->SetDrawOption("colz");
-      tmp->SetXTitle("Q Long Calculated");
-      tmp->SetYTitle("Q Long From Board");
+      tmp->SetXTitle("Q Long");
+      tmp->SetYTitle("PSD");
       push_back(tmp);
     }
   }
 
 }
 
+void TV1725PSDQL::UpdateHistograms(TDataContainer& dataContainer){
 
-/// Update the histograms for this canvas 
-void TV1725QLQL::UpdateHistogram(int board, int chan, uint16_t QLCal[], uint16_t QLBoard[], int nEvents){
+  TV1725DppPsdData *data = dataContainer.GetEventData<TV1725DppPsdData>("W500");
+  if(!data) return;
+    
+  /// Get the Vector of ADC Measurements.
+  std::vector<ChannelMeasurement> measurements = data->GetMeasurements();
 
+  
+  for(unsigned int i = 0; i < measurements.size(); i++){
+    
+    ChannelMeasurement meas = measurements[i];
+    int ch = meas.GetChannel();
+    double psd = 0;
+    if(meas.GetQlong() != 0) psd = (double)(meas.GetQlong() - meas.GetQshort())/(double)meas.GetQlong();    
+    GetHistogram(ch)->Fill(meas.GetQlong(),psd);
 
-  std::cout << "Filling histograms" << std::endl;
-  int index = board*V1725_MAXCHAN + chan;
-  for (int i=0; i<nEvents; i++)
-    {
-      GetHistogram(index)->Fill(QLBoard[i],QLCal[i]);     
-    }
+  }
+
 }
 
 
 
+
 /// Take actions at begin run
-void TV1725QLQL::BeginRun(int transition,int run,int time){
+void TV1725PSDQL::BeginRun(int transition,int run,int time){
 
   CreateHistograms();
 }
 
 /// Take actions at end run  
-void TV1725QLQL::EndRun(int transition,int run,int time){
+void TV1725PSDQL::EndRun(int transition,int run,int time){
 
 }
 
@@ -232,21 +241,6 @@ void TV1725WaveformDisplay::UpdateHistograms(TDataContainer& dataContainer){
 
 };
 
-
-/// Update the histograms for this canvas 
-void TV1725WaveformDisplay::UpdateHistogram(int board, int chan, uint16_t * wf, int tLength,  char * ctag){
-
-  int index = board*V1725_MAXCHAN + chan;
-
-
-  TH1* tmp = GetHistogram(index);
-  if ( tmp->GetNbinsX() != tLength ) tmp->SetBins(tLength,0.,tLength*4.0);
-  for (int b = 0; b<tLength; b++){
-    GetHistogram(index)->SetBinContent(b+1,*(wf+b));
-  }
-  GetHistogram(index)->SetTitle(ctag);
-
-}
 
 
 
