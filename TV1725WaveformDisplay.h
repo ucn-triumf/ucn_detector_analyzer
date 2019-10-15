@@ -40,7 +40,7 @@ class TV1725PSDQL : public THistogramArrayBase
   TV1725PSDQL();
   virtual ~TV1725PSDQL(){};
 
-  void UpdateHistograms(TDataContainer&);
+  void UpdateHistograms(TDataContainer& dataContainer);
 
   void BeginRun(int transition, int run, int time);
   
@@ -49,30 +49,14 @@ class TV1725PSDQL : public THistogramArrayBase
   void CreateHistograms();
 };
 
-class TV1725QSQS : public THistogramArrayBase//added Aug 10, 2016
-{
- public: 
-  TV1725QSQS();
-  virtual ~TV1725QSQS(){};
 
-  void UpdateHistograms(TDataContainer&){};
-  void UpdateHistogram(int board, int chan, uint16_t QSCal[], uint16_t QSBoard[], int nEvents);
-
-  void BeginRun(int transition, int run, int time);
-  
-  void EndRun(int transition, int run, int time);
-
-  void CreateHistograms();
-  };
-
-class TV1725_PH : public THistogramArrayBase//added Aug 10, 2016
+class TV1725_PH : public THistogramArrayBase 
 {
  public: 
   TV1725_PH();
   virtual ~TV1725_PH(){};
 
-  void UpdateHistograms(TDataContainer&){};
-  void UpdateHistogram(int board, int chan, uint32_t pulseHeight);
+  void UpdateHistograms(TDataContainer& dataContainer);
 
   void BeginRun(int transition, int run, int time);
   

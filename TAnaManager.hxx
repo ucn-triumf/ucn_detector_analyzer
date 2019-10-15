@@ -47,6 +47,7 @@ public:
   TV792Histograms* GetV785Histo(){return fV785Charge;}
   TV1725WaveformDisplay* GetV1725Waveform(){return fV1750WaveformDisplay;}
   TV1725PSDQL* GetV1725PSDvsQL(){return fV1725PSDQL;}
+  TV1725_PH* GetV1725_PH(){ return fV1725_PH;}
   TUCNChronobox* GetChronobox(){ return fUCNChronobox;}
 
 
@@ -85,6 +86,7 @@ private:
 
   TV1725WaveformDisplay *fV1750WaveformDisplay;
   TV1725PSDQL* fV1725PSDQL;
+  TV1725_PH* fV1725_PH;
 
   TGraphErrors *fTransmissionDuringCountingGraph; // transmission with normalization during counting
   TGraphErrors *fTransmissionDuringIrradiationGraph; // transmission with normalization during irradiation
