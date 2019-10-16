@@ -73,7 +73,7 @@ TV1725DppPsdData::TV1725DppPsdData(int bklen, int bktype, const char* name, void
     }
   }
   //std::cout << "Number of measurements: " << fMeasurements.size() << std::endl;
-  if(GetChMask() == 1){
+  if(GetChMask() == 1999999){
     std::cout << "----------------------" << std::endl;
     for(int i = 0; i < 10; i++){
       printf("%i 0x%08x\n",i,GetData32()[i]);

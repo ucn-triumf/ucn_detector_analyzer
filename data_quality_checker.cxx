@@ -1,4 +1,7 @@
-// Analyzer; nominally this analyzer will allow histograms that persist across runs...DW
+// 
+// Do some basic data quality checks:
+// i) Look for timing markers at start and end of run
+// ii) Check that pedestal look okay... print message otherwise...
 
 #include <stdio.h>
 #include <iostream>
@@ -23,6 +26,9 @@ public:
   bool bor_check_done;
   double start_time;
   std::vector<double> time_synch_pulses;
+  
+  std::vector<double> baselines;
+  std::vector<double> baselines_n;
 
   Analyzer() {
     DisableAutoMainWindow();
@@ -31,7 +37,8 @@ public:
     SetOnlineName("data_quality_checker");
     bor_check_done = true;
 
-
+    baselines = std::vector<double>(16,0.0);
+    baselines_n = std::vector<double>(16,0.0);
   };
 
   virtual ~Analyzer() {};
@@ -60,6 +67,11 @@ public:
     
     bor_time = -1;
     bor_check_done = true;
+    for(int i = 0; i < 16; i++){
+      baselines[i] = 0.0;
+      baselines_n[i] = 0.0;
+    }
+    
   }
 
   
@@ -84,6 +96,10 @@ public:
 #else
     bor_check_done = false;
 #endif
+    for(int i = 0; i < 16; i++){
+      baselines[i] = 0.0;
+      baselines_n[i] = 0.0;
+    }
     
   }
 
@@ -110,12 +126,38 @@ public:
       cm_msg(MINFO,"Data Quality","EOR; total run length was %f seconds.",tdiff);
     }
     time_synch_pulses.clear();
+
+
+    // Get average baseline for the run... suggest a new DC offset
+    INT dc_offset[16];
+    int size = sizeof(dc_offset);
+    db_get_value(hDB, 0, "/Equipment/UCN_Detector/Settings/Module0/DC Offset", &dc_offset, &size, TID_INT, 0);
+    for(int i = 0; i < 16; i++){
+      double baseline = 0;
+      if(baselines_n[i] != 0){
+	baseline = baselines[i] / baselines_n[i];
+	
+	int new_offset = (int)((baseline - 14718) * (3.37) + dc_offset[i]);
+	std::cout << "Ch = " << i << " baseline=" << baseline 
+		  << " Current offset = " << dc_offset[i] 
+		  << " New offset = " << new_offset 
+		  << std::endl;
+
+	double diff = fabs(baseline - 14718);
+	if(diff > 15 && i < 9){
+	  cm_msg(MERROR,"Data Quality","baseline check failed for channel %i; expected baseline 14718, actual baseline %f; new recommended offset %i.\n",
+		 i,baseline,new_offset);
+	}
+      }
+    }
     
     
 #else
 #endif
     time_synch_pulses.clear();
   
+
+
   }
 
 
@@ -135,6 +177,16 @@ public:
 	if(meas.GetChannel() == 11){
 	  time_synch_pulses.push_back(timestamp);
 	}
+
+	// Average the baseline samples for this event
+	double avg = 0.0;
+	int ch = meas.GetChannel();
+	for(int i =0; i < 10; i++){
+	  avg += ((double)meas.GetSample(i))/10.0;
+	}	  
+	//std::cout << "Avg ("<<ch<<"): " << avg << std::endl;
+	baselines[ch] += avg;
+	baselines_n[ch] += 1.0;	
       }
     }
 
@@ -143,7 +195,7 @@ public:
 #ifdef HAVE_MIDAS
       int time = dataContainer.GetMidasData().GetTimeStamp();
       int dtime = time - bor_time;
-      if(dtime > 16){
+      if(dtime > 20){
 	std::cout << "BOR check!" << std::endl;
 
 	if(start_time == 0  && time_synch_pulses.size()) start_time = time_synch_pulses[0];
