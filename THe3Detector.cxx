@@ -61,7 +61,7 @@ void THe3Detector::GetHits(TDataContainer& dataContainer){
     if((fIs3HEDET1 && (ch == 13))||
        (!fIs3HEDET1 && (ch == 12))){
 
-      if(hit.chargeShort > 0){
+      if(hit.chargeShort > 1500){
 	if(0)std::cout << "UCN hit PH: " << hit.chargeShort << " " << ch << std::endl;
 	fHits.push_back(hit);
       }else
