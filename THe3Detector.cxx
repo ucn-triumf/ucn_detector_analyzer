@@ -53,7 +53,7 @@ void THe3Detector::GetHits(TDataContainer& dataContainer){
     for (int b = 0; b<nsamples; b++){
       if(meas.GetSample(b) < min_value) min_value = meas.GetSample(b);
     }
-    int pulse_height = 14700 - (int)min_value;
+    int pulse_height = 14718 - (int)min_value;
     hit.chargeShort = pulse_height;
     hit.chargeLong  = pulse_height;
 
@@ -62,7 +62,6 @@ void THe3Detector::GetHits(TDataContainer& dataContainer){
        (!fIs3HEDET1 && (ch == 12))){
 
       if(hit.chargeShort > 1500){
-	if(0)std::cout << "UCN hit PH: " << hit.chargeShort << " " << ch << std::endl;
 	fHits.push_back(hit);
       }else
 	fBackgroundHits.push_back(hit);

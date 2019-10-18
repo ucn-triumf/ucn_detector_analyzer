@@ -94,7 +94,7 @@ int TUCNChronobox::ProcessMidasEvent(TDataContainer& dataContainer){
       int falling = (word & 0x1);
       if((word & 0xff000000) == 0xff000000){
 	fRolloverWord = word;
-      }else if((word & 0xf0000000) == 0x80000000){	
+      }else if((word & 0xc0000000) == 0x80000000){	
 	int ch = (word & 0x7f000000) >> 24;
 	uint32_t timestamp = (word & 0xfffffe) >> 1;
 	int falling = (word & 0x1);
@@ -128,8 +128,9 @@ int TUCNChronobox::ProcessMidasEvent(TDataContainer& dataContainer){
 	}
 
 
-	if(1 and ch != 0 and !falling)
-	  std::cout << std::hex << "Chrono: Chan " << ch << " ("<<falling<< ") timestamp=0x"<< timestamp << " bit 0x200000 = " << ((word & 0x00200000) >> 21) << std::dec 
+	if(1)
+	  std::cout << "Chrono " << ch << std::hex  << " ("<<falling<< ") timestamp=0x"<< timestamp << " bit 0x200000 = " 
+		    << ((word & 0x00200000) >> 21) << std::dec 
 		    << " time diff=" << full_time - fTimestamps[ch][falling] 
 		    << std::endl;
 	
