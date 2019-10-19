@@ -53,6 +53,9 @@ class TUCNChronobox {
   TUCNChronoDiffArray *fFallingEdgeDiff;
   TUCNChronoDiffArray *fPulseWidths;
 
+  TH1D *fIV3DriveClosedDiff;
+  TH1D *fIV3DriveOpenedDiff;
+  TH1D *fIV3ClosedOpenDiff;
 
  private:
 
