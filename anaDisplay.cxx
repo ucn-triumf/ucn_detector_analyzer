@@ -117,18 +117,9 @@ public:
     AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetV1725_PH(),"Pulse Height"),"V1725 Details");
     AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetV1725_QL(),"Q-long"),"V1725 Details");
 
-    //AddSingleCanvas(new TFancyHistogramCanvas(anaViewer->fV1720WaveformDisplay, "V1720 Waveform",9,false),"V1720 Details");
-    //AddSingleCanvas(new TFancyHistogramCanvas(anaViewer->fV1720QSQLHistograms, "Q Short vs Q Long",16,false),"V1720 Details");
-    //AddSingleCanvas(new TFancyHistogramCanvas(anaViewer->fV1720PSDQLHistograms, "PSD vs Q Long",16,false),"V1720 Details");
-    //AddSingleCanvas(new TFancyHistogramCanvas(anaViewer->fV1720_PH, "Pulse Height",16,false),"V1720 Details");
-
     // Add plots for V785 charge
     AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetV785Histo(),"V785 Charge"),"V785 Details");
  
-    // Add plots about sequencing checks
-    TLi6Detector* li6detector = dynamic_cast<TLi6Detector*>(anaManager->GetLi6DetectorAnalyzer());
-    if(li6detector) AddSingleCanvas(li6detector->GetV1720SequenceCanvas(),"Sequencing");
-
 
     // Add for chronobox
     AddSingleCanvas(new TFancyHistogramCanvas(anaManager->fUCNChronobox->fRisingEdgeDiff,"Rising Edge Differences"),"Chronobox");
