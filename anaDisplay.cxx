@@ -115,6 +115,7 @@ public:
     AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetV1725Waveform(),"V1725 Waveform"),"V1725 Details");
     AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetV1725PSDvsQL(),"PSD vs QLong"),"V1725 Details");
     AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetV1725_PH(),"Pulse Height"),"V1725 Details");
+    AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetV1725_QL(),"Q-long"),"V1725 Details");
 
     //AddSingleCanvas(new TFancyHistogramCanvas(anaViewer->fV1720WaveformDisplay, "V1720 Waveform",9,false),"V1720 Details");
     //AddSingleCanvas(new TFancyHistogramCanvas(anaViewer->fV1720QSQLHistograms, "Q Short vs Q Long",16,false),"V1720 Details");
@@ -133,6 +134,7 @@ public:
     AddSingleCanvas(new TFancyHistogramCanvas(anaManager->fUCNChronobox->fRisingEdgeDiff,"Rising Edge Differences"),"Chronobox");
     AddSingleCanvas(new TFancyHistogramCanvas(anaManager->fUCNChronobox->fFallingEdgeDiff,"Falling Edge Differences"),"Chronobox");   
     AddSingleCanvas(new TFancyHistogramCanvas(anaManager->fUCNChronobox->fPulseWidths,"Pulse Widths"),"Chronobox");
+    AddSingleCanvas(anaManager->fUCNChronobox->GetIV3Canvas(),"Chronobox");
 
 
     AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->GetTransmissionDuringCountingGraph(), "Li6/He3 ratio during counting"), "Transmission");

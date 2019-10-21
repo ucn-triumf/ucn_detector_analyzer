@@ -106,7 +106,8 @@ TLi6Detector::TLi6Detector(bool isOffline, bool saveTree):TUCNDetectorBaseClass(
   //was 60445
   // Preliminary threshold for Qlong and PSD
   fPSDThreshold = 0.3;
-  fQLongThreshold = 2000.0;
+  //fQLongThreshold = 2000.0;  // change for V1725
+  fQLongThreshold = 3000.0;
 
   std::cout << "Finished Li-6 constructor " << std::endl;
   

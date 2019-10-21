@@ -8,6 +8,7 @@
 #include <string>
 #include "TDataContainer.hxx"
 #include "TH1D.h"
+#include "TMulticanvas.h"
 
 class TUCNChronoDiffArray : public THistogramArrayBase {
  public:
@@ -58,6 +59,14 @@ class TUCNChronobox {
   /// Take actions at begin run
   void BeginRun(int transition,int run,int time){
     MakeSingleHistograms();
+  }
+
+  TMulticanvas* GetIV3Canvas(){
+    TMulticanvas *canvas = new TMulticanvas("IV3 Canvas");
+    canvas->AddHistoSingle(fIV3DriveClosedDiff,0);
+    canvas->AddHistoSingle(fIV3DriveOpenedDiff,1);
+    canvas->AddHistoSingle(fIV3ClosedOpenDiff,2);
+    return canvas;
   }
 
   TH1D *fIV3DriveClosedDiff;
