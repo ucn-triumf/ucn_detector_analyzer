@@ -53,6 +53,13 @@ class TUCNChronobox {
   TUCNChronoDiffArray *fFallingEdgeDiff;
   TUCNChronoDiffArray *fPulseWidths;
 
+  void MakeSingleHistograms();
+
+  /// Take actions at begin run
+  void BeginRun(int transition,int run,int time){
+    MakeSingleHistograms();
+  }
+
   TH1D *fIV3DriveClosedDiff;
   TH1D *fIV3DriveOpenedDiff;
   TH1D *fIV3ClosedOpenDiff;

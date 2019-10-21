@@ -56,8 +56,27 @@ void TUCNChronoDiffArray::EndRun(int transition,int run,int time){
 
 }
 
+void TUCNChronobox::MakeSingleHistograms(){
+
+  // If the histograms exist, exit... 
+  TH1D *old = (TH1D*)gDirectory->Get("IV3DriveClosedDiff");
+  if (old) return;
+
+  // otherwise make the histograms
+  fIV3DriveClosedDiff = new TH1D("IV3DriveClosedDiff","IV3: Closed State Time - Drive Time",1000,0,2);
+  fIV3DriveClosedDiff->SetXTitle("Closed State Stop Time - Valve Drive Time (s)");
+
+  fIV3DriveOpenedDiff = new TH1D("IV3DriveOpenDiff","IV3: Open State Time - Drive Time",1000,0,2);
+  fIV3DriveOpenedDiff->SetXTitle("Open State Time - Valve Drive Time (s)");
+
+  fIV3ClosedOpenDiff = new TH1D("IV3ClosedOpenDiff","IV3: Open State Time - Closed State Time",1000,0,2);
+  fIV3ClosedOpenDiff->SetXTitle("Open State Stop Time - Closed Time (s)");
+
+}
 
 TUCNChronobox::TUCNChronobox(){
+
+  std::cout << "Chronobox initialize" << std::endl;
 
   fNumberRollovers= 0;
   fRolloverWord = 0;
@@ -71,16 +90,7 @@ TUCNChronobox::TUCNChronobox(){
   fFallingEdgeDiff = new TUCNChronoDiffArray("Falling Edge Diff");
   fPulseWidths = new TUCNChronoDiffArray("Pulse Widths");
 
-  fIV3DriveClosedDiff = new TH1D("IV3DriveClosedDiff","IV3: Closed State Time - Drive Time",400,0,2);
-  fIV3DriveClosedDiff->SetXTitle("Closed State Stop Time - Valve Drive Time (s)");
-
-  fIV3DriveOpenedDiff = new TH1D("IV3DriveOpenDiff","IV3: Open State Time - Drive Time",400,0,2);
-  fIV3DriveOpenedDiff->SetXTitle("Open State Time - Valve Drive Time (s)");
-
-  fIV3ClosedOpenDiff = new TH1D("IV3ClosedOpenDiff","IV3: Open State Time - Closed State Time",400,0,2);
-  fIV3ClosedOpenDiff->SetXTitle("Open State Stop Time - Closed Time (s)");
-
-
+  MakeSingleHistograms();
 
 }
 

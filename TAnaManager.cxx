@@ -76,6 +76,7 @@ TAnaManager::TAnaManager(bool isOffline, bool saveTree){
 
 void TAnaManager::BeginRun(int transition,int run,int time) {
     if(fLi6Detector) fLi6Detector->BeginRun(transition,run,time);
+    if(fUCNChronobox) fUCNChronobox->BeginRun(transition,run,time);
 
     // reset histograms
     fTransmissionDuringCountingGraph->Set(0);
