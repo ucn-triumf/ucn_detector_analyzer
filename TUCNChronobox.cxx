@@ -14,7 +14,7 @@ void TUCNChronoDiffArray::CreateHistograms(){
   clear();
 
   
-  for(int i = 0; i < 40; i++){ // loop over channels    
+  for(int i = 0; i < TUCNChronobox::MaxChan; i++){ // loop over channels    
 
     char name[100];
     char title[100];
@@ -63,13 +63,13 @@ void TUCNChronobox::MakeSingleHistograms(){
   if (old) return;
 
   // otherwise make the histograms
-  fIV3DriveClosedDiff = new TH1D("IV3DriveClosedDiff","IV3: Closed State Time - Drive Time",1000,0,2);
+  fIV3DriveClosedDiff = new TH1D("IV3DriveClosedDiff","IV3: Closed State Time - Drive Time",4000,0,2);
   fIV3DriveClosedDiff->SetXTitle("Closed State Stop Time - Valve Drive Time (s)");
 
-  fIV3DriveOpenedDiff = new TH1D("IV3DriveOpenDiff","IV3: Open State Time - Drive Time",1000,0,2);
+  fIV3DriveOpenedDiff = new TH1D("IV3DriveOpenDiff","IV3: Open State Time - Drive Time",4000,0,2);
   fIV3DriveOpenedDiff->SetXTitle("Open State Time - Valve Drive Time (s)");
 
-  fIV3ClosedOpenDiff = new TH1D("IV3ClosedOpenDiff","IV3: Open State Time - Closed State Time",1000,0,2);
+  fIV3ClosedOpenDiff = new TH1D("IV3ClosedOpenDiff","IV3: Open State Time - Closed State Time",4000,0,2);
   fIV3ClosedOpenDiff->SetXTitle("Open State Stop Time - Closed Time (s)");
 
 }
@@ -109,11 +109,12 @@ int TUCNChronobox::ProcessMidasEvent(TDataContainer& dataContainer){
     struct timeval tp;
     gettimeofday(&tp,NULL);
 
-    //std::cout << "nwords: " << nwords << std::endl;
+    std::cout << "Chrono nwords: " << nwords << std::endl;
     for(int i = 0; i < nwords; i++){
       uint32_t word = data->GetData32()[i];
       int falling = (word & 0x1);
       if((word & 0xff000000) == 0xff000000){
+	std::cout << "Chrono rollover: " << std::hex << word << std::dec << std::endl;
 	fRolloverWord = word;
       }else if((word & 0xc0000000) == 0x80000000){	
 	int ch = (word & 0x7f000000) >> 24;
@@ -148,11 +149,12 @@ int TUCNChronobox::ProcessMidasEvent(TDataContainer& dataContainer){
 	}
 
 	
-	if(1){
+	if(1 && ch < 32){
 	  std::cout << "Chrono " << ch ;
 	  if(falling) std::cout << " fall ";
 	  else        std::cout << " rise ";
 	  std::cout << "timestamp= " << full_time 
+		    << " rollover=" << rollovers
 	    //<< std::hex  << " ("<<falling<< ") timestamp=0x"<< timestamp << std::dec 
 		    << " tdiff (same) =" << full_time - fTimestamps[ch][falling] 
 		    << " tdiff (state)=" << full_time - fTimestamps[ch][!falling] 

@@ -143,9 +143,9 @@ public:
 		  << " New offset = " << new_offset 
 		  << std::endl;
 
-	double diff = fabs(baseline - 14718);
-	if(diff > 15 && i < 9){
-	  cm_msg(MERROR,"Data Quality","baseline check failed for channel %i; expected baseline 14718, actual baseline %f; new recommended offset %i.\n",
+	double diff = baseline - 14718;
+	if((diff > 45 || diff < -25) && i < 9){
+	  cm_msg(MINFO,"Data Quality","baseline check failed for channel %i; expected baseline 14718, actual baseline %f; new recommended offset %i.\n",
 		 i,baseline,new_offset);
 	}
       }
@@ -195,7 +195,7 @@ public:
 #ifdef HAVE_MIDAS
       int time = dataContainer.GetMidasData().GetTimeStamp();
       int dtime = time - bor_time;
-      if(dtime > 20){
+      if(dtime > 22){
 	std::cout << "BOR check!" << std::endl;
 
 	if(start_time == 0  && time_synch_pulses.size()) start_time = time_synch_pulses[0];

@@ -124,8 +124,17 @@ public:
     // Add for chronobox
     AddSingleCanvas(new TFancyHistogramCanvas(anaManager->fUCNChronobox->fRisingEdgeDiff,"Rising Edge Differences"),"Chronobox");
     AddSingleCanvas(new TFancyHistogramCanvas(anaManager->fUCNChronobox->fFallingEdgeDiff,"Falling Edge Differences"),"Chronobox");   
-    AddSingleCanvas(new TFancyHistogramCanvas(anaManager->fUCNChronobox->fPulseWidths,"Pulse Widths"),"Chronobox");
+    /*    AddSingleCanvas(new TFancyHistogramCanvas(anaManager->fUCNChronobox->fPulseWidths,"Pulse Widths"),"Chronobox");
     AddSingleCanvas(anaManager->fUCNChronobox->GetIV3Canvas(),"Chronobox");
+    TMulticanvas *canvas = new TMulticanvas("IV3 Canvas ");
+    canvas->AddHistoSingle(anaManager->fUCNChronobox->fIV3DriveClosedDiff,0);
+    canvas->AddHistoSingle(anaManager->fUCNChronobox->fIV3DriveOpenedDiff,1);
+    canvas->AddHistoSingle(anaManager->fUCNChronobox->fIV3ClosedOpenDiff,2);
+    //AddSingleCanvas(canvas,"Chronobox");*/
+    AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->fUCNChronobox->fIV3DriveClosedDiff, "IV3 Drive/Closed"), "Chronobox");
+    AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->fUCNChronobox->fIV3DriveOpenedDiff, "IV3 Drive/Open"), "Chronobox");
+    AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->fUCNChronobox->fIV3ClosedOpenDiff, "IV3 Closed/Open"), "Chronobox");
+
 
 
     AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->GetTransmissionDuringCountingGraph(), "Li6/He3 ratio during counting"), "Transmission");

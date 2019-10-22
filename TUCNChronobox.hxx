@@ -36,7 +36,7 @@ class TUCNChronobox {
 
  public:
 
-  const static int MaxChan = 64;
+  const static int MaxChan = 128;
   const static int PPSChan = 3;
   
   TUCNChronobox();
@@ -60,14 +60,14 @@ class TUCNChronobox {
   void BeginRun(int transition,int run,int time){
     MakeSingleHistograms();
   }
-
+  /*
   TMulticanvas* GetIV3Canvas(){
     TMulticanvas *canvas = new TMulticanvas("IV3 Canvas");
     canvas->AddHistoSingle(fIV3DriveClosedDiff,0);
     canvas->AddHistoSingle(fIV3DriveOpenedDiff,1);
     canvas->AddHistoSingle(fIV3ClosedOpenDiff,2);
     return canvas;
-  }
+    }*/
 
   TH1D *fIV3DriveClosedDiff;
   TH1D *fIV3DriveOpenedDiff;
