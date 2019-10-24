@@ -84,10 +84,10 @@ OBJS += TLi6GainCalib.o
 OBJS += TUCNCycleParameters.o
 OBJS += TUCNChronobox.o
 
-all: $(OBJS) ana.exe anaDisplay.exe midas2root.exe analyzer_persist.exe data_quality_checker.exe
+all: $(OBJS) online_analysis.exe anaDisplay.exe midas2root.exe analyzer_persist.exe data_quality_checker.exe
 # UCNAnalyzer.exe UCNDisplay.exe UCNRateMonitor.exe UCNDisplay3.exe
 
-ana.exe: ana.cxx $(OBJS) 
+online_analysis.exe: online_analysis.cxx $(OBJS) 
 	$(CXX) -o $@ $(CXXFLAGS) $^ $(LIBS) $(ROOTGLIBS) -lm -lz -lpthread -lssl -lutil
 
 anaDisplay.exe: anaDisplay.cxx $(OBJS) 
