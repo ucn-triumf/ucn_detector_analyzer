@@ -454,16 +454,6 @@ public:
 	sprintf(filename,"%s/StorageWithMonitorAfterIrradiation.png",dirname.c_str());
 	c1->SaveAs(filename);
 	
-	TGraphErrors* tmptmp = new TGraphErrors();
-	tmptmp->SetPoint(0,0,0);
-	tmptmp->SetPoint(1,1,1);
-	tmptmp->SetPoint(2,2,1);
-	tmptmp->Draw("AP*");
-	tmptmp->SetMarkerStyle(20);
-	sprintf(filename,"%s/test.png",dirname.c_str());
-	c1->Update();
-	c1->SaveAs(filename);
-	
 	TV1725PSDQL *psd_vs_ql = anaManager->GetV1725PSDvsQL();
 	TH2D *tmp3 = new TH2D(*(TH2D*)psd_vs_ql->GetHistogram(0));
 	for(int i = 1; i < 9; i++){
