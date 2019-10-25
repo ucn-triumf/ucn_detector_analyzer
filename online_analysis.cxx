@@ -360,9 +360,9 @@ public:
 	    outfile << "]" << std::endl;
 	    
 	    if(fHitsPerCycle[det].size()-1 == i){
-	      outfile << " }" << std::endl;
+	      outfile << "  }" << std::endl;
 	    }else{
-	      outfile << " }," << std::endl;
+	      outfile << "  }," << std::endl;
 	    }
 	  }
 	
@@ -477,7 +477,73 @@ public:
 	tmp2->Draw();
 	sprintf(filename,"%s/IV3DriveClosedDiff.png",dirname.c_str());
 	c1->SaveAs(filename);	  
-      
+	
+	
+	
+	// Write results to file.
+	// Make the directory
+	sprintf(filename,"%s/UCN_counts.json",dirname.c_str());        
+	std::fstream outfile;	    
+	outfile.open (filename, std::fstream::in | std::fstream::out | std::fstream::trunc);
+	if(!outfile.is_open()){
+	  std::cout << "Failed to open outfile: " << filename << std::endl;
+	  exit(0);
+	}else{
+	  std::cout << "Successfully opened file " << filename << std::endl;
+	}
+	outfile << "{ \n " << std::endl;
+	
+	
+	for(int det = 0; det < 3; det++){
+	  
+	  char detector[10];
+	  if(det == 0){
+	    sprintf(detector,"Li6");
+	  }else if(det == 1){
+	    sprintf(detector,"He3");
+	  }else{
+	    sprintf(detector,"He3Det2");
+
+	  }	
+	  outfile << "  \""<<detector<< "\" : { " << std::endl;;
+	  for(unsigned int i = 0; i < fHitsPerCycle[det].size(); i++){
+
+	    time_t t(fHitsPerCycle[det][i].first);
+	    struct tm *tm = localtime(&t);
+	    char date[256];
+	    
+	    strftime(date,sizeof(date),"%Y/%m/%d %H:%M:%S",tm);
+
+	    outfile << "    \"Cycle" << i << "\" : {" << std::endl;
+	    outfile << "      \"Start Time\" : \"" << date << "\", " << std::endl;
+	    outfile << "      \"Total Hits\" : " << fHitsPerCycle[det][i].second << ", " << std::endl;
+	    outfile << "      \"Hits per period\" : [";
+	    for(int per = 0; per < MaxPeriods; per++){
+	      outfile << fHitsPerCyclePerPeriod[det][per][i].second;
+	      if(per != (MaxPeriods-1)) outfile << ",";
+	    }
+	    outfile << "]" << std::endl;
+	    
+	    if(fHitsPerCycle[det].size()-1 == i){
+	      outfile << "    }" << std::endl;
+	    }else{
+	      outfile << "    }," << std::endl;
+	    }
+	  
+	
+	  }
+
+	  outfile << "  }";
+	  if(det != 2)outfile << ", ";
+	  outfile << std::endl;
+
+	}
+	 
+	outfile << "} \n " << std::endl; 
+	outfile.close();
+
+
+
       }
     }  
 #endif
