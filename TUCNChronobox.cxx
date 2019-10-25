@@ -109,12 +109,12 @@ int TUCNChronobox::ProcessMidasEvent(TDataContainer& dataContainer){
     struct timeval tp;
     gettimeofday(&tp,NULL);
 
-    std::cout << "Chrono nwords: " << nwords << std::endl;
+    if(0)    std::cout << "Chrono nwords: " << nwords << std::endl;
     for(int i = 0; i < nwords; i++){
       uint32_t word = data->GetData32()[i];
       int falling = (word & 0x1);
       if((word & 0xff000000) == 0xff000000){
-	std::cout << "Chrono rollover: " << std::hex << word << std::dec << std::endl;
+	if(0)std::cout << "Chrono rollover: " << std::hex << word << std::dec << std::endl;
 	fRolloverWord = word;
       }else if((word & 0xc0000000) == 0x80000000){	
 	int ch = (word & 0x7f000000) >> 24;
@@ -149,7 +149,7 @@ int TUCNChronobox::ProcessMidasEvent(TDataContainer& dataContainer){
 	}
 
 	
-	if(1 && ch < 32){
+	if(1 && ch != 16){
 	  std::cout << "Chrono " << ch ;
 	  if(falling) std::cout << " fall ";
 	  else        std::cout << " rise ";
