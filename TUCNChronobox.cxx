@@ -63,6 +63,16 @@ void TUCNChronobox::MakeSingleHistograms(){
   if (old) return;
 
   // otherwise make the histograms
+  fIV2DriveClosedDiff = new TH1D("IV2DriveClosedDiff","IV2: Closed State Time - Drive Time",4000,0,2);
+  fIV2DriveClosedDiff->SetXTitle("Closed State Stop Time - Valve Drive Time (s)");
+
+  fIV2DriveOpenedDiff = new TH1D("IV2DriveOpenDiff","IV2: Open State Time - Drive Time",4000,0,2);
+  fIV2DriveOpenedDiff->SetXTitle("Open State Time - Valve Drive Time (s)");
+
+  fIV2ClosedOpenDiff = new TH1D("IV2ClosedOpenDiff","IV2: Open State Time - Closed State Time",4000,0,2);
+  fIV2ClosedOpenDiff->SetXTitle("Open State Stop Time - Closed Time (s)");
+  
+  // otherwise make the histograms
   fIV3DriveClosedDiff = new TH1D("IV3DriveClosedDiff","IV3: Closed State Time - Drive Time",4000,0,2);
   fIV3DriveClosedDiff->SetXTitle("Closed State Stop Time - Valve Drive Time (s)");
 
@@ -71,6 +81,7 @@ void TUCNChronobox::MakeSingleHistograms(){
 
   fIV3ClosedOpenDiff = new TH1D("IV3ClosedOpenDiff","IV3: Open State Time - Closed State Time",4000,0,2);
   fIV3ClosedOpenDiff->SetXTitle("Open State Stop Time - Closed Time (s)");
+  
 
 }
 
@@ -160,6 +171,30 @@ int TUCNChronobox::ProcessMidasEvent(TDataContainer& dataContainer){
 		    << " tdiff (state)=" << full_time - fTimestamps[ch][!falling] 
 		    << std::endl;
 	}	
+
+	if(ch == 9 && falling && tdiff > 2){ // Falling edge of IV2 close (ch 9) - IV3 drive start (ch 25)
+	  std::cout << "9-25 diff!! " 
+		    << (full_time - fTimestamps[25][0])
+		    << " " << full_time << " " <<  fTimestamps[25][0]
+		    << " Chrono" << std::endl;
+	  fIV2DriveClosedDiff->Fill(full_time - fTimestamps[25][0]);
+	}
+
+	if(ch == 8 && !falling && tdiff > 2){ // Rising edge of IV2 open (ch 8) - IV3 drive start (ch 25)
+	  std::cout << "8-25 diff!! " 
+		    << (full_time - fTimestamps[25][0]) 
+		    << " " << full_time << " " <<  fTimestamps[25][0] 
+		    << " Chrono" << std::endl;
+	  fIV2DriveOpenedDiff->Fill(full_time - fTimestamps[25][0]);
+	}
+
+	if(ch == 8 && !falling && tdiff > 2){ // Rising edge of IV2 open (ch 8) -  falling edge of IV2 close (ch 9)
+	  std::cout << "8-9 diff!! " 
+		    << (full_time - fTimestamps[9][1]) 
+		    << " " << full_time << " " <<  fTimestamps[9][1]  
+		    << " Chrono" << std::endl;
+	  fIV2ClosedOpenDiff->Fill(full_time - fTimestamps[9][1]);
+	}
 
 	if(ch == 11 && falling && tdiff > 2){ // Falling edge of IV3 close (ch 11) - IV3 drive start (ch 26)
 	  std::cout << "11-26 diff!! " 

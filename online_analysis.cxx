@@ -404,6 +404,11 @@ public:
 	sprintf(filename,"%s/TransmissionDuringCounting.png",dirname.c_str());
 	c1->SaveAs(filename);
 	
+	tmp = anaManager->GetTransmissionWithPreStorageGraph();
+	tmp->Draw("AP*"); tmp->SetMarkerStyle(20);
+	sprintf(filename,"%s/TransmissionWithPreStorage.png",dirname.c_str());
+	c1->SaveAs(filename);
+	
 	tmp = anaManager->GetTransmissionDuringIrradiationGraph();
 	tmp->Draw("AP*"); tmp->SetMarkerStyle(20);
 	sprintf(filename,"%s/TransmissionDuringIrradiation.png",dirname.c_str());
@@ -411,7 +416,7 @@ public:
 	
 	tmp = anaManager->GetHe3DuringIrradiationGraph();
 	tmp->Draw("AP*"); tmp->SetMarkerStyle(20);
-	sprintf(filename,"%s/TransmissionDuringIrradiation.png",dirname.c_str());
+	sprintf(filename,"%s/He3DuringIrradiation.png",dirname.c_str());
 	c1->SaveAs(filename);
 	
 	tmp = anaManager->GetHe3DuringStorageGraph();

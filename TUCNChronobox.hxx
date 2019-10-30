@@ -58,9 +58,12 @@ class TUCNChronobox {
 
   /// Take actions at begin run
   void BeginRun(int transition,int run,int time){
-    MakeSingleHistograms();
+    //MakeSingleHistograms();
+    fIV3DriveClosedDiff->Reset();
+    fIV3DriveOpenedDiff->Reset();
+    fIV3ClosedOpenDiff->Reset();
   }
-  /*
+  /* 
   TMulticanvas* GetIV3Canvas(){
     TMulticanvas *canvas = new TMulticanvas("IV3 Canvas");
     canvas->AddHistoSingle(fIV3DriveClosedDiff,0);
@@ -69,6 +72,9 @@ class TUCNChronobox {
     return canvas;
     }*/
 
+  TH1D *fIV2DriveClosedDiff;
+  TH1D *fIV2DriveOpenedDiff;
+  TH1D *fIV2ClosedOpenDiff;
   TH1D *fIV3DriveClosedDiff;
   TH1D *fIV3DriveOpenedDiff;
   TH1D *fIV3ClosedOpenDiff;

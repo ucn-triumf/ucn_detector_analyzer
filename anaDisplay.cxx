@@ -81,7 +81,7 @@ public:
 
     // Add the common plots, for He3 and Li6 detectors
 
-    for(int i = 0; i < 3; i++){
+    for(int i = 2; i < 3; i++){
       std::cout << "Step " << i << std::endl;
       TUCNDetectorBaseClass* detector = anaManager->GetHe3DetectorAnalyzer();
       std::string tabname = std::string("He3 Analysis");
@@ -94,7 +94,7 @@ public:
       }
 
       // Charge Spectrum
-      AddSingleCanvas(new TFancyHistogramCanvas(detector->GetChargeHistograms(),
+      if(0)AddSingleCanvas(new TFancyHistogramCanvas(detector->GetChargeHistograms(),
                                                 "Charge"),tabname.c_str());
       
       // UCN Rate Vs Time
@@ -105,7 +105,7 @@ public:
       AddSingleCanvas(detector->GetHitsInCycleCumulCanvas(),tabname.c_str());
       
       // UCN Hits Per Cycle
-      AddSingleCanvas(detector->GetHitsPerCycleCanvas(),tabname.c_str());
+      if(0)AddSingleCanvas(detector->GetHitsPerCycleCanvas(),tabname.c_str());
 
       // UCN Hits Per Cycle histogram
       AddSingleCanvas(detector->GetHitsPerCycleHCanvas(),tabname.c_str());
@@ -118,12 +118,11 @@ public:
     AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetV1725_QL(),"Q-long"),"V1725 Details");
 
     // Add plots for V785 charge
-    AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetV785Histo(),"V785 Charge"),"V785 Details");
+    if(0)AddSingleCanvas(new TFancyHistogramCanvas(anaManager->GetV785Histo(),"V785 Charge"),"V785 Details");
  
-
     // Add for chronobox
-    AddSingleCanvas(new TFancyHistogramCanvas(anaManager->fUCNChronobox->fRisingEdgeDiff,"Rising Edge Differences"),"Chronobox");
-    AddSingleCanvas(new TFancyHistogramCanvas(anaManager->fUCNChronobox->fFallingEdgeDiff,"Falling Edge Differences"),"Chronobox");   
+    if(0)AddSingleCanvas(new TFancyHistogramCanvas(anaManager->fUCNChronobox->fRisingEdgeDiff,"Rising Edge Differences"),"Chronobox");
+    if(0)AddSingleCanvas(new TFancyHistogramCanvas(anaManager->fUCNChronobox->fFallingEdgeDiff,"Falling Edge Differences"),"Chronobox");   
     /*    AddSingleCanvas(new TFancyHistogramCanvas(anaManager->fUCNChronobox->fPulseWidths,"Pulse Widths"),"Chronobox");
     AddSingleCanvas(anaManager->fUCNChronobox->GetIV3Canvas(),"Chronobox");
     TMulticanvas *canvas = new TMulticanvas("IV3 Canvas ");
@@ -131,6 +130,11 @@ public:
     canvas->AddHistoSingle(anaManager->fUCNChronobox->fIV3DriveOpenedDiff,1);
     canvas->AddHistoSingle(anaManager->fUCNChronobox->fIV3ClosedOpenDiff,2);
     //AddSingleCanvas(canvas,"Chronobox");*/
+
+    AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->fUCNChronobox->fIV2DriveClosedDiff, "IV2 Drive/Closed"), "Chronobox");
+    AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->fUCNChronobox->fIV2DriveOpenedDiff, "IV2 Drive/Open"), "Chronobox");
+    AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->fUCNChronobox->fIV2ClosedOpenDiff,  "IV2 Closed/Open"), "Chronobox");
+
     AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->fUCNChronobox->fIV3DriveClosedDiff, "IV3 Drive/Closed"), "Chronobox");
     AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->fUCNChronobox->fIV3DriveOpenedDiff, "IV3 Drive/Open"), "Chronobox");
     AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->fUCNChronobox->fIV3ClosedOpenDiff, "IV3 Closed/Open"), "Chronobox");
@@ -179,6 +183,11 @@ public:
     anaViewer->ProcessMidasEvent(dataContainer, 'n', PSDMax, PSDMin);
 
     anaManager->ProcessMidasEvent(dataContainer);
+
+    if(0)
+      if(dataContainer.GetMidasData().GetSerialNumber() %1000 ==0)
+	std::cout << "IV3 histogram: " << anaManager->fUCNChronobox->fIV3DriveClosedDiff->GetEntries() 
+		  << " 0x" << anaManager->fUCNChronobox->fIV3DriveClosedDiff << std::endl;
   }
 
   void PlotCanvas(TDataContainer& dataContainer){
