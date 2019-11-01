@@ -59,9 +59,18 @@ class TUCNChronobox {
   /// Take actions at begin run
   void BeginRun(int transition,int run,int time){
     //MakeSingleHistograms();
-    fIV3DriveClosedDiff->Reset();
-    fIV3DriveOpenedDiff->Reset();
-    fIV3ClosedOpenDiff->Reset();
+fIV2DriveClosedDiff->Reset();
+  fIV2DriveOpenedDiff->Reset();
+  fIV2ClosedOpenedDiff->Reset();
+  fIV2NoDriveClosedDiff->Reset();
+  fIV2NoDriveOpenedDiff->Reset();
+  fIV2OpenedClosedDiff->Reset();
+  fIV3DriveClosedDiff->Reset();
+  fIV3DriveOpenedDiff->Reset();
+  fIV3ClosedOpenedDiff->Reset();
+  fIV3NoDriveClosedDiff->Reset();
+  fIV3NoDriveOpenedDiff->Reset();
+  fIV3OpenedClosedDiff->Reset(); 
   }
   /* 
   TMulticanvas* GetIV3Canvas(){
@@ -74,16 +83,16 @@ class TUCNChronobox {
 
   TH1D *fIV2DriveClosedDiff;
   TH1D *fIV2DriveOpenedDiff;
-  TH1D *fIV2ClosedOpenDiff;
+  TH1D *fIV2ClosedOpenedDiff;
   TH1D *fIV2NoDriveClosedDiff;
   TH1D *fIV2NoDriveOpenedDiff;
-  TH1D *fIV2OpenClosedDiff;
+  TH1D *fIV2OpenedClosedDiff;
   TH1D *fIV3DriveClosedDiff;
   TH1D *fIV3DriveOpenedDiff;
-  TH1D *fIV3ClosedOpenDiff;
+  TH1D *fIV3ClosedOpenedDiff;
   TH1D *fIV3NoDriveClosedDiff;
   TH1D *fIV3NoDriveOpenedDiff;
-  TH1D *fIV3OpenClosedDiff;
+  TH1D *fIV3OpenedClosedDiff;
 
  private:
 

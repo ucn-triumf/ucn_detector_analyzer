@@ -69,8 +69,8 @@ void TUCNChronobox::MakeSingleHistograms(){
   fIV2DriveOpenedDiff = new TH1D("IV2DriveOpenDiff","IV2: Open State Time - Drive Time",4000,0,2);
   fIV2DriveOpenedDiff->SetXTitle("Open State Time - Valve Drive Time (s)");
 
-  fIV2ClosedOpenDiff = new TH1D("IV2ClosedOpenDiff","IV2: Open State Time - Closed State Time",4000,0,2);
-  fIV2ClosedOpenDiff->SetXTitle("Open State Stop Time - Closed Time (s)");
+  fIV2ClosedOpenedDiff = new TH1D("IV2ClosedOpenDiff","IV2: Open State Time - Closed State Time",4000,0,2);
+  fIV2ClosedOpenedDiff->SetXTitle("Open State Stop Time - Closed Time (s)");
 
   fIV2NoDriveClosedDiff = new TH1D("IV2NoDriveClosedDiff","IV2: Closed State Time - No Drive Time",4000,0,2);
   fIV2NoDriveClosedDiff->SetXTitle("Closed State Stop Time - Valve No Drive Time (s)");
@@ -78,8 +78,8 @@ void TUCNChronobox::MakeSingleHistograms(){
   fIV2NoDriveOpenedDiff = new TH1D("IV2NoDriveOpenDiff","IV2: Open State Time - No Drive Time",4000,0,2);
   fIV2NoDriveOpenedDiff->SetXTitle("Open State Time - Valve No Drive Time (s)");
 
-  fIV2OpenClosedDiff = new TH1D("IV2OpenClosedDiff","IV2: Closed State Time - Open State Time",4000,0,2);
-  fIV2OpenClosedDiff->SetXTitle("Closed State Stop Time - Open Time (s)");
+  fIV2OpenedClosedDiff = new TH1D("IV2OpenClosedDiff","IV2: Closed State Time - Open State Time",4000,0,2);
+  fIV2OpenedClosedDiff->SetXTitle("Closed State Stop Time - Open Time (s)");
   
   fIV3DriveClosedDiff = new TH1D("IV3DriveClosedDiff","IV3: Closed State Time - Drive Time",4000,0,2);
   fIV3DriveClosedDiff->SetXTitle("Closed State Stop Time - Valve Drive Time (s)");
@@ -87,8 +87,8 @@ void TUCNChronobox::MakeSingleHistograms(){
   fIV3DriveOpenedDiff = new TH1D("IV3DriveOpenDiff","IV3: Open State Time - Drive Time",4000,0,2);
   fIV3DriveOpenedDiff->SetXTitle("Open State Time - Valve Drive Time (s)");
 
-  fIV3ClosedOpenDiff = new TH1D("IV3ClosedOpenDiff","IV3: Open State Time - Closed State Time",4000,0,2);
-  fIV3ClosedOpenDiff->SetXTitle("Open State Stop Time - Closed Time (s)");
+  fIV3ClosedOpenedDiff = new TH1D("IV3ClosedOpenDiff","IV3: Open State Time - Closed State Time",4000,0,2);
+  fIV3ClosedOpenedDiff->SetXTitle("Open State Stop Time - Closed Time (s)");
   
   fIV3NoDriveClosedDiff = new TH1D("IV3NoDriveClosedDiff","IV3: Closed State Time - No Drive Time",4000,0,2);
   fIV3NoDriveClosedDiff->SetXTitle("Closed State Stop Time - Valve No Drive Time (s)");
@@ -96,8 +96,8 @@ void TUCNChronobox::MakeSingleHistograms(){
   fIV3NoDriveOpenedDiff = new TH1D("IV3NoDriveOpenDiff","IV3: Open State Time - No Drive Time",4000,0,2);
   fIV3NoDriveOpenedDiff->SetXTitle("Open State Time - Valve No Drive Time (s)");
 
-  fIV3OpenClosedDiff = new TH1D("IV3OpenClosedDiff","IV3: Closed State Time - Open State Time",4000,0,2);
-  fIV3OpenClosedDiff->SetXTitle("Closed State Stop Time - Open Time (s)");
+  fIV3OpenedClosedDiff = new TH1D("IV3OpenClosedDiff","IV3: Closed State Time - Open State Time",4000,0,2);
+  fIV3OpenedClosedDiff->SetXTitle("Closed State Stop Time - Open Time (s)");
 
 }
 
@@ -194,7 +194,7 @@ int TUCNChronobox::ProcessMidasEvent(TDataContainer& dataContainer){
 	}
 
 	if(ch == 8 && !falling && tdiff > 2){ // Rising edge of IV2 open (ch 8) -  falling edge of IV2 close (ch 9)
-	  fIV2ClosedOpenDiff->Fill(full_time - fTimestamps[9][1]);
+	  fIV2ClosedOpenedDiff->Fill(full_time - fTimestamps[9][1]);
 	}
 
 	if(ch == 9 && !falling && tdiff > 2){ // rising edge of IV2 close (ch 9) - IV2 no drive start (ch 25)
@@ -206,7 +206,7 @@ int TUCNChronobox::ProcessMidasEvent(TDataContainer& dataContainer){
 	}
 
 	if(ch == 9 && !falling && tdiff > 2){ //  Rising edge of IV2 close (ch 9) - Falling edge of IV2 open (ch 8)
-	  fIV2OpenClosedDiff->Fill(full_time - fTimestamps[8][1]);	  
+	  fIV2OpenedClosedDiff->Fill(full_time - fTimestamps[8][1]);	  
 	}
 
 
@@ -221,7 +221,7 @@ int TUCNChronobox::ProcessMidasEvent(TDataContainer& dataContainer){
 	}
 
 	if(ch == 10 && !falling && tdiff > 2){ // Rising edge of IV3 open (ch 10) -  falling edge of IV3 close (ch 11)
-	  fIV3ClosedOpenDiff->Fill(full_time - fTimestamps[11][1]);
+	  fIV3ClosedOpenedDiff->Fill(full_time - fTimestamps[11][1]);
 	}
 
 	if(ch == 11 && !falling && tdiff > 2){ // rising edge of IV3 close (ch 11) - IV3 no drive start (ch 26)
@@ -233,7 +233,7 @@ int TUCNChronobox::ProcessMidasEvent(TDataContainer& dataContainer){
 	}
 
 	if(ch == 11 && !falling && tdiff > 2){ //  Rising edge of IV3 close (ch 11) - Falling edge of IV3 open (ch 10)
-	  fIV3OpenClosedDiff->Fill(full_time - fTimestamps[10][1]);
+	  fIV3OpenedClosedDiff->Fill(full_time - fTimestamps[10][1]);
 	}
 
 

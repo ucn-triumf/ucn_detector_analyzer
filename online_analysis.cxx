@@ -468,13 +468,68 @@ public:
 	sprintf(filename,"%s/Li6_PSD_vs_QL.png",dirname.c_str());
 	c1->SaveAs(filename);
 		
-	TH1D *tmp2 =  anaManager->fUCNChronobox->fIV3DriveClosedDiff;
+	TH1D *tmp2 =  anaManager->fUCNChronobox->fIV2DriveClosedDiff;
+	tmp2->Draw();
+	sprintf(filename,"%s/IV2DriveClosedDiff.png",dirname.c_str());
+	c1->SaveAs(filename);	  
+		
+	tmp2 =  anaManager->fUCNChronobox->fIV2DriveOpenedDiff;
+	tmp2->Draw();
+	sprintf(filename,"%s/IV2DriveOpenedDiff.png",dirname.c_str());
+	c1->SaveAs(filename);	  
+
+	tmp2 =  anaManager->fUCNChronobox->fIV2ClosedOpenedDiff;
+	tmp2->Draw();
+	sprintf(filename,"%s/IV2ClosedOpenedDiff.png",dirname.c_str());
+	c1->SaveAs(filename);	  
+
+	tmp2 =  anaManager->fUCNChronobox->fIV2NoDriveClosedDiff;
+	tmp2->Draw();
+	sprintf(filename,"%s/IV2NoDriveClosedDiff.png",dirname.c_str());
+	c1->SaveAs(filename);	  
+		
+	tmp2 =  anaManager->fUCNChronobox->fIV2NoDriveOpenedDiff;
+	tmp2->Draw();
+	sprintf(filename,"%s/IV2NoDriveOpenedDiff.png",dirname.c_str());
+	c1->SaveAs(filename);	  
+
+	tmp2 =  anaManager->fUCNChronobox->fIV2OpenedClosedDiff;
+	tmp2->Draw();
+	sprintf(filename,"%s/IV2OpenedClosedDiff.png",dirname.c_str());
+	c1->SaveAs(filename);	  
+	
+	tmp2 =  anaManager->fUCNChronobox->fIV3DriveClosedDiff;
 	tmp2->Draw();
 	sprintf(filename,"%s/IV3DriveClosedDiff.png",dirname.c_str());
 	c1->SaveAs(filename);	  
+		
+	tmp2 =  anaManager->fUCNChronobox->fIV3DriveOpenedDiff;
+	tmp2->Draw();
+	sprintf(filename,"%s/IV3DriveOpenDiff.png",dirname.c_str());
+	c1->SaveAs(filename);	  
+
+	tmp2 =  anaManager->fUCNChronobox->fIV3ClosedOpenedDiff;
+	tmp2->Draw();
+	sprintf(filename,"%s/IV3ClosedOpenedDiff.png",dirname.c_str());
+	c1->SaveAs(filename);	  
+
+	tmp2 =  anaManager->fUCNChronobox->fIV3NoDriveClosedDiff;
+	tmp2->Draw();
+	sprintf(filename,"%s/IV3NoDriveClosedDiff.png",dirname.c_str());
+	c1->SaveAs(filename);	  
+		
+	tmp2 =  anaManager->fUCNChronobox->fIV3NoDriveOpenedDiff;
+	tmp2->Draw();
+	sprintf(filename,"%s/IV3NoDriveOpenedDiff.png",dirname.c_str());
+	c1->SaveAs(filename);	  
+
+	tmp2 =  anaManager->fUCNChronobox->fIV3OpenedClosedDiff;
+	tmp2->Draw();
+	sprintf(filename,"%s/IV3OpenedClosedDiff.png",dirname.c_str());
+	c1->SaveAs(filename);	  
 	
-	
-	
+
+
 	// Write results to file.
 	// Make the directory
 	sprintf(filename,"%s/UCN_counts.json",dirname.c_str());        

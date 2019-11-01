@@ -109,7 +109,7 @@ public:
       if(0)AddSingleCanvas(detector->GetHitsPerCycleCanvas(),tabname.c_str());
 
       // UCN Hits Per Cycle histogram
-      AddSingleCanvas(detector->GetHitsPerCycleHCanvas(),tabname.c_str());
+      if(0)AddSingleCanvas(detector->GetHitsPerCycleHCanvas(),tabname.c_str());
     }
 
     // Add detailed specific plots for V1725
@@ -134,13 +134,17 @@ public:
 
     AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->fUCNChronobox->fIV2DriveClosedDiff, "IV2 Drive/Closed"), "Chronobox");
     AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->fUCNChronobox->fIV2DriveOpenedDiff, "IV2 Drive/Open"), "Chronobox");
-    AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->fUCNChronobox->fIV2ClosedOpenDiff,  "IV2 Closed/Open"), "Chronobox");
+    AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->fUCNChronobox->fIV2ClosedOpenedDiff,  "IV2 Closed/Open"), "Chronobox");
+    AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->fUCNChronobox->fIV2NoDriveClosedDiff, "IV2 No Drive/Closed"), "Chronobox");
+    AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->fUCNChronobox->fIV2NoDriveOpenedDiff, "IV2 No Drive/Open"), "Chronobox");
+    AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->fUCNChronobox->fIV2OpenedClosedDiff,  "IV2 Open/Closed"), "Chronobox");
 
     AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->fUCNChronobox->fIV3DriveClosedDiff, "IV3 Drive/Closed"), "Chronobox");
     AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->fUCNChronobox->fIV3DriveOpenedDiff, "IV3 Drive/Open"), "Chronobox");
-    AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->fUCNChronobox->fIV3ClosedOpenDiff, "IV3 Closed/Open"), "Chronobox");
-
-
+    AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->fUCNChronobox->fIV3ClosedOpenedDiff, "IV3 Closed/Open"), "Chronobox");
+    AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->fUCNChronobox->fIV3NoDriveClosedDiff, "IV3 No Drive/Closed"), "Chronobox");
+    AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->fUCNChronobox->fIV3DriveOpenedDiff, "IV3 No Drive/Open"), "Chronobox");
+    AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->fUCNChronobox->fIV3OpenedClosedDiff, "IV3 Open/Closed"), "Chronobox");
 
     AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->GetTransmissionDuringCountingGraph(), "Li6/He3 ratio during counting"), "Transmission");
     AddSingleCanvas(new TSimpleHistogramCanvas(anaManager->GetHe3DuringIrradiationGraph(), "He3 counts during irradiation"), "Transmission");

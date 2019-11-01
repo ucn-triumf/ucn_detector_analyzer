@@ -344,6 +344,7 @@ void TUCNDetectorBaseClass::ProcessMidasEvent(TDataContainer& dataContainer){
     fHitsInCycleIntime->Reset();
   }
   
+  /*
   fHitsPerCycle->Set(0);
   fHitsPerCycleIntime->Set(0);
   double maxCycle = 0;
@@ -358,6 +359,7 @@ void TUCNDetectorBaseClass::ProcessMidasEvent(TDataContainer& dataContainer){
   fHitsPerCycle->SetMinimum(0);
   fHitsPerCycle->SetMaximum(maxCycle*1.2);
 
+  
   fHitsPerCycleH->Reset();
   fHitsPerCycleHIntime->Reset();
   for(unsigned int i = 0; i < fHitsPerCycleVector.size(); i++){
@@ -366,7 +368,7 @@ void TUCNDetectorBaseClass::ProcessMidasEvent(TDataContainer& dataContainer){
     fHitsPerCycleH->SetBinContent(bin,fHitsPerCycleVector[i].second+0.0001);
     fHitsPerCycleHIntime->SetBinContent(bin,fHitsPerCycleVectorIntime[i].second+0.0001);
   }
-
+  */
 
 
   // Fill the tree, if requested;
