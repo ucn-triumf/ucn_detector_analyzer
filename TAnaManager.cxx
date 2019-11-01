@@ -66,9 +66,9 @@ TAnaManager::TAnaManager(bool isOffline, bool saveTree){
   fHe3StorageBackgroundGraph = new TGraphErrors();
   fHe3StorageBackgroundGraph->SetTitle("He3 background during storage period;Cycle no.;He3 background rate (s^{-1})");
   fLi6StorageGraph = new TGraphErrors();
-  fLi6StorageGraph->SetTitle(";Storage time (s);Background-corrected Li6 counts");
+  fLi6StorageGraph->SetTitle("Unnormalized storage with Li6 detector;Storage time (s);Background-corrected Li6 counts");
   fHe3StorageGraph = new TGraphErrors();
-  fHe3StorageGraph->SetTitle(";Storage time (s);Background-corrected He3 counts");
+  fHe3StorageGraph->SetTitle("Unnormalized storage with He3 detector;Storage time (s);Background-corrected He3 counts");
   fStorageWithMonitorDuringIrradiation = new TGraphErrors();
   fStorageWithMonitorDuringIrradiation->SetTitle("Storage with normalization during irradiation;Storage time (s);Background-corrected Li6-He3 ratio");
   fStorageWithMonitorAfterIrradiation = new TGraphErrors();
@@ -219,7 +219,7 @@ int TAnaManager::ProcessMidasEvent(TDataContainer& dataContainer){
 
       /******** TRANSMISSION WITH PRE-STORAGE *******/
       transmission = Li6corrected/He3Hits[1];
-      transmissionerr = std::sqrt(Li6correctederr / Li6corrected + 1. / He3Hits[1]) * transmission;
+      transmissionerr = std::sqrt(std::pow(Li6correctederr / Li6corrected, 2) + 1. / He3Hits[1]) * transmission;
       fTransmissionWithPreStorage->Set(N + 1);
       fTransmissionWithPreStorage->SetPoint(N, N, transmission);
       fTransmissionWithPreStorage->SetPointError(N, 0., transmissionerr);
