@@ -81,7 +81,8 @@ public:
 
     // Add the common plots, for He3 and Li6 detectors
 
-    for(int i = 2; i < 3; i++){
+    for(int i = 0; i < 3; i++){
+      if(i == 1) continue;
       std::cout << "Step " << i << std::endl;
       TUCNDetectorBaseClass* detector = anaManager->GetHe3DetectorAnalyzer();
       std::string tabname = std::string("He3 Analysis");

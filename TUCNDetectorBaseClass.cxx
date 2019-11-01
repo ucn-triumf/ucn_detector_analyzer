@@ -282,7 +282,9 @@ void TUCNDetectorBaseClass::ProcessMidasEvent(TDataContainer& dataContainer){
     double time_in_cycle = hittime - fCycleStartTime;
     fHitsInCycle->Fill(time_in_cycle);
     fHitsInCycleCumul->Fill(time_in_cycle);
+    //if(fIsLi6) std::cout << "Time cycle: " << time_in_cycle << std::endl;
     fTotalHitsCycle++;
+    //if(fIsLi6) std::cout << "Total: " << fTotalHitsCycle << std::endl;
     if(hittime >= fSeqValveOpenTime && hittime < fSeqValveCloseTime){
       fTotalHitsCycleIntime++;
       fHitsInCycleIntime->Fill(time_in_cycle);

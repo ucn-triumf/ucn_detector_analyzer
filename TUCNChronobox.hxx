@@ -75,9 +75,15 @@ class TUCNChronobox {
   TH1D *fIV2DriveClosedDiff;
   TH1D *fIV2DriveOpenedDiff;
   TH1D *fIV2ClosedOpenDiff;
+  TH1D *fIV2NoDriveClosedDiff;
+  TH1D *fIV2NoDriveOpenedDiff;
+  TH1D *fIV2OpenClosedDiff;
   TH1D *fIV3DriveClosedDiff;
   TH1D *fIV3DriveOpenedDiff;
   TH1D *fIV3ClosedOpenDiff;
+  TH1D *fIV3NoDriveClosedDiff;
+  TH1D *fIV3NoDriveOpenedDiff;
+  TH1D *fIV3OpenClosedDiff;
 
  private:
 
