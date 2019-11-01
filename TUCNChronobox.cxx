@@ -184,6 +184,7 @@ int TUCNChronobox::ProcessMidasEvent(TDataContainer& dataContainer){
 		    << std::endl;
 	}	
 
+	// IV2
 	if(ch == 9 && falling && tdiff > 2){ // Falling edge of IV2 close (ch 9) - IV2 drive start (ch 25)
 	  fIV2DriveClosedDiff->Fill(full_time - fTimestamps[25][0]);
 	}
@@ -205,10 +206,12 @@ int TUCNChronobox::ProcessMidasEvent(TDataContainer& dataContainer){
 	}
 
 	if(ch == 9 && !falling && tdiff > 2){ //  Rising edge of IV2 close (ch 9) - Falling edge of IV2 open (ch 8)
-	  fIV3OpenClosedDiff->Fill(full_time - fTimestamps[8][0]);
+	  fIV2OpenClosedDiff->Fill(full_time - fTimestamps[8][1]);	  
 	}
 
 
+
+	// IV3
 	if(ch == 11 && falling && tdiff > 2){ // Falling edge of IV3 close (ch 11) - IV3 drive start (ch 26)
 	  fIV3DriveClosedDiff->Fill(full_time - fTimestamps[26][0]);
 	}
