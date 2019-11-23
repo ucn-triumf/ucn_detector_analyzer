@@ -6,12 +6,13 @@
 const int Nchannels = 16;
 #include <sys/time.h>
 
-// Keep track of which V1720 have UCN hits and which have monitoring hits
+// Keep track of which V1725 have UCN hits and which have monitoring hits
 const bool ucn_channels[16] = { true,  true,  true,  true,
-				true,  true,  true, false,
-				true, true, false, false,
+				true,  true,  true, true,
+				true, false, false, false,
 				false, false, false, false};
 /// End Edit above: June 7, 2018 (BJ)
+/// Updated for V1725 digitizer: Nov 22, 2019 (WS)
 /// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
