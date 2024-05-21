@@ -7,105 +7,103 @@
 #include "TRootanaEventLoop.hxx"
 #include "TAnaManager.hxx"
 #include "TUCNAnaViewer3.h"
-#include "XmlOdb.h"
+#include "mvodb.h"
 
-class Analyzer: public TRootanaEventLoop {
-
-
-
+class Analyzer: public TRootanaEventLoop{
 
 public:
 
-  // Two analysis managers.  Define and fill histograms in 
-  // analysis manager.
-  TAnaManager *anaManager;
-  TUCNAnaViewer3 *anaViewer;
+    // Two analysis managers.  Define and fill histograms in analysis manager.
+    TAnaManager *anaManager;
+    TUCNAnaViewer3 *anaViewer;
 
-  
-  Analyzer() {
+    Analyzer(){
+        SetOutputFilename("ucn_run_");
+        DisableAutoMainWindow();
+        UseBatchMode();
+        SetOnlineName("midas2root");
+        anaManager = 0;
+        anaViewer = 0;
+    };
 
-    SetOutputFilename("ucn_tree_");
-    DisableAutoMainWindow();
-    UseBatchMode();
-    SetOnlineName("midas2root");
-    anaManager = 0;
-    anaViewer = 0;
-  };
+    virtual ~Analyzer() {};
 
-  virtual ~Analyzer() {};
+    void Initialize(){
 
-  void Initialize(){
+        #ifdef HAVE_THTTP_SERVER
+            std::cout << "Using THttpServer in read/write mode" << std::endl;
+            SetTHttpServerReadWrite();
+        #endif
 
-#ifdef HAVE_THTTP_SERVER
-    std::cout << "Using THttpServer in read/write mode" << std::endl;
-    SetTHttpServerReadWrite();
-#endif
+        // Start the anaManager with flag to write trees.
+        anaManager = 0; //new TAnaManager(IsOffline(),true);
+        anaViewer  = 0; //new TUCNAnaViewer3();
+    }
 
-    // Start the anaManager with flag to write trees.
-    anaManager = 0; //new TAnaManager(IsOffline(),true);
-    anaViewer  = 0; //new TUCNAnaViewer3();
-    
-  }
+    void InitManager(){
 
-  void InitManager(){
-    
-    if(anaManager)
-      delete anaManager;
-    anaManager = new TAnaManager(IsOffline(),true);
-    if(anaViewer)
-      delete anaViewer;
-    anaViewer  = new TUCNAnaViewer3();
-    
-    
-  }
-  
-  
-  void BeginRun(int transition,int run,int time){
-    
-    InitManager();
-    anaManager->BeginRun(transition, run, time);
+        if(anaManager)
+            delete anaManager;
+        anaManager = new TAnaManager(IsOffline(), GetODB(), true);
+        if(anaViewer)
+            delete anaViewer;
+        anaViewer  = new TUCNAnaViewer3();
+    }
 
-    // Get the run comment and the shifter from the ODB dump at BOR.
-    XmlOdb *odb = dynamic_cast<XmlOdb*>(GetODB());
-    TTree *headerTree = new TTree("headerTree", "headerTree");
+    void BeginRun(int transition, int run, int time){
 
-    std::string shifter_string(odb->odbReadString("/Experiment/Edit on start/Shifters",0,"XXX"));
-    std::string experiment_string(odb->odbReadString("/Experiment/Edit on start/Experiment number",0,"XXX"));
-    std::string comment_string(odb->odbReadString("/Experiment/Edit on start/Comment",0,"XXX"));
-    headerTree->Branch("shifter", &shifter_string);
-    headerTree->Branch("comment", &comment_string);
-    headerTree->Branch("experimentNumber", &experiment_string);
-    headerTree->Fill();
- 
-    std::cout << "Run shifter " << shifter_string << std::endl;
-    std::cout << "Experiment number " << experiment_string << std::endl;
-    std::cout << "Run comment " << comment_string << std::endl;
-    
-    
-  }
+        InitManager();
+        anaManager->BeginRun(transition, run, time);
 
+        // iterate through the Edit on start keys and fetch all values
+        MVOdb *odb = GetODB();
+        TTree *headerTree = new TTree("headerTree", "headerTree");
 
-  bool ProcessMidasEvent(TDataContainer& dataContainer){
+        // try to get all edit on start values
+        std::string path = std::string("/Experiment/Edit on start/");
 
-    if(!anaManager) InitManager();
+        std::vector<std::string> varname = std::vector<std::string>();
+        std::vector<int> tid = std::vector<int>();
+        std::vector<int> num_values = std::vector<int>();
+        std::vector<int> total_size = std::vector<int>();
+        std::vector<int> item_size = std::vector<int>();
+        MVOdbError* error = new MVOdbError();
 
-    float PSDMax, PSDMin;   
-    anaViewer->ProcessMidasEvent(dataContainer, 'n', PSDMax, PSDMin);
+        MVOdb *odb_editonstart = odb->Chdir(path.c_str());
+        odb_editonstart->ReadDir(&varname, &tid, &num_values, &total_size, &item_size, error);
 
-    anaManager->ProcessMidasEvent(dataContainer);
-    
-    return true;
-  }
+        // make branches and get odb info
+        std::vector<std::string> odb_header = std::vector<std::string>();
+        odb_header.resize(varname.size()); // prevents segfault on tree fill
 
+        for (long unsigned int i=0; i<varname.size(); i++){
+            odb->RS((path+varname[i]).c_str(), &odb_header[i]);
+            headerTree->Branch(varname[i].c_str(), &odb_header[i]);
+        }
+        headerTree->Fill();
 
-}; 
+        // print header info
+        for (long unsigned int i=0; i<varname.size(); i++){
+            std::cout << varname[i] << ": " << odb_header[i] << std::endl;
+        }
+    }
 
+    bool ProcessMidasEvent(TDataContainer& dataContainer){
 
-int main(int argc, char *argv[])
-{
+        if(!anaManager)
+            InitManager();
 
-  Analyzer::CreateSingleton<Analyzer>();
-  return Analyzer::Get().ExecuteLoop(argc, argv);
+        float PSDMax, PSDMin;
+        anaViewer->ProcessMidasEvent(dataContainer, 'n', PSDMax, PSDMin);
+        anaManager->ProcessMidasEvent(dataContainer);
 
+        return true;
+    }
+
+};
+
+int main(int argc, char *argv[]){
+    Analyzer::CreateSingleton<Analyzer>();
+    return Analyzer::Get().ExecuteLoop(argc, argv);
 }
 
