@@ -88,7 +88,6 @@ class TUCNBaseTree {
 
         const char* BANKNAME;
         const char* TREENAME;
-        const char* ODBPATH_KEY;
         const char* ODBPATH_NAMES;
 };
 
