@@ -10,83 +10,71 @@
 
 class Analyzer: public TRootanaEventLoop {
 
+    public:
+
+        // Two analysis managers.  Define and fill histograms in
+        // analysis manager.
+        TAnaManager *anaManager;
+        TUCNAnaViewer3 *anaViewer;
 
 
+        Analyzer() {
 
-public:
+            SetOutputFilename("ucn_analyzer_output");
+            DisableAutoMainWindow();
+            UseBatchMode();
+            SetOnlineName("jsroot_server_current");
+            anaManager = 0;
+            anaViewer = 0;
+        };
 
-  // Two analysis managers.  Define and fill histograms in 
-  // analysis manager.
-  TAnaManager *anaManager;
-  TUCNAnaViewer3 *anaViewer;
+        virtual ~Analyzer() {};
 
-  
-  Analyzer() {
+        void Initialize(){
 
-    SetOutputFilename("ucn_analyzer_output");
-    DisableAutoMainWindow();
-    UseBatchMode();
-    SetOnlineName("jsroot_server_current");
-    anaManager = 0;
-    anaViewer = 0;
-  };
+            #ifdef HAVE_THTTP_SERVER
+                std::cout << "Using THttpServer in read/write mode" << std::endl;
+                SetTHttpServerReadWrite();
+            #endif
 
-  virtual ~Analyzer() {};
+            anaManager = new TAnaManager(IsOffline(), GetODB());
+            anaViewer  = new TUCNAnaViewer3();
 
-  void Initialize(){
+        }
 
-#ifdef HAVE_THTTP_SERVER
-    std::cout << "Using THttpServer in read/write mode" << std::endl;
-    SetTHttpServerReadWrite();
-#endif
+        void InitManager(){
+            if(anaManager)
+                delete anaManager;
+            anaManager = new TAnaManager(IsOffline(), GetODB());
 
-    anaManager = new TAnaManager(IsOffline());
-    anaViewer  = new TUCNAnaViewer3();
-    
-  }
+            if(anaViewer)
+                delete anaViewer;
+            anaViewer  = new TUCNAnaViewer3();
+        }
 
-  void InitManager(){
-    
-    if(anaManager)
-      delete anaManager;
-    anaManager = new TAnaManager(IsOffline());
-    if(anaViewer)
-      delete anaViewer;
-    anaViewer  = new TUCNAnaViewer3();
-    
-    
-  }
-  
-  
-  void BeginRun(int transition,int run,int time){
-    
-    InitManager();
-    anaManager->BeginRun(transition, run, time);
-    
-  }
+        void BeginRun(int transition,int run,int time){
+
+            InitManager();
+            anaManager->BeginRun(transition, run, time);
+        }
 
 
-  bool ProcessMidasEvent(TDataContainer& dataContainer){
+    bool ProcessMidasEvent(TDataContainer& dataContainer){
 
-    if(!anaManager) InitManager();
+        if(!anaManager) InitManager();
 
-    float PSDMax, PSDMin;   
-    anaViewer->ProcessMidasEvent(dataContainer, 'n', PSDMax, PSDMin);
+        float PSDMax, PSDMin;
+        anaManager->ProcessMidasEvent(dataContainer);
+        anaViewer->ProcessMidasEvent(dataContainer, 'n', PSDMax, PSDMin);
 
-    anaManager->ProcessMidasEvent(dataContainer);
-    
-    return true;
-  }
+        return true;
+    }
+};
 
-
-}; 
-
-
+// execute
 int main(int argc, char *argv[])
 {
-
-  Analyzer::CreateSingleton<Analyzer>();
-  return Analyzer::Get().ExecuteLoop(argc, argv);
-
+    Analyzer::CreateSingleton<Analyzer>();
+    return Analyzer::Get().ExecuteLoop(argc, argv);
 }
 
