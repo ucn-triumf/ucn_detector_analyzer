@@ -1,6 +1,8 @@
 #ifndef TAnaManager_h
 #define TAnaManager_h
 
+#include "mvodb.h"
+
 // Use this list here to decide which type of equipment to use.
 
 #define USE_V1720
@@ -15,50 +17,52 @@
 
 /// This is the main analysis manager program for the UCN detectors.
 class TAnaManager  {
-public:
-  TAnaManager(bool isOffline, bool saveTree = false);
-  virtual ~TAnaManager(){};
+    public:
+        TAnaManager(bool isOffline, MVOdb* odb = 0, bool saveTree = false);
+        virtual ~TAnaManager(){};
 
-  /// Processes the midas event, fills histograms, etc.
-  int ProcessMidasEvent(TDataContainer& dataContainer);
-  
-  void BeginRun(int transition,int run,int time) {
-    if(fLi6Detector) fLi6Detector->BeginRun(transition,run,time);
-  }
+        /// Processes the midas event, fills histograms, etc.
+        int ProcessMidasEvent(TDataContainer& dataContainer);
 
-  // Method to force analyzer to use simpler PC timestamps
-  void UsePCTime(){
-    if(fHe3Detector) fHe3Detector->UsePCTime();
-    if(fLi6Detector) fLi6Detector->UsePCTime();    
-  }
-  /// Methods for determining if we have a particular set of histograms.
-  //bool HaveHe3RateHistograms();
-  bool HaveV1720Histograms();
-  /// Methods for getting particular set of histograms.
-  TV1720Waveform* GetV1720Histograms();
-  //THe3RateVsTime* GetHe3RateHistograms();
-  THe3CountsInSequence* GetHe3CountsHistograms();
+        void BeginRun(int transition, int run, int time) {
+            if(fLi6Detector) fLi6Detector->BeginRun(transition,run,time);
+        }
 
-  TUCNDetectorBaseClass* GetHe3DetectorAnalyzer(){return fHe3Detector;}
-  TUCNDetectorBaseClass* GetLi6DetectorAnalyzer(){return fLi6Detector;}
-  
-  TV792Histograms* GetV785Histo(){return fV785Charge;}
+        // Method to force analyzer to use simpler PC timestamps
+        void UsePCTime(){
+            if(fHe3Detector) fHe3Detector->UsePCTime();
+            if(fLi6Detector) fLi6Detector->UsePCTime();
+        }
 
-private:
-  
-  TV1720Waveform *fV1720Waveform;
-  //THe3RateVsTime* fHe3RateVsTime;
-  THe3CountsInSequence* fHe3CountsInSequence;
-  
-  THe3Detector  *fHe3Detector;
-  TLi6Detector  *fLi6Detector;
+        // Methods for determining if we have a particular set of histograms.
+        //bool HaveHe3RateHistograms();
+        bool HaveV1720Histograms();
 
-  TLNDDetectorTree *fLNDDetectorTree;
-  TUCNSourceEpicsTree *fSourceEpicsTree;
-  TUCNBeamlineEpicsTree *fBeamlineEpicsTree;
+        /// Methods for getting particular set of histograms.
+        TV1720Waveform* GetV1720Histograms();
+        //THe3RateVsTime* GetHe3RateHistograms();
+        THe3CountsInSequence* GetHe3CountsHistograms();
 
-  // Histogram of all V785 Charges
-  TV792Histograms *fV785Charge;
+        TUCNDetectorBaseClass* GetHe3DetectorAnalyzer(){return fHe3Detector;}
+        TUCNDetectorBaseClass* GetLi6DetectorAnalyzer(){return fLi6Detector;}
+
+        TV792Histograms* GetV785Histo(){return fV785Charge;}
+
+    private:
+
+        TV1720Waveform *fV1720Waveform;
+        //THe3RateVsTime* fHe3RateVsTime;
+        THe3CountsInSequence* fHe3CountsInSequence;
+
+        THe3Detector  *fHe3Detector;
+        TLi6Detector  *fLi6Detector;
+
+        TLNDDetectorTree *fLNDDetectorTree;
+        TUCNSourceEpicsTree *fSourceEpicsTree;
+        TUCNBeamlineEpicsTree *fBeamlineEpicsTree;
+
+        // Histogram of all V785 Charges
+        TV792Histograms *fV785Charge;
 
 };
 
