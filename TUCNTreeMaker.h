@@ -1,32 +1,23 @@
 #ifndef TUCNTreeMaker_h
 #define TUCNTreeMaker_h
 
-// This file contains classes for making
-
-
 #include <string>
 #include "TTree.h"
 #include "TUCNHit.hxx"
 #include "TDataContainer.hxx"
 #include "mvodb.h"
 
-
 // This class will make the tree of UCN hits and the separate tree of sequence transitions
 class TUCNHitsTree {
     public:
-
         TUCNHitsTree(std::string name);
-
         void FillHits(TUCNHitCollection& hits, int isUCN);
         void FillTransition(double icycleStartTime, double icycleValveOpenTime,
                             double icycleValveCloseTime, double icycleDelayTime,
                             double icycleOpenInterval);
 
-
     private:
-
         std::string detector_name;
-
         TTree * tRunTran; // run transitions
         int     tRunNum;
         int     tTime;
@@ -58,60 +49,52 @@ class TUCNHitsTree {
         Short_t tIsUCN;
 };
 
-// This class will make the tree of LND thermal variables.
-class TLNDDetectorTree {
- public:
-
-  TLNDDetectorTree();
-
-  void FillTree(TDataContainer& dataContainer);
-
-
- private:
-
-  TTree *tLND;
-
-  int timestamp;
-  double LND_Reading;
-};
-
-// Base class for making trees with saved data
+// Base class for making trees with saved data such as EPICS variables
 class TUCNBaseTree {
     public:
-        TUCNBaseTree(MVOdb* odb);
+        TUCNBaseTree(MVOdb* odb,
+                     char const* bankname, // midas bank from which to fetch data
+                     char const* treename, // name of tree to save in file
+                     char const* odbpath); // path to list of names in odb
         void FillTree(TDataContainer& dataContainer);
 
     protected:
-        TTree *datatree;
+        TTree *datatree; // tree with final data
         int timestamp;
-        std::vector<double> values;
-
-        const char* BANKNAME;
-        const char* TREENAME;
-        const char* ODBPATH_NAMES;
+        std::vector<double> values; // holds data for placement in tree
+        const char* bank; // midas bank from which to fetch data
 };
+
+/// Derived classes from TUCNBaseTree
 
 // This class will make the tree of source epics variables.
 class TUCNSourceEpicsTree: public TUCNBaseTree {
     public:
-        using TUCNBaseTree::TUCNBaseTree;
-
-    protected:
-        static constexpr const char* BANKNAME = "EPSR";
-        static constexpr const char* TREENAME = "SourceEpicsTree";
-        static constexpr const char* ODBPATH_NAMES = "/Equipment/SourceEpics/Settings/Names";
+        TUCNSourceEpicsTree(MVOdb* odb):
+            TUCNBaseTree(odb,
+                        "EPSR",
+                        "SourceEpicsTree",
+                        "/Equipment/SourceEpics/Settings/Names") {}
 };
 
 // Make tree for beamline epics variables
 class TUCNBeamlineEpicsTree: public TUCNBaseTree {
     public:
-        using TUCNBaseTree::TUCNBaseTree;
-
-    protected:
-        static constexpr const char* BANKNAME = "EPBL";
-        static constexpr const char* TREENAME = "BeamlineEpicsTree";
-        static constexpr const char* ODBPATH_NAMES = "/Equipment/BeamlineEpics/Settings/Names";
+        TUCNBeamlineEpicsTree(MVOdb* odb):
+            TUCNBaseTree(odb,
+                        "EPBL",
+                        "BeamlineEpicsTree",
+                        "/Equipment/BeamlineEpics/Settings/Names") {}
 };
 
+// This class will make the tree of LND thermal variables.
+class TLNDDetectorTree: public TUCNBaseTree {
+    public:
+        TLNDDetectorTree(MVOdb* odb):
+            TUCNBaseTree(odb,
+                        "PICO",
+                        "LNDDetectorTree",
+                        "/Equipment/scPico/Settings/Names") {}
+};
 
 #endif // TUCNTreeMaker_h

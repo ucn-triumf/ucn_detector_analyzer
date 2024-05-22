@@ -77,14 +77,22 @@ public:
         odb_header.resize(varname.size()); // prevents segfault on tree fill
 
         for (long unsigned int i=0; i<varname.size(); i++){
-            odb->RS((path+varname[i]).c_str(), &odb_header[i]);
-            headerTree->Branch(varname[i].c_str(), &odb_header[i]);
+
+            // skip write data
+            if (varname[i].find("write data") == std::string::npos){
+                odb->RS((path+varname[i]).c_str(), &odb_header[i]);
+                headerTree->Branch(varname[i].c_str(), &odb_header[i]);
+            }
         }
         headerTree->Fill();
 
         // print header info
         for (long unsigned int i=0; i<varname.size(); i++){
-            std::cout << varname[i] << ": " << odb_header[i] << std::endl;
+
+            // skip write data
+            if (varname[i].find("write data") == std::string::npos){
+                std::cout << varname[i] << ": " << odb_header[i] << std::endl;
+            }
         }
     }
 

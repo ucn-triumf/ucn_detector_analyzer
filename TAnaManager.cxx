@@ -12,19 +12,23 @@ TAnaManager::TAnaManager(bool isOffline, MVOdb* odb, bool saveTree){
     fLi6Detector = new TLi6Detector(isOffline,saveTree);
 
     if(saveTree){
-        std::cout << "Creating EPICS tree" << std::endl;
-        fLNDDetectorTree = new TLNDDetectorTree();
+        std::cout << "Creating EPICS tree... ";
+        fLNDDetectorTree = new TLNDDetectorTree(odb);
+        fBeamlineEpicsTree = new TUCNBeamlineEpicsTree(odb);
         fSourceEpicsTree = new TUCNSourceEpicsTree(odb);
-        fBeamlineEpicsTree = new TUCNBeamlineEpicsTree();
+
     }else{
         fSourceEpicsTree = 0;
         fBeamlineEpicsTree = 0;
         fLNDDetectorTree = 0;
     }
 
+    std::cout << "done" << std::endl;
+
     //fV785Charge = new TUCNDetectorCharge(false)
     fV785Charge = new TV792Histograms();
     fV785Charge->DisableAutoUpdate();
+
 };
 
 bool insequence = 0;
