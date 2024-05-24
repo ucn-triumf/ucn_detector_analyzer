@@ -12,7 +12,7 @@ TAnaManager::TAnaManager(bool isOffline, MVOdb* odb, bool saveTree){
     fLi6Detector = new TLi6Detector(isOffline,saveTree);
 
     if(saveTree){
-        std::cout << "Creating EPICS tree... ";
+        std::cout << "Creating EPICS trees... ";
         fLNDDetectorTree = new TLNDDetectorTree(odb);
         fBeamlineEpicsTree = new TUCNBeamlineEpicsTree(odb);
         fSourceEpicsTree = new TUCNSourceEpicsTree(odb);

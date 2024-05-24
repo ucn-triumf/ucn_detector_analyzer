@@ -11,6 +11,17 @@
 
 class Analyzer: public TRootanaEventLoop{
 
+private:
+    std::vector<const char*> header_names = {"/Experiment/Edit on start/Run Title",
+                                             "/Experiment/Edit on start/Experiment number",
+                                             "/Experiment/Edit on start/Shifters",
+                                             "/Experiment/Edit on start/Comment",
+                                             "/Runinfo/Start time",
+                                             "/Runinfo/Stop time",
+                                             };
+    int run_number;
+
+
 public:
 
     // Two analysis managers.  Define and fill histograms in analysis manager.
@@ -55,45 +66,36 @@ public:
         InitManager();
         anaManager->BeginRun(transition, run, time);
 
+        /// Make header
+
         // iterate through the Edit on start keys and fetch all values
         MVOdb *odb = GetODB();
         TTree *headerTree = new TTree("headerTree", "headerTree");
 
-        // try to get all edit on start values
-        std::string path = std::string("/Experiment/Edit on start/");
+        // get header string values
+        std::vector<std::string> header_val = std::vector<std::string>();
+        header_val.resize(header_names.size()); // prevents segfault on tree fill
+        std::string name;   // name of header without full path
 
-        std::vector<std::string> varname = std::vector<std::string>();
-        std::vector<int> tid = std::vector<int>();
-        std::vector<int> num_values = std::vector<int>();
-        std::vector<int> total_size = std::vector<int>();
-        std::vector<int> item_size = std::vector<int>();
-        MVOdbError* error = new MVOdbError();
+        for (long unsigned int i=0; i<header_names.size(); i++){
 
-        MVOdb *odb_editonstart = odb->Chdir(path.c_str());
-        odb_editonstart->ReadDir(&varname, &tid, &num_values, &total_size, &item_size, error);
+            // get name without path
+            name = std::string(header_names[i]);
+            name = name.substr(name.find_last_of('/')+1);
 
-        // make branches and get odb info
-        std::vector<std::string> odb_header = std::vector<std::string>();
-        odb_header.resize(varname.size()); // prevents segfault on tree fill
-
-        for (long unsigned int i=0; i<varname.size(); i++){
-
-            // skip write data
-            if (varname[i].find("write data") == std::string::npos){
-                odb->RS((path+varname[i]).c_str(), &odb_header[i]);
-                headerTree->Branch(varname[i].c_str(), &odb_header[i]);
-            }
+            // read string and make branch
+            odb->RS(header_names[i], &header_val[i]);
+            std::cout << name << ": \t" << header_val[i] << std::endl;
+            headerTree->Branch(name.c_str(), &header_val[i]);
         }
+
+        // get run number
+        odb->RI("/Runinfo/Run number", &run_number); // read string
+        std::cout << "Run number: \t" << run_number << std::endl;
+        headerTree->Branch("Run number", &run_number);
+
+        // fill tree
         headerTree->Fill();
-
-        // print header info
-        for (long unsigned int i=0; i<varname.size(); i++){
-
-            // skip write data
-            if (varname[i].find("write data") == std::string::npos){
-                std::cout << varname[i] << ": " << odb_header[i] << std::endl;
-            }
-        }
     }
 
     bool ProcessMidasEvent(TDataContainer& dataContainer){
@@ -107,7 +109,6 @@ public:
 
         return true;
     }
-
 };
 
 int main(int argc, char *argv[]){
