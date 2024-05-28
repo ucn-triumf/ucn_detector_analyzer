@@ -99,7 +99,7 @@ TUCNBaseTree::TUCNBaseTree(MVOdb* odb, char const* bankname, char const* treenam
     bank = bankname;
 
     // create tree and timestamp branch
-    datatree = new TTree(treename, treename);
+    datatree = new TTree(treename, (std::string(treename)+" TTree").c_str());
     datatree->Branch("timestamp", &timestamp, "timestamp/I" );
 
     // read names
@@ -111,6 +111,11 @@ TUCNBaseTree::TUCNBaseTree(MVOdb* odb, char const* bankname, char const* treenam
     // setup branches (don't use default branches)
     for (long unsigned int i=0; i<names.size(); i++){
         if (names[i].find("Default") == std::string::npos){
+
+            // fix name: can't have colons in the name
+            std::replace(names[i].begin(), names[i].end(), ':', '_');
+
+            // make branch
             datatree->Branch(names[i].c_str(), &values[i], (names[i]+"/D").c_str());
         }
     }

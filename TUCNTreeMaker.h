@@ -67,33 +67,77 @@ class TUCNBaseTree {
 
 /// Derived classes from TUCNBaseTree
 
-// This class will make the tree of source epics variables.
-class TUCNSourceEpicsTree: public TUCNBaseTree {
+// Epics variables
+class SourceEpics: public TUCNBaseTree {
     public:
-        TUCNSourceEpicsTree(MVOdb* odb):
+        SourceEpics(MVOdb* odb):
             TUCNBaseTree(odb,
                         "EPSR",
-                        "SourceEpicsTree",
+                        "SourceEpics",
                         "/Equipment/SourceEpics/Settings/Names") {}
 };
 
-// Make tree for beamline epics variables
-class TUCNBeamlineEpicsTree: public TUCNBaseTree {
+class BeamlineEpics: public TUCNBaseTree {
     public:
-        TUCNBeamlineEpicsTree(MVOdb* odb):
+        BeamlineEpics(MVOdb* odb):
             TUCNBaseTree(odb,
                         "EPBL",
-                        "BeamlineEpicsTree",
+                        "BeamlineEpics",
                         "/Equipment/BeamlineEpics/Settings/Names") {}
 };
 
-// This class will make the tree of LND thermal variables.
-class TLNDDetectorTree: public TUCNBaseTree {
+class UCN2Epics: public TUCNBaseTree {
     public:
-        TLNDDetectorTree(MVOdb* odb):
+        UCN2Epics(MVOdb* odb):
+            TUCNBaseTree(odb,
+                        "EPU2",
+                        "UCN2Epics",
+                        "/Equipment/UCN2Epics/Settings/Names") {}
+};
+
+class UCN2EpicsTemperature: public TUCNBaseTree {
+    public:
+        UCN2EpicsTemperature(MVOdb* odb):
+            TUCNBaseTree(odb,
+                        "EP2T",
+                        "UCN2EpicsTemperature",
+                        "/Equipment/UCN2EpicsTemperature/Settings/Names") {}
+};
+
+class UCN2EpicsPressures: public TUCNBaseTree {
+    public:
+        UCN2EpicsPressures(MVOdb* odb):
+            TUCNBaseTree(odb,
+                        "EP2T", // same bank name as temperature?
+                        "UCN2EpicsPressures",
+                        "/Equipment/UCN2EpicsPressures/Settings/Names") {}
+};
+
+class UCN2EpicsOthers: public TUCNBaseTree {
+    public:
+        UCN2EpicsOthers(MVOdb* odb):
+            TUCNBaseTree(odb,
+                        "EP2T", // same bank name as temperature?
+                        "UCN2EpicsOthers",
+                        "/Equipment/UCN2EpicsOthers/Settings/Names") {}
+};
+
+class UCN2EpicsPhase2B: public TUCNBaseTree {
+    public:
+        UCN2EpicsPhase2B(MVOdb* odb):
+            TUCNBaseTree(odb,
+                        "EPH2",
+                        "UCN2EpicsPhase2B",
+                        "/Equipment/UCN2EpicsPhase2B/Settings/Names") {}
+};
+
+// LND thermal variables
+class scPico: public TUCNBaseTree {
+    public:
+        scPico(MVOdb* odb):
             TUCNBaseTree(odb,
                         "PICO",
-                        "LNDDetectorTree",
+                        "scPico",
                         "/Equipment/scPico/Settings/Names") {}
 };
 
