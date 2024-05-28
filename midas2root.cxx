@@ -47,7 +47,7 @@ public:
         #endif
 
         // Start the anaManager with flag to write trees.
-        anaManager = 0; //new TAnaManager(IsOffline(),true);
+        anaManager = 0; //new TAnaManager(IsOffline(), GetODB(), true);
         anaViewer  = 0; //new TUCNAnaViewer3();
     }
 
@@ -70,7 +70,7 @@ public:
 
         // iterate through the Edit on start keys and fetch all values
         MVOdb *odb = GetODB();
-        TTree *headerTree = new TTree("headerTree", "headerTree");
+        TTree *headerTree = new TTree("header", "header TTree");
 
         // get header string values
         std::vector<std::string> header_val = std::vector<std::string>();

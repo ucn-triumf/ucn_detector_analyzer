@@ -13,14 +13,25 @@ TAnaManager::TAnaManager(bool isOffline, MVOdb* odb, bool saveTree){
 
     if(saveTree){
         std::cout << "Creating EPICS trees... ";
-        fLNDDetectorTree = new TLNDDetectorTree(odb);
-        fBeamlineEpicsTree = new TUCNBeamlineEpicsTree(odb);
-        fSourceEpicsTree = new TUCNSourceEpicsTree(odb);
+
+        fSourceEpics = new SourceEpics(odb);
+        fBeamlineEpics = new BeamlineEpics(odb);
+        fUCN2Epics = new UCN2Epics(odb);
+        fUCN2EpicsTemperature = new UCN2EpicsTemperature(odb);
+        fUCN2EpicsPressures = new UCN2EpicsPressures(odb);
+        fUCN2EpicsOthers = new UCN2EpicsOthers(odb);
+        fUCN2EpicsPhase2B = new UCN2EpicsPhase2B(odb);
+        fscPico = new scPico(odb);
 
     }else{
-        fSourceEpicsTree = 0;
-        fBeamlineEpicsTree = 0;
-        fLNDDetectorTree = 0;
+        fSourceEpics = 0;
+        fBeamlineEpics = 0;
+        fUCN2Epics = 0;
+        fUCN2EpicsTemperature = 0;
+        fUCN2EpicsPressures = 0;
+        fUCN2EpicsOthers = 0;
+        fUCN2EpicsPhase2B = 0;
+        fscPico = 0;
     }
 
     std::cout << "done" << std::endl;
@@ -40,11 +51,15 @@ int TAnaManager::ProcessMidasEvent(TDataContainer& dataContainer){
 
     fHe3Detector->ProcessMidasEvent(dataContainer);
     fLi6Detector->ProcessMidasEvent(dataContainer);
-    if(fSourceEpicsTree){
-        fLNDDetectorTree->FillTree(dataContainer);
-        fSourceEpicsTree->FillTree(dataContainer);
-        fBeamlineEpicsTree->FillTree(dataContainer);
-    }
+
+    if (fSourceEpics)           fSourceEpics->FillTree(dataContainer);
+    if (fBeamlineEpics)         fBeamlineEpics->FillTree(dataContainer);
+    if (fUCN2Epics)             fUCN2Epics->FillTree(dataContainer);
+    if (fUCN2EpicsTemperature)  fUCN2EpicsTemperature->FillTree(dataContainer);
+    if (fUCN2EpicsPressures)    fUCN2EpicsPressures->FillTree(dataContainer);
+    if (fUCN2EpicsOthers)       fUCN2EpicsOthers->FillTree(dataContainer);
+    if (fUCN2EpicsPhase2B)      fUCN2EpicsPhase2B->FillTree(dataContainer);
+    if (fscPico)                fscPico->FillTree(dataContainer);
 
     TV792NData *data = dataContainer.GetEventData<TV792NData>("ADC0");
     if(!data)

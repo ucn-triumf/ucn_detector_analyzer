@@ -57,9 +57,15 @@ class TAnaManager  {
         THe3Detector  *fHe3Detector;
         TLi6Detector  *fLi6Detector;
 
-        TLNDDetectorTree *fLNDDetectorTree;
-        TUCNSourceEpicsTree *fSourceEpicsTree;
-        TUCNBeamlineEpicsTree *fBeamlineEpicsTree;
+        // equipment list
+        SourceEpics *fSourceEpics; // vertical source
+        BeamlineEpics *fBeamlineEpics;
+        UCN2Epics *fUCN2Epics;
+        UCN2EpicsTemperature *fUCN2EpicsTemperature;
+        UCN2EpicsPressures *fUCN2EpicsPressures;
+        UCN2EpicsOthers *fUCN2EpicsOthers;
+        UCN2EpicsPhase2B *fUCN2EpicsPhase2B;
+        scPico *fscPico;
 
         // Histogram of all V785 Charges
         TV792Histograms *fV785Charge;
