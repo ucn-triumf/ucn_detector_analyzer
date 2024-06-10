@@ -6,25 +6,22 @@
 
 /// Class for making histograms of V792 ADC data.
 class TV792Histograms : public THistogramArrayBase {
- public:
-  TV792Histograms();
-  virtual ~TV792Histograms(){};
-  
-  /// Update the histograms for this canvas.
-  void UpdateHistograms(TDataContainer& dataContainer);
+    public:
+        TV792Histograms();
+        virtual ~TV792Histograms(){};
 
-  /// Take actions at begin run
-  void BeginRun(int transition,int run,int time);
+        /// Update the histograms for this canvas.
+        void UpdateHistograms(TDataContainer& dataContainer);
 
-  /// Take actions at end run  
-  void EndRun(int transition,int run,int time);
+        /// Take actions at begin run
+        void BeginRun(int transition,int run,int time);
+
+        /// Take actions at end run
+        void EndRun(int transition,int run,int time);
 
 private:
-
-  void CreateHistograms();
-    
+    void CreateHistograms();
 };
-
 #endif
 
 
