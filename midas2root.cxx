@@ -86,7 +86,7 @@ public:
             // read string and make branch
             odb->RS(header_names[i], &header_val[i]);
             std::cout << name << ": \t" << header_val[i] << std::endl;
-            headerTree->Branch(name.c_str(), &header_val[i]);
+            headerTree->Branch(name.c_str(), &(header_val[i]));
         }
 
         // get run number

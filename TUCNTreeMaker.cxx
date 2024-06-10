@@ -112,7 +112,7 @@ TUCNBaseTree::TUCNBaseTree(MVOdb* odb, char const* bankname, char const* treenam
     for (long unsigned int i=0; i<names.size(); i++){
         if (names[i].find("Default") == std::string::npos){
 
-            // fix name: can't have colons in the name
+            // can't have colons in the name or leaf list is expanded
             std::replace(names[i].begin(), names[i].end(), ':', '_');
 
             // make branch
