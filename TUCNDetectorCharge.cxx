@@ -7,10 +7,16 @@ const int Nchannels = 16;
  #include <sys/time.h>
 
 /// Reset the histograms for this canvas
-TUCNDetectorCharge::TUCNDetectorCharge(bool isLi6){  
+TUCNDetectorCharge::TUCNDetectorCharge(bool isLi6, bool is3HEDET1){  
   fIsLi6 = isLi6;
   if(fIsLi6) det_name = std::string("Li6");
-  else  det_name = std::string("He3");
+  else{
+    if(is3HEDET1){
+      det_name = std::string("He3");
+    }else{
+      det_name = std::string("He3Det2");
+    }
+  }
 
   CreateHistograms();
 }

@@ -8,11 +8,11 @@ const int Nchannels = 8;
 int timescale[8] = {300,600,1200,2400,4800,9600,19200,38400};
 
 /// Reset the histograms for this canvas
-TUCNRateVsTime::TUCNRateVsTime(bool isLi6, bool isOffline){  
+TUCNRateVsTime::TUCNRateVsTime(bool isLi6, bool isOffline, bool is3HEDET1){  
 
   fIsLi6 = isLi6;
   fIsOffline = isOffline;
-  
+  fIs3HEDET1 = is3HEDET1;
   CreateHistograms();
   lastTimestamp = 0;
 }
@@ -28,7 +28,13 @@ void TUCNRateVsTime::CreateHistograms(){
     char name[100];
     char title[100];
     if(fIsLi6) sprintf(name,"Li6_Rate_%i_%i",0,i);
-    else sprintf(name,"He3_Rate_%i_%i",0,i);
+    else{
+      if(fIs3HEDET1){
+	sprintf(name,"He3_Rate_%i_%i",0,i);
+      }else{
+	sprintf(name,"He3_Det2_Rate_%i_%i",0,i);
+      }
+    }
 
     // Delete old histograms, if we already have them
     TH1D *old = (TH1D*)gDirectory->Get(name);

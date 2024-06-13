@@ -11,13 +11,16 @@
 #include "TFancyHistogramCanvas.hxx"
 
 #include "TUCNTreeMaker.h"
+#include "TUCNCycleParameters.hxx"
+
 
 /// Generic base class that handles producing a consistent
 /// set of plots and data for Li-6 and He-3 detectors
 class TUCNDetectorBaseClass  {
-    public:
-        TUCNDetectorBaseClass(bool isOffline, bool isLi6, bool saveTree = false);
-        virtual ~TUCNDetectorBaseClass(){};
+ public:
+  TUCNDetectorBaseClass(bool isOffline, bool isLi6, bool saveTree = false, bool is3HEDET1 = true);
+  virtual ~TUCNDetectorBaseClass(){};
+
 
         // Get the UCN hits for this MIDAS event.
         // This method needs to be defined in each derived class.
@@ -46,22 +49,24 @@ class TUCNDetectorBaseClass  {
         /// Take actions at begin run
         void BeginRun(int transition,int run,int time);
 
-        /// Take actions at end run
-        void EndRun(int transition,int run,int time);
+  /// Take actions at end run
+  void EndRun(int transition,int run,int time);
 
-        bool IsLi6(){ return fIsLi6;};
-        bool IsHe3(){ return !fIsLi6;};
+  bool IsLi6(){ return fIsLi6;};
+  bool IsHe3(){ return !fIsLi6;};
 
-        std::string GetDetectorName(){
-        if(IsLi6()) return std::string("Li6");
-        if(IsHe3()) return std::string("He3");
-        return std::string("notset");
-        }
+  bool CycleStarted() const { return fcycle_started; };
 
-        // Method to force analyzer to use simpler PC timestamps
-        void UsePCTime(bool usepc = true){
-            fUsePCTime = true;
-        }
+  std::string GetDetectorName(){
+    if(IsLi6()) return std::string("Li6");
+    if(IsHe3()) return std::string("He3");
+    return std::string("notset");
+  }
+
+  // Method to force analyzer to use simpler PC timestamps
+  void UsePCTime(bool usepc = true){
+    fUsePCTime = usepc;
+  }
 
         TUCNDetectorCharge* GetChargeHistograms(){return fDetectorCharge;}
         TUCNRateVsTime* GetRateVsTime(){return fRateVsTime;}
@@ -91,20 +96,31 @@ class TUCNDetectorBaseClass  {
             return tmp;
         }
 
-        TSimpleHistogramCanvas* GetHitsPerCycleHCanvas(){
-            TSimpleHistogramCanvas *tmp = new TSimpleHistogramCanvas(fHitsPerCycleH,"Hits Per Cycle","P");
-            tmp->AddExtraHisto(fHitsPerCycleHIntime);
-            return tmp;
-        }
-        //  TH1D* GetHitsPerCycle(){return fHitsPerCycle;}
+  TSimpleHistogramCanvas* GetHitsPerCycleHCanvas(){
+    TSimpleHistogramCanvas *tmp = new TSimpleHistogramCanvas(fHitsPerCycleH,"Hits Per Cycle","P");
+    tmp->AddExtraHisto(fHitsPerCycleHIntime);
+    return tmp;
+  }
+  //  TH1D* GetHitsPerCycle(){return fHitsPerCycle;}
 
-    protected:
+  // Get Vectors of hits per cycle
+  std::vector<std::pair<double, double> > GetHitsPerCycle(){return fHitsPerCycleVector;};
+  std::vector<std::pair<double, double> > GetInTimeHitsPerCycle(){ return fHitsPerCycleVectorIntime;};
+  std::vector<std::vector<std::pair<double, double> > > GetHitsPerCyclePerPeriod(){return fHitsPerCycleVectorPeriods;}
+  std::vector<std::pair<double, double> > GetHitsPerCyclePerPeriod(int i){return fHitsPerCycleVectorPeriods[i];}
+  std::vector<std::pair<double, double> > GetMonitorCountsAfterIrradiationPerCycle(){ return fMonitorCountsAfterIrradiationPerCycle; }
 
-        bool fIsLi6; // Is for Li-6 detector
-        bool fIsOffline;
+  TUCNCycleParameters CycleParameters;
 
-        // List of UCN hits
-        TUCNHitCollection fHits;
+
+protected:
+
+  bool fIsLi6; // Is for Li-6 detector
+  bool fIs3HEDET1; // Is this 3HEDET1?
+  bool fIsOffline;
+
+  // List of UCN hits
+  TUCNHitCollection fHits;
 
         // List of background hits
         TUCNHitCollection fBackgroundHits;
@@ -132,22 +148,29 @@ class TUCNDetectorBaseClass  {
         TUCNDetectorCharge *fDetectorCharge;
         TUCNRateVsTime *fRateVsTime;
 
-        TH1D *fHitsInCycle;
-        TH1D *fHitsInCycleIntime;
-        TH1D *fHitsInCycleCumul;
-        TH1D *fHitsInCycleCumulIntime;
-        TGraph *fHitsPerCycle;
-        TGraph *fHitsPerCycleIntime;
-        TH1D *fHitsPerCycleH;
-        TH1D *fHitsPerCycleHIntime;
+  TH1D *fHitsInCycle;
+  TH1D *fHitsInCycleIntime;
+  TH1D *fHitsInCycleCumul;
+  TH1D *fHitsInCycleCumulIntime;
+  TGraph *fHitsPerCycle;
+  TGraph *fHitsPerCycleIntime;
+  TH1D *fHitsPerCycleH;
+  TH1D *fHitsPerCycleHIntime;
 
-        // UCN hits in this cycle
-        int fTotalHitsCycle;
-        int fTotalHitsCycleIntime;  // hits when valve open
+    // true if last processed event started a new cycle
+    bool fcycle_started;
 
-        // vector to store the cycle hits in
-        std::vector<std::pair<double, double> > fHitsPerCycleVector;
-        std::vector<std::pair<double, double> > fHitsPerCycleVectorIntime;
+    // UCN hits in this cycle
+  int fTotalHitsCycle;
+  int fTotalHitsCycleIntime;  // hits when valve open
+  int fTotalHitsCyclePeriods[10];  // total hits per period.
+  int fTotalMonitorCountsAfterIrradiation; // hits between end of irradiation and (end of irradiation)+(counting time)
+
+  // vector to store the cycle hits in
+  std::vector<std::pair<double, double> > fHitsPerCycleVector;
+  std::vector<std::pair<double, double> > fHitsPerCycleVectorIntime;
+  std::vector<std::vector<std::pair<double, double> > > fHitsPerCycleVectorPeriods;
+  std::vector<std::pair<double, double> > fMonitorCountsAfterIrradiationPerCycle;
 };
 
 #endif

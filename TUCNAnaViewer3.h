@@ -15,27 +15,29 @@
 /// length array of the ADC values for individual pulses.
 class TUCNAnaViewer3 {
 
-    public:
+ public:
 
-        TUCNAnaViewer3();
-        ~TUCNAnaViewer3();
+  TUCNAnaViewer3();
+  ~TUCNAnaViewer3();
 
-        /// Processes the midas event, fills histograms, etc.
-        int ProcessMidasEvent(TDataContainer& dataContainer,char CutChoice, float PSDMax, float PSDMin);
-        int FindAndFitPulses(TDataContainer& dataContainer, char CutChoice, float PSDMax, float PSDMin);
+  /// Processes the midas event, fills histograms, etc.
+  int ProcessMidasEvent(TDataContainer& dataContainer,char CutChoice, float PSDMax, float PSDMin);
 
-        /// Blah, make histograms public;
-        TV1720WaveformDisplay* fV1720WaveformDisplay;
-        TV1720QLQL * fV1720QLQL;
-        TV1720QSQS * fV1720QSQS;
+  int FindAndFitPulses(TDataContainer& dataContainer, char CutChoice, float PSDMax, float PSDMin);
 
-        TV1720QSQLHistograms*  fV1720QSQLHistograms;
-        TV1720PSDQLHistograms* fV1720PSDQLHistograms;
+  /// Blah, make histograms public;
+  TV1720WaveformDisplay* fV1720WaveformDisplay;
+  TV1720QLQL * fV1720QLQL;
+  TV1720QSQS * fV1720QSQS;
+  TV1720_PH *fV1720_PH;
 
-    private:
-        TLi6GainCalib qcali;
+  TV1720QSQLHistograms*  fV1720QSQLHistograms;
+  TV1720PSDQLHistograms* fV1720PSDQLHistograms;
 
-        double fFirstPulseFittedTime;
+ private:
+  TLi6GainCalib qcali;
+
+  double fFirstPulseFittedTime;
 
         // branches
         Float_t tPSD;

@@ -41,10 +41,14 @@ class DPPBankHandler{
   DPPBankHandler(){ 
     fFirst=true; 
     verbose=0;
+    fMaxSubEv=0;
   };
   ~DPPBankHandler(){
+    std::cout << "MaxSubEv : " << fMaxSubEv << std::endl;
     if ( fMaxSubEv > 0 ){
       for ( int ich=0; ich<PSD_MAXNCHAN; ich++){
+	std::cout << "Deleting... " << ich << std::endl;
+	std::cout << fDPPInfo[ich] << " " <<  fWaveforms[ich] << std::endl;
 	if (fDPPInfo[ich]!=NULL) delete [] fDPPInfo[ich];
 	if (fWaveforms[ich]!=NULL) delete [] fWaveforms[ich];
       }

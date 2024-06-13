@@ -7,6 +7,8 @@
 #include "TMulticanvas.h"
 #include "TLi6GainCalib.h"
 
+#define USING_V1725_READOUT_LI6 1
+
 /// Class for making histograms of V1720 baseline
 class TV1720Baselines : public THistogramArrayBase {
     public:
@@ -43,14 +45,21 @@ class TLi6Detector : public TUCNDetectorBaseClass {
         // Get a more precise sequence start time from v1720 bank
         virtual bool CheckForSequenceStartPrecise(TDataContainer& dataContainer);
 
-        virtual bool UsePreciseSequenceTime(){
-            if(fUsePCTime) return false;
-            return true;
-        };
+  virtual bool UsePreciseSequenceTime(){
 
-        TFancyHistogramCanvas* GetV1720BaselineCanvas(){
-            return new TFancyHistogramCanvas(fBaselines, "Baselines");
-        }
+
+    if(fUsePCTime){
+      return false;
+    }
+    return true;
+  };
+
+
+  TFancyHistogramCanvas* GetV1720BaselineCanvas(){
+    return new TFancyHistogramCanvas(fBaselines,"Baselines");
+    //canvas->SetChannelName("Timescale");
+    //return canvas;
+  }
 
         TMulticanvas* GetV1720SequenceCanvas(){
             TMulticanvas *canvas = new TMulticanvas("Sequence Statistics");
