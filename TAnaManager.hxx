@@ -53,22 +53,9 @@ class TAnaManager  {
         TV1725_PH* GetV1725_PH(){ return fV1725_PH;}
         TV1725_QL* GetV1725_QL(){ return fV1725_QL;}
         TUCNChronobox* GetChronobox(){ return fUCNChronobox;}
-
-
         TUCNChronobox *fUCNChronobox;
 
-        TGraphErrors* GetTransmissionDuringCountingGraph() const { return fTransmissionDuringCountingGraph; }
-        TGraphErrors* GetTransmissionDuringIrradiationGraph() const { return fTransmissionDuringIrradiationGraph; }
-        TGraphErrors* GetTransmissionWithPreStorageGraph() const { return fTransmissionWithPreStorage; }
-        TGraphErrors* GetHe3DuringIrradiationGraph() const { return fHe3DuringIrradiationGraph; }
-        TGraphErrors* GetHe3DuringStorageGraph() const { return fHe3DuringStorageGraph; }
-        TGraphErrors* GetHe3AfterIrradiationGraph() const { return fHe3AfterIrradiationGraph; }
-        TGraphErrors* GetLi6StorageBackgroundGraph() const { return fLi6StorageBackgroundGraph; }
-        TGraphErrors* GetHe3StorageBackgroundGraph() const { return fHe3StorageBackgroundGraph; }
-        TGraphErrors* GetLi6StorageGraph() const { return fLi6StorageGraph; }
-        TGraphErrors* GetHe3StorageGraph() const { return fHe3StorageGraph; }
-        TGraphErrors* GetStorageWithMonitorDuringIrradiation() const { return fStorageWithMonitorDuringIrradiation; }
-        TGraphErrors* GetStorageWithMonitorAfterIrradiation() const { return fStorageWithMonitorAfterIrradiation; }
+        std::map<const char*, TGraphErrors*> graphs;
 
     private:
 
@@ -101,18 +88,21 @@ class TAnaManager  {
         TV1725_PH* fV1725_PH;
         TV1725_QL* fV1725_QL;
 
-        TGraphErrors *fTransmissionDuringCountingGraph; // transmission with normalization during counting
-        TGraphErrors *fTransmissionDuringIrradiationGraph; // transmission with normalization during irradiation
-        TGraphErrors *fTransmissionWithPreStorage; // transmission with a pre-storage period
-        TGraphErrors *fHe3DuringIrradiationGraph; // He3 monitor counts during irradiation period
-        TGraphErrors *fHe3DuringStorageGraph; // He3 monitor counts during storage period
-        TGraphErrors *fHe3AfterIrradiationGraph; // He3 monitor counts after irradiation
-        TGraphErrors *fLi6StorageBackgroundGraph; // Li6 background during storage periods
-        TGraphErrors *fHe3StorageBackgroundGraph; // He3 background during storage periods
-        TGraphErrors *fLi6StorageGraph; // background-corrected Li6 counts vs. storage time
-        TGraphErrors *fHe3StorageGraph; // background-corrected He3 counts vs. storage time
-        TGraphErrors *fStorageWithMonitorDuringIrradiation; // background-corrected Li6 counts normalized to He3 counts during irradiation vs. storage time
-        TGraphErrors *fStorageWithMonitorAfterIrradiation; // background-corrected Li6 counts normalized to He3 counts after irradiation vs. storage time
+        // define names and titles of TGraphErrors to draw in anaDisplay
+        std::map<const char*, const char*> GRAPH_NAME_TITLE = {
+            {"TransmissionDuringCounting",          "Transmission normalized during counting;Cycle no.;Li6-He3 ratio"},
+            {"TransmissionDuringIrradiation",       "Transmission normalized during irradiation;Cycle no.;Li6-He3 ratio"},
+            {"TransmissionWithPreStorage",          "Transmission normalized during prestorage;Cycle no.;Background-corrected Li6-He3 ratio"},
+            {"He3DuringIrradiation",                "He3 monitor counts during irradiation;Cycle no.;He3 counts"},
+            {"He3DuringStorage",                    "He3 monitor counts during storage;Cycle no.;He3 counts"},
+            {"He3AfterIrradiation",                 "He3 monitor counts after irradiation;Cycle no.;He3 counts"},
+            {"Li6StorageBackground",                "Li6 background during storage period;Cycle no.;Li6 background rate (s^{-1})"},
+            {"He3StorageBackground",                "He3 background during storage period;Cycle no.;He3 background rate (s^{-1})"},
+            {"Li6Storage",                          "Unnormalized storage with Li6 detector;Storage time (s);Background-corrected Li6 counts"},
+            {"He3Storage",                          "Unnormalized storage with He3 detector;Storage time (s);Background-corrected He3 counts"},
+            {"StorageWithMonitorDuringIrradiation", "Storage with normalization during irradiation;Storage time (s);Background-corrected Li6-He3 ratio"},
+            {"StorageWithMonitorAfterIrradiation",  "Storage with normalization after irradiation;Storage time(s);Background-corrected Li6-He3 ratio"},
+        };
 };
 
 #endif

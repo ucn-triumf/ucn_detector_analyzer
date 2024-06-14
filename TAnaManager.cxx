@@ -10,12 +10,13 @@ TAnaManager::TAnaManager(bool isOffline, MVOdb* odb, bool saveTree){
     fHe3CountsInSequence = new THe3CountsInSequence();
     fHe3CountsInSequence->DisableAutoUpdate();
 
-    fHe3Detector = new THe3Detector(isOffline,true,saveTree);
-    fHe3Detector2 = new THe3Detector(isOffline,false,saveTree);
-    fLi6Detector = new TLi6Detector(isOffline,saveTree);
+    fHe3Detector = new THe3Detector(isOffline, true, saveTree);
+    fHe3Detector2 = new THe3Detector(isOffline, false, saveTree);
+    fLi6Detector = new TLi6Detector(isOffline, saveTree);
 
+    // make trees for saving outputs
     if(saveTree){
-        std::cout << "Creating EPICS tree" << std::endl;
+        std::cout << "Creating EPICS trees" << std::endl;
         fLNDDetectorTree = new TLNDDetectorTree();
         fSCMTree = new TSCMTree();
         fSequencerTree = new TSequencerTree();
@@ -35,8 +36,12 @@ TAnaManager::TAnaManager(bool isOffline, MVOdb* odb, bool saveTree){
         fSCMTree = 0;
         fSequencerTree = 0;
         fscPico = 0;
+        fUCN2Epics = 0;
+        fUCN2EpicsTemperature = 0;
+        fUCN2EpicsPressures = 0;
+        fUCN2EpicsOthers = 0;
+        fUCN2EpicsPhase2B = 0;
     }
-
 
     std::cout << "Making V1725 plots " << std::endl;
 
@@ -57,51 +62,23 @@ TAnaManager::TAnaManager(bool isOffline, MVOdb* odb, bool saveTree){
 
     gStyle->SetOptFit(111);
     gStyle->SetOptStat(1001111);
-    fTransmissionDuringCountingGraph = new TGraphErrors();
-    fTransmissionDuringCountingGraph->SetTitle("Transmission normalized during counting;Cycle no.;Li6-He3 ratio");
-    fTransmissionDuringIrradiationGraph = new TGraphErrors();
-    fTransmissionDuringIrradiationGraph->SetTitle("Transmission normalized during irradiation;Cycle no.;Li6-He3 ratio");
-    fTransmissionWithPreStorage = new TGraphErrors();
-    fTransmissionWithPreStorage->SetTitle("Transmission normalized during prestorage;Cycle no.;Background-corrected Li6-He3 ratio");
-    fHe3DuringIrradiationGraph = new TGraphErrors();
-    fHe3DuringIrradiationGraph->SetTitle("He3 monitor counts during irradiation;Cycle no.;He3 counts");
-    fHe3DuringStorageGraph = new TGraphErrors();
-    fHe3DuringStorageGraph->SetTitle("He3 monitor counts during storage;Cycle no.;He3 counts");
-    fHe3AfterIrradiationGraph = new TGraphErrors();
-    fHe3AfterIrradiationGraph->SetTitle("He3 monitor counts after irradiation;Cycle no.;He3 counts");
-    fLi6StorageBackgroundGraph = new TGraphErrors();
-    fLi6StorageBackgroundGraph->SetTitle("Li6 background during storage period;Cycle no.;Li6 background rate (s^{-1})");
-    fHe3StorageBackgroundGraph = new TGraphErrors();
-    fHe3StorageBackgroundGraph->SetTitle("He3 background during storage period;Cycle no.;He3 background rate (s^{-1})");
-    fLi6StorageGraph = new TGraphErrors();
-    fLi6StorageGraph->SetTitle("Unnormalized storage with Li6 detector;Storage time (s);Background-corrected Li6 counts");
-    fHe3StorageGraph = new TGraphErrors();
-    fHe3StorageGraph->SetTitle("Unnormalized storage with He3 detector;Storage time (s);Background-corrected He3 counts");
-    fStorageWithMonitorDuringIrradiation = new TGraphErrors();
-    fStorageWithMonitorDuringIrradiation->SetTitle("Storage with normalization during irradiation;Storage time (s);Background-corrected Li6-He3 ratio");
-    fStorageWithMonitorAfterIrradiation = new TGraphErrors();
-    fStorageWithMonitorAfterIrradiation->SetTitle("Storage with normalization after irradiation;Storage time(s);Background-corrected Li6-He3 ratio");
+
+    // initialize graphs for displaying analysis
+    for (const auto& [name, title] : GRAPH_NAME_TITLE){
+        graphs[name] = new TGraphErrors();
+        graphs[name]->SetTitle(title);
+    }
     std::cout << "Finished TAnaManager constructor" << std::endl;
 };
 
-void TAnaManager::BeginRun(int transition,int run,int time) {
-    if(fLi6Detector) fLi6Detector->BeginRun(transition,run,time);
-    if(fUCNChronobox) fUCNChronobox->BeginRun(transition,run,time);
+void TAnaManager::BeginRun(int transition, int run, int time) {
+    if(fLi6Detector) fLi6Detector->BeginRun(transition, run, time);
+    if(fUCNChronobox) fUCNChronobox->BeginRun(transition, run, time);
 
-    // reset histograms
-    fTransmissionDuringCountingGraph->Set(0);
-    fTransmissionDuringIrradiationGraph->Set(0);
-    fTransmissionWithPreStorage->Set(0);
-    fHe3DuringIrradiationGraph->Set(0);
-    fHe3DuringStorageGraph->Set(0);
-    fHe3AfterIrradiationGraph->Set(0);
-    fLi6StorageBackgroundGraph->Set(0);
-    fHe3StorageBackgroundGraph->Set(0);
-    fLi6StorageGraph->Set(0);
-    fHe3StorageGraph->Set(0);
-    fStorageWithMonitorDuringIrradiation->Set(0);
-    fStorageWithMonitorAfterIrradiation->Set(0);
-    std::cout << "TAnaManager::Finished BeginRun" << std::endl;
+    // reset graphs
+    for (const auto& [name, graph] : graphs){
+        graph->Set(0);
+    }
 }
 
 bool insequence = 0;
@@ -136,13 +113,11 @@ int TAnaManager::ProcessMidasEvent(TDataContainer& dataContainer){
         /// Get the Vector of ADC Measurements.
         std::vector<VADCNMeasurement> measurements = data->GetMeasurements();
         for (unsigned int i = 0; i < measurements.size(); i++) { // loop over measurements
-
             int channel = measurements[i].GetChannel();
             int charge = measurements[i].GetMeasurement();
 
             if (channel >= 0 && channel < 16)
                 fV785Charge->GetHistogram(channel)->Fill(charge);
-
         }
     }
 
@@ -164,62 +139,64 @@ int TAnaManager::ProcessMidasEvent(TDataContainer& dataContainer){
         int last_cycle_index = cycle_index > 0 ? cycle_index - 1 : fLi6Detector->CycleParameters.GetNumberCyclesInSuper() - 1;
         double storagetime = fLi6Detector->CycleParameters.GetTimeForPeriod(1, last_cycle_index);
         double countingtime = fLi6Detector->CycleParameters.GetTimeForPeriod(2, last_cycle_index);
-        int N = fTransmissionDuringCountingGraph->GetN();
+
+        int N = graphs["TransmissionDuringCounting"]->GetN();
 
         /****** TRANSMISSION ******/
-        fTransmissionDuringCountingGraph->Set(N + 1);
-        fTransmissionDuringIrradiationGraph->Set(N + 1);
-        fLi6StorageBackgroundGraph->Set(N + 1);
+        graphs["TransmissionDuringCounting"]->Set(N + 1);
+        graphs["TransmissionDuringIrradiation"]->Set(N + 1);
+        graphs["Li6StorageBackground"]->Set(N + 1);
 
         // transmission = Li6 counts / He3 counts during counting
         double transmission = Li6Hits[1]/He3Hits[1];
         double transmissionerr = std::sqrt(1./Li6Hits[1] + 1./He3Hits[1]) * transmission;
-        fTransmissionDuringCountingGraph->SetPoint(N, N, transmission);
-        fTransmissionDuringCountingGraph->SetPointError(N, 0., transmissionerr);
-        fTransmissionDuringCountingGraph->Fit("pol0", "Q");
+
+        graphs["TransmissionDuringCounting"]->SetPoint(N, N, transmission);
+        graphs["TransmissionDuringCounting"]->SetPointError(N, 0., transmissionerr);
+        graphs["TransmissionDuringCounting"]->Fit("pol0", "Q");
 
         // transmission = Li6 counts / He3 counts during irradiation
         transmission = Li6Hits[1]/He3Hits[0];
         transmissionerr = std::sqrt(1./Li6Hits[1] + 1./He3Hits[0]) * transmission;
-        fTransmissionDuringIrradiationGraph->SetPoint(N, N, transmission);
-        fTransmissionDuringIrradiationGraph->SetPointError(N, 0., transmissionerr);
-        fTransmissionDuringIrradiationGraph->Fit("pol0", "Q");
+        graphs["TransmissionDuringIrradiation"]->SetPoint(N, N, transmission);
+        graphs["TransmissionDuringIrradiation"]->SetPointError(N, 0., transmissionerr);
+        graphs["TransmissionDuringIrradiation"]->Fit("pol0", "Q");
 
         /******** MONITOR COUNTS ********/
-        fHe3DuringIrradiationGraph->Set(N + 1);
-        fHe3DuringIrradiationGraph->SetPoint(N, N, He3Hits[0]);
-        fHe3DuringIrradiationGraph->SetPointError(N, 0., std::sqrt(He3Hits[0]));
-        fHe3DuringIrradiationGraph->Fit("pol0","Q");
-        fHe3DuringStorageGraph->Set(N + 1);
-        fHe3DuringStorageGraph->SetPoint(N, N, He3Hits[1]);
-        fHe3DuringStorageGraph->SetPointError(N, 0., std::sqrt(He3Hits[1]));
-        fHe3DuringStorageGraph->Fit("pol0","Q");
-        fHe3AfterIrradiationGraph->Set(N + 1);
-        fHe3AfterIrradiationGraph->SetPoint(N, N, fHe3Detector->GetMonitorCountsAfterIrradiationPerCycle().back().second);
-        fHe3AfterIrradiationGraph->SetPointError(N, 0., std::sqrt(fHe3Detector->GetMonitorCountsAfterIrradiationPerCycle().back().second));
-        fHe3AfterIrradiationGraph->Fit("pol0","Q");
+        graphs["He3DuringIrradiation"]->Set(N + 1);
+        graphs["He3DuringIrradiation"]->SetPoint(N, N, He3Hits[0]);
+        graphs["He3DuringIrradiation"]->SetPointError(N, 0., std::sqrt(He3Hits[0]));
+        graphs["He3DuringIrradiation"]->Fit("pol0", "Q");
+        graphs["He3DuringStorage"]->Set(N + 1);
+        graphs["He3DuringStorage"]->SetPoint(N, N, He3Hits[1]);
+        graphs["He3DuringStorage"]->SetPointError(N, 0., std::sqrt(He3Hits[1]));
+        graphs["He3DuringStorage"]->Fit("pol0", "Q");
+        graphs["He3AfterIrradiation"]->Set(N + 1);
+        graphs["He3AfterIrradiation"]->SetPoint(N, N, fHe3Detector->GetMonitorCountsAfterIrradiationPerCycle().back().second);
+        graphs["He3AfterIrradiation"]->SetPointError(N, 0., std::sqrt(fHe3Detector->GetMonitorCountsAfterIrradiationPerCycle().back().second));
+        graphs["He3AfterIrradiation"]->Fit("pol0", "Q");
 
         /******** BACKGROUND DURING (PRE-)STORAGE PERIOD ********/
         // calculate background rate during storage period in a storage measurement (exclude cycles with 0s storage time)
         if (storagetime > 0) {
-            fLi6StorageBackgroundGraph->SetPoint(N, N, Li6Hits[1] / storagetime);
-            fLi6StorageBackgroundGraph->SetPointError(N, 0., std::sqrt(Li6Hits[1]) / storagetime);
-            fHe3StorageBackgroundGraph->SetPoint(N, N, He3Hits[1] / storagetime);
-            fHe3StorageBackgroundGraph->SetPointError(N, 0., std::sqrt(He3Hits[1]) / storagetime);
+            graphs["Li6StorageBackground"]->SetPoint(N, N, Li6Hits[1] / storagetime);
+            graphs["Li6StorageBackground"]->SetPointError(N, 0., std::sqrt(Li6Hits[1]) / storagetime);
+            graphs["He3StorageBackground"]->SetPoint(N, N, He3Hits[1] / storagetime);
+            graphs["He3StorageBackground"]->SetPointError(N, 0., std::sqrt(He3Hits[1]) / storagetime);
         }
         else{
-            fLi6StorageBackgroundGraph->SetPoint(N,N,0.);
-            fHe3StorageBackgroundGraph->SetPoint(N,N,0.);
+            graphs["Li6StorageBackground"]->SetPoint(N, N, 0.);
+            graphs["He3StorageBackground"]->SetPoint(N, N, 0.);
         }
 
         // get background rate averaged over all cycles
-        auto Li6result = fLi6StorageBackgroundGraph->Fit("pol0", "QS");
+        auto Li6result = graphs["Li6StorageBackground"]->Fit("pol0", "QS");
         double Li6backgroundrate = 0., Li6backgroundrateerr = 0.;
         if (Li6result == 0){
             Li6backgroundrate = Li6result->Parameter(0);
             Li6backgroundrateerr = Li6result->ParError(0);
         }
-        auto He3result = fHe3StorageBackgroundGraph->Fit("pol0", "QS");
+        auto He3result = graphs["He3StorageBackground"]->Fit("pol0", "QS");
         double He3backgroundrate = 0., He3backgroundrateerr = 0.;
         if (He3result == 0){
             He3backgroundrate = He3result->Parameter(0);
@@ -231,10 +208,10 @@ int TAnaManager::ProcessMidasEvent(TDataContainer& dataContainer){
         /******** TRANSMISSION WITH PRE-STORAGE *******/
         transmission = Li6corrected/He3Hits[1];
         transmissionerr = std::sqrt(std::pow(Li6correctederr / Li6corrected, 2) + 1. / He3Hits[1]) * transmission;
-        fTransmissionWithPreStorage->Set(N + 1);
-        fTransmissionWithPreStorage->SetPoint(N, N, transmission);
-        fTransmissionWithPreStorage->SetPointError(N, 0., transmissionerr);
-        fTransmissionWithPreStorage->Fit("pol0", "Q");
+        graphs["TransmissionWithPreStorage"]->Set(N + 1);
+        graphs["TransmissionWithPreStorage"]->SetPoint(N, N, transmission);
+        graphs["TransmissionWithPreStorage"]->SetPointError(N, 0., transmissionerr);
+        graphs["TransmissionWithPreStorage"]->Fit("pol0", "Q");
 
         /******** STORAGE WITH LI6 ONLY *********/
         TF1 fexpo("fexpo", "[0]*exp(-x/[1])");
@@ -242,34 +219,34 @@ int TAnaManager::ProcessMidasEvent(TDataContainer& dataContainer){
         fexpo.SetParName(1, "#tau");
 
         // subtract background from Li6/He3 counts, plot vs. storage time
-        fLi6StorageGraph->Set(N + 1);
-        fLi6StorageGraph->SetPoint(N, storagetime, Li6corrected);
-        fLi6StorageGraph->SetPointError(N, 0., Li6correctederr);
+        graphs["Li6Storage"]->Set(N + 1);
+        graphs["Li6Storage"]->SetPoint(N, storagetime, Li6corrected);
+        graphs["Li6Storage"]->SetPointError(N, 0., Li6correctederr);
         fexpo.SetParameters(10000, 10);
-        fLi6StorageGraph->Fit(&fexpo,"Q");
+        graphs["Li6Storage"]->Fit(&fexpo, "Q");
 
         /******** STORAGE WITH HE3 ONLY *********/
-        fHe3StorageGraph->Set(N + 1);
-        fHe3StorageGraph->SetPoint(N, storagetime, He3Hits[2] - He3backgroundrate*countingtime);
-        fHe3StorageGraph->SetPointError(N, 0., std::sqrt(He3Hits[2] + std::pow(He3backgroundrateerr*countingtime, 2)));
+        graphs["He3Storage"]->Set(N + 1);
+        graphs["He3Storage"]->SetPoint(N, storagetime, He3Hits[2] - He3backgroundrate*countingtime);
+        graphs["He3Storage"]->SetPointError(N, 0., std::sqrt(He3Hits[2] + std::pow(He3backgroundrateerr*countingtime, 2)));
         fexpo.SetParameters(1000, 10);
-        fHe3StorageGraph->Fit(&fexpo,"Q");
+        graphs["He3Storage"]->Fit(&fexpo, "Q");
 
         /******* STORAGE WITH MONITOR ********/
         // subtract background from Li6 counts, normalize to He3 counts during irradiation, plot vs. storage time
-        fStorageWithMonitorDuringIrradiation->Set(N + 1);
-        fStorageWithMonitorDuringIrradiation->SetPoint(N, storagetime, Li6corrected/He3Hits[0]);
-        fStorageWithMonitorDuringIrradiation->SetPointError(N, 0., std::sqrt(std::pow(Li6correctederr/Li6corrected, 2) + 1./He3Hits[0])*Li6corrected/He3Hits[0]);
+        graphs["StorageWithMonitorDuringIrradiation"]->Set(N + 1);
+        graphs["StorageWithMonitorDuringIrradiation"]->SetPoint(N, storagetime, Li6corrected/He3Hits[0]);
+        graphs["StorageWithMonitorDuringIrradiation"]->SetPointError(N, 0., std::sqrt(std::pow(Li6correctederr/Li6corrected, 2) + 1./He3Hits[0])*Li6corrected/He3Hits[0]);
         fexpo.SetParameters(10, 10);
-        fStorageWithMonitorDuringIrradiation->Fit(&fexpo, "Q");
+        graphs["StorageWithMonitorDuringIrradiation"]->Fit(&fexpo, "Q");
 
         double monitorcounts = fHe3Detector->GetMonitorCountsAfterIrradiationPerCycle().back().second;
         // subtract background from Li6 counts, normalize to He3 counts after irradiation, plot vs. storage time
-        fStorageWithMonitorAfterIrradiation->Set(N + 1);
-        fStorageWithMonitorAfterIrradiation->SetPoint(N, storagetime, Li6corrected / monitorcounts);
-        fStorageWithMonitorAfterIrradiation->SetPointError(N, 0., std::sqrt(std::pow(Li6correctederr/Li6corrected, 2) + 1./monitorcounts) * Li6corrected / monitorcounts);
+        graphs["StorageWithMonitorAfterIrradiation"]->Set(N + 1);
+        graphs["StorageWithMonitorAfterIrradiation"]->SetPoint(N, storagetime, Li6corrected / monitorcounts);
+        graphs["StorageWithMonitorAfterIrradiation"]->SetPointError(N, 0., std::sqrt(std::pow(Li6correctederr/Li6corrected, 2) + 1./monitorcounts) * Li6corrected / monitorcounts);
         fexpo.SetParameters(10, 10);
-        fStorageWithMonitorAfterIrradiation->Fit(&fexpo, "Q");
+        graphs["StorageWithMonitorAfterIrradiation"]->Fit(&fexpo, "Q");
     }
     return 1;
 }

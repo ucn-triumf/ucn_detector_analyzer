@@ -52,11 +52,10 @@ public:
 
     void InitManager(){
 
-        if(anaManager)
-            delete anaManager;
+        if(anaManager)  delete anaManager;
         anaManager = new TAnaManager(IsOffline(), GetODB(), true);
-        if(anaViewer)
-            delete anaViewer;
+
+        if(anaViewer)   delete anaViewer;
         anaViewer  = new TUCNAnaViewer3();
     }
 
