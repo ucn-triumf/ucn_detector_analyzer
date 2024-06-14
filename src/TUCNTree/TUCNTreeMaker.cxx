@@ -83,7 +83,7 @@ void TUCNHitsTree::FillHits(TUCNHitCollection& hits, int isUCN){
         if(hit.psd > -2.0)
             tPSD = hit.psd;
         else
-        `   tPSD = -2.0;
+            tPSD = -2.0;
 
         tChannel = hit.channel;
         tIsUCN = isUCN;

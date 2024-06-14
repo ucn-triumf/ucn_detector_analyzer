@@ -15,14 +15,14 @@ void TLi6GainCalib::add_calib( const std::string& fname, double tmin,double tmax
     // failed to open!
     // try the default location:
     in.open("/home/ucn/online/ucn_detector_analyzer/calib_li6_gains.txt");
-    if ( !in.is_open() ){      
+    if ( !in.is_open() ){
       std::cerr<<"TLi6GainCalib failed to open "<<fname<<std::endl;
       throw std::runtime_error("TLi6GainCalib::add_calib");
     }
   }
 
   std::cout<<"TLi6GainCalib::add_calib: tmin="<<tmin<<" tmax="<<tmax<<std::endl;
-    
+
   int idigi, ich, igch;
   double qcali;
   while ( in >> idigi >> ich >> qcali ){
@@ -30,7 +30,7 @@ void TLi6GainCalib::add_calib( const std::string& fname, double tmin,double tmax
     calimap[ igch ] = qcali;
     std::cout<<"  idigi="<<idigi<<" ich="<<ich<<" igch="<<igch<<" qcali="<<calimap[igch]<<std::endl;
   }
- 
+
   calimaps.push_back( calimap );
 }
 

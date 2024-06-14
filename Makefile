@@ -1,129 +1,94 @@
-#
-# Example Makefile for ROOTANA-based projects
-#
+# Makefile for ucn_detector_analyzer executables
+
+MODULES   := TUCNTree TV Detector Exp Misc
+SRC_DIR   := $(addprefix src/,$(MODULES))
+BUILD_DIR := $(addprefix build/,$(MODULES))
+
+SRC       := $(foreach sdir,$(SRC_DIR),$(wildcard $(sdir)/*.cxx))
+OBJS      := $(patsubst src/%.cxx,build/%.o,$(SRC))
+INCLUDES  := $(addprefix -I,$(SRC_DIR))
+
+vpath %.cxx $(SRC_DIR)
 
 CXXFLAGS = -g -O2 -Wall -Wuninitialized
 
 # required ZLIB library
-
 CXXFLAGS += -DHAVE_LIBZ -std=c++11
 
 # required ROOTANA library
-
 ifndef ROOTANASYS
-ROOTANASYS=..
+	ROOTANASYS=..
 endif
-
-CXXFLAGS += -I$(ROOTANASYS)/include
+CXXFLAGS += -I$(ROOTANASYS)/include $(INCLUDES)
 LIBS += -L$(ROOTANASYS)/lib -lrootana
 
 # ROOT libraries
-
 ifdef ROOTSYS
+	ROOTCFLAGS   := $(shell root-config --cflags)
+	ROOTFEATURES := $(shell root-config --features)
+	ROOTGLIBS    := $(shell root-config --glibs) -lThread
+	HAVE_ROOT_HTTP := $(findstring http,$(ROOTFEATURES))
+	HAVE_ROOT_XML  := $(findstring xml,$(ROOTFEATURES))
 
-ROOTCFLAGS   := $(shell root-config --cflags)
-ROOTFEATURES := $(shell root-config --features)
-ROOTGLIBS    := $(shell root-config --glibs) -lThread
-HAVE_ROOT_HTTP := $(findstring http,$(ROOTFEATURES))
-HAVE_ROOT_XML  := $(findstring xml,$(ROOTFEATURES))
+	CXXFLAGS  += -DHAVE_ROOT $(ROOTCFLAGS)
 
-CXXFLAGS  += -DHAVE_ROOT $(ROOTCFLAGS)
+	ifdef HAVE_ROOT_XML
+		CXXFLAGS  += -DHAVE_ROOT_XML
+		ROOTGLIBS += -lXMLParser -lThread -lRHTTP
+	endif
 
-ifdef HAVE_ROOT_XML
-CXXFLAGS  += -DHAVE_ROOT_XML
-ROOTGLIBS += -lXMLParser -lThread -lRHTTP
-endif
-
-ifdef HAVE_ROOT_HTTP
-CXXFLAGS  += -DHAVE_ROOT_HTTP -DHAVE_THTTP_SERVER
-ROOTGLIBS += -lRHTTP
-endif
-
+	ifdef HAVE_ROOT_HTTP
+		CXXFLAGS  += -DHAVE_ROOT_HTTP -DHAVE_THTTP_SERVER
+		ROOTGLIBS += -lRHTTP
+	endif
 endif # ROOTSYS
 
 # optional MIDAS library
-
 ifdef MIDASSYS
 
-MIDASLIBS = $(MIDASSYS)/linux/lib/libmidas.a -lutil -lrt
-CXXFLAGS += -DHAVE_MIDAS -DOS_LINUX -Dextname -I$(MIDASSYS)/include
+	MIDASLIBS = $(MIDASSYS)/linux/lib/libmidas.a -lutil -lrt
+	CXXFLAGS += -DHAVE_MIDAS -DOS_LINUX -Dextname -I$(MIDASSYS)/include
 
-UNAME := $(shell uname)
-ifeq ($(UNAME),Darwin)
-MIDASLIBS = $(MIDASSYS)/darwin/lib/libmidas.a
-endif
+	UNAME := $(shell uname)
 
-LIBS += $(MIDASLIBS)
+	ifeq ($(UNAME),Darwin)
+		MIDASLIBS = $(MIDASSYS)/darwin/lib/libmidas.a
+	endif
+	LIBS += $(MIDASLIBS)
 
 endif # MIDASSYS
 
+# for compiling all the src files in the various modules
+define make-goal
+$1/%.o: %.cxx
+	$(CXX) $(CXXFLAGS) -c $$< -o $$@
+endef
 
+.PHONY: all checkdirs clean
 
-CAENDIGLIB = $(HOME)/Andrew/CAENStuff/CAENDigitizer_2.7.9/include
-CAENCOMMLIB = $(HOME)/Andrew/CAENStuff/CAENComm-1.2/include
+all: checkdirs $(OBJS) anaDisplay.exe midas2root.exe analyzer_persist.exe data_quality_checker.exe
 
-OBJS:=
-OBJS += TV792Histogram.o
-OBJS += TV1720Waveform.o
-OBJS += TUCNHit.o
-OBJS += TUCNDetectorBaseClass.o
-OBJS += TUCNDetectorCharge.o
-OBJS += TUCNRateVsTime.o
-OBJS += THe3Detector.o
-OBJS += TLi6Detector.o
-OBJS += THe3CountsInSequence.o
-OBJS += TAnaManager.o
-OBJS += TV1720Histograms.o
-OBJS += PulseShapeStruct.o
-OBJS += TUCNAnaViewer3.o
-OBJS += TV1720WaveformDisplay.o
-OBJS += TV1725DppPsdData.o
-OBJS += TV1725WaveformDisplay.o
-OBJS += TUCNTreeMaker.o
-OBJS += TLi6GainCalib.o
-OBJS += TUCNCycleParameters.o
-OBJS += TUCNChronobox.o
-
-all: $(OBJS) anaDisplay.exe midas2root.exe analyzer_persist.exe data_quality_checker.exe #online_analysis.exe
-# UCNAnalyzer.exe UCNDisplay.exe UCNRateMonitor.exe UCNDisplay3.exe
-
-online_analysis.exe: online_analysis.cxx $(OBJS)
+midas2root.exe: src/midas2root.cxx $(OBJS)
 	$(CXX) -o $@ $(CXXFLAGS) $^ $(LIBS) $(ROOTGLIBS) -lm -lz -lpthread -lssl -lutil
 
-anaDisplay.exe: anaDisplay.cxx $(OBJS)
+anaDisplay.exe: src/anaDisplay.cxx $(OBJS)
 	$(CXX) -o $@ $(CXXFLAGS) $^ $(LIBS) $(ROOTGLIBS) -lm -lz -lpthread -lssl -lutil
 
-midas2root.exe: midas2root.cxx $(OBJS)
+analyzer_persist.exe: src/analyzer_persist.cxx $(OBJS)
 	$(CXX) -o $@ $(CXXFLAGS) $^ $(LIBS) $(ROOTGLIBS) -lm -lz -lpthread -lssl -lutil
 
-analyzer_persist.exe: analyzer_persist.cxx $(OBJS)
+data_quality_checker.exe: src/data_quality_checker.cxx $(OBJS)
 	$(CXX) -o $@ $(CXXFLAGS) $^ $(LIBS) $(ROOTGLIBS) -lm -lz -lpthread -lssl -lutil
 
-data_quality_checker.exe: data_quality_checker.cxx $(OBJS)
-	$(CXX) -o $@ $(CXXFLAGS) $^ $(LIBS) $(ROOTGLIBS) -lm -lz -lpthread -lssl -lutil
+checkdirs: $(BUILD_DIR)
 
+$(BUILD_DIR):
+	@mkdir -p $@
 
-#UCNDisplay.exe: UCNDisplay.cxx $(OBJS)
-#	$(CXX) -o $@ $(CXXFLAGS) $^ $(LIBS) $(ROOTGLIBS) -lm -lz -lpthread -lssl -lutil
-
-#UCNDisplay3.exe: UCNDisplay3.cxx $(OBJS)
-#	$(CXX) -o $@ $(CXXFLAGS) $^ $(LIBS) $(ROOTGLIBS) -lm -lz -lpthread -lssl -lutil
-
-#UCNRateMonitor.exe: UCNRateMonitor.cxx $(OBJS)
-#	$(CXX) -o $@ $(CXXFLAGS) $^ $(LIBS) $(ROOTGLIBS) -lm -lz -lpthread -lssl -lutil
-
-#UCNAnalyzer.exe: UCNAnalyzer.cxx $(OBJS)
-#	$(CXX) -o $@ $(CXXFLAGS) $^ $(LIBS) $(ROOTGLIBS) -lm -lz -lpthread -lssl -lutil
-
-%.o: %.cxx
-	$(CXX) -o $@ $(CXXFLAGS) -c $<
-
-dox:
-	doxygen
-
-clean::
-	-rm -f *.o *.a
+clean:
+	@rm -rf $(BUILD_DIR)
+	-rm -rf build
 	-rm -f *.exe
-	-rm -rf *.exe.dSYM
 
-# end
+# build all the files in the various modules
+$(foreach bdir,$(BUILD_DIR),$(eval $(call make-goal,$(bdir))))

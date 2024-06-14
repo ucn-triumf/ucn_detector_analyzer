@@ -7,6 +7,7 @@
 #include "TRootanaEventLoop.hxx"
 #include "TAnaManager.hxx"
 #include "TUCNAnaViewer3.h"
+#include "mvodb.h"
 
 #ifdef HAVE_MIDAS
     #include "midas.h"
@@ -62,7 +63,7 @@ class Analyzer: public TRootanaEventLoop {
             SetTHttpServerReadWrite();
             #endif
 
-            anaManager = new TAnaManager(IsOffline());
+            anaManager = new TAnaManager(IsOffline(), GetODB());
             std::cout << "Finish manager " << std::endl;
             anaViewer  = new TUCNAnaViewer3();
 
@@ -145,7 +146,7 @@ class Analyzer: public TRootanaEventLoop {
             std::cout << "Deleting and creating anaManager " << std::endl;
             if(anaManager)
                 delete anaManager;
-            anaManager = new TAnaManager(IsOffline());
+            anaManager = new TAnaManager(IsOffline(), GetODB());
 
             std::cout << "Deleting and creating anaViewer " << std::endl;
             if(anaViewer)
