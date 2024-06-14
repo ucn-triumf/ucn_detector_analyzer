@@ -112,12 +112,12 @@ class TSequencerTree {
 };
 
 // Base class for making trees with saved data such as EPICS variables
-class TUCNBaseTree {
+class TUCNEpicsTree {
     public:
-        TUCNBaseTree(MVOdb* odb,
+        TUCNEpicsTree(MVOdb* odb,
                      char const* bankname, // midas bank from which to fetch data
                      char const* treename, // name of tree to save in file
-                     char const* odbpath); // path to list of names in odb
+                     char const* odbpath); // path to list of names in odb for branches
         void FillTree(TDataContainer& dataContainer);
 
     protected:
@@ -126,82 +126,5 @@ class TUCNBaseTree {
         std::vector<double> values; // holds data for placement in tree
         const char* bank; // midas bank from which to fetch data
 };
-
-/// Derived classes from TUCNBaseTree
-
-// Epics variables
-class SourceEpics: public TUCNBaseTree {
-    public:
-        SourceEpics(MVOdb* odb):
-            TUCNBaseTree(odb,
-                        "EPSR",
-                        "SourceEpics",
-                        "/Equipment/SourceEpics/Settings/Names") {}
-};
-
-class BeamlineEpics: public TUCNBaseTree {
-    public:
-        BeamlineEpics(MVOdb* odb):
-            TUCNBaseTree(odb,
-                        "EPBL",
-                        "BeamlineEpics",
-                        "/Equipment/BeamlineEpics/Settings/Names") {}
-};
-
-class UCN2Epics: public TUCNBaseTree {
-    public:
-        UCN2Epics(MVOdb* odb):
-            TUCNBaseTree(odb,
-                        "EPU2",
-                        "UCN2Epics",
-                        "/Equipment/UCN2Epics/Settings/Names") {}
-};
-
-class UCN2EpicsTemperature: public TUCNBaseTree {
-    public:
-        UCN2EpicsTemperature(MVOdb* odb):
-            TUCNBaseTree(odb,
-                        "EP2T",
-                        "UCN2EpicsTemperature",
-                        "/Equipment/UCN2EpicsTemperature/Settings/Names") {}
-};
-
-class UCN2EpicsPressures: public TUCNBaseTree {
-    public:
-        UCN2EpicsPressures(MVOdb* odb):
-            TUCNBaseTree(odb,
-                        "EP2T", // same bank name as temperature?
-                        "UCN2EpicsPressures",
-                        "/Equipment/UCN2EpicsPressures/Settings/Names") {}
-};
-
-class UCN2EpicsOthers: public TUCNBaseTree {
-    public:
-        UCN2EpicsOthers(MVOdb* odb):
-            TUCNBaseTree(odb,
-                        "EP2T", // same bank name as temperature?
-                        "UCN2EpicsOthers",
-                        "/Equipment/UCN2EpicsOthers/Settings/Names") {}
-};
-
-class UCN2EpicsPhase2B: public TUCNBaseTree {
-    public:
-        UCN2EpicsPhase2B(MVOdb* odb):
-            TUCNBaseTree(odb,
-                        "EPH2",
-                        "UCN2EpicsPhase2B",
-                        "/Equipment/UCN2EpicsPhase2B/Settings/Names") {}
-};
-
-// LND thermal variables
-class scPico: public TUCNBaseTree {
-    public:
-        scPico(MVOdb* odb):
-            TUCNBaseTree(odb,
-                        "PICO",
-                        "scPico",
-                        "/Equipment/scPico/Settings/Names") {}
-};
-
 
 #endif // TUCNTreeMaker_h

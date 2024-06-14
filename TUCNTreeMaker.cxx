@@ -81,9 +81,9 @@ void TUCNHitsTree::FillHits(TUCNHitCollection& hits, int isUCN){
         tChargeS = hit.chargeShort;
         tBaseline = hit.baseline;
         if(hit.psd > -2.0)
-        tPSD = hit.psd;
+            tPSD = hit.psd;
         else
-        tPSD = -2.0;
+        `   tPSD = -2.0;
 
         tChannel = hit.channel;
         tIsUCN = isUCN;
@@ -231,8 +231,7 @@ void TSCMTree::FillTree(TDataContainer& dataContainer){
     tSCM->Fill();
 }
 
-
-TUCNBaseTree::TUCNBaseTree(MVOdb* odb, char const* bankname, char const* treename,
+TUCNEpicsTree::TUCNEpicsTree(MVOdb* odb, char const* bankname, char const* treename,
                             char const* odbpath){
     /**
      * @brief Base constructor for objects which create trees from MIDAS banks.
@@ -255,23 +254,23 @@ TUCNBaseTree::TUCNBaseTree(MVOdb* odb, char const* bankname, char const* treenam
     // read names
     std::vector<std::string> names = std::vector<std::string>();
     odb->RSA(odbpath, &names);
-
     values.resize(names.size());    // prevents segfault on tree fill
 
-    // setup branches (don't use default branches)
+    // setup branches
     for (long unsigned int i=0; i<names.size(); i++){
+
+        // don't use default branches
         if (names[i].find("Default") == std::string::npos){
 
             // can't have colons in the name or leaf list is expanded
             std::replace(names[i].begin(), names[i].end(), ':', '_');
 
-            // make branch
             datatree->Branch(names[i].c_str(), &values[i], (names[i]+"/D").c_str());
         }
     }
 };
 
-void TUCNBaseTree::FillTree(TDataContainer& dataContainer){
+void TUCNEpicsTree::FillTree(TDataContainer& dataContainer){
     /**
      * @brief Fill the trees with data from MIDAS events.
      */

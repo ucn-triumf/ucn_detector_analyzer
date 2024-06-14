@@ -68,17 +68,10 @@ class TAnaManager  {
         TLi6Detector  *fLi6Detector;
 
         // EPICS variables
+        std::vector<TUCNEpicsTree*> fEPICSTrees;
         TLNDDetectorTree *fLNDDetectorTree;
         TSCMTree *fSCMTree;
         TSequencerTree *fSequencerTree;
-        SourceEpics *fSourceEpics;
-        BeamlineEpics *fBeamlineEpics;
-        UCN2Epics *fUCN2Epics;
-        UCN2EpicsTemperature *fUCN2EpicsTemperature;
-        UCN2EpicsPressures *fUCN2EpicsPressures;
-        UCN2EpicsOthers *fUCN2EpicsOthers;
-        UCN2EpicsPhase2B *fUCN2EpicsPhase2B;
-        scPico *fscPico;
 
         // Histogram of all V785 Charges
         TV792Histograms *fV785Charge;

@@ -20,27 +20,42 @@ TAnaManager::TAnaManager(bool isOffline, MVOdb* odb, bool saveTree){
         fLNDDetectorTree = new TLNDDetectorTree();
         fSCMTree = new TSCMTree();
         fSequencerTree = new TSequencerTree();
-        fSourceEpics = new SourceEpics(odb);
-        fBeamlineEpics = new BeamlineEpics(odb);
-        fUCN2Epics = new UCN2Epics(odb);
-        fUCN2EpicsTemperature = new UCN2EpicsTemperature(odb);
-        fUCN2EpicsPressures = new UCN2EpicsPressures(odb);
-        fUCN2EpicsOthers = new UCN2EpicsOthers(odb);
-        fUCN2EpicsPhase2B = new UCN2EpicsPhase2B(odb);
-        fscPico = new scPico(odb);
+        fEPICSTrees = std::vector<TUCNEpicsTree*>({
+            new TUCNEpicsTree(odb,
+                            "EPSR",         // bank name
+                            "SourceEpics",  // tree name
+                            "/Equipment/SourceEpics/Settings/Names"), // odb path to branch names
+            new TUCNEpicsTree(odb,
+                            "EPBL",
+                            "BeamlineEpics",
+                            "/Equipment/BeamlineEpics/Settings/Names"),
+            new TUCNEpicsTree(odb,
+                            "EPU2",
+                            "UCN2Epics",
+                            "/Equipment/UCN2Epics/Settings/Names"),
+            new TUCNEpicsTree(odb,
+                            "EP2T",
+                            "UCN2EpicsTemperature",
+                            "/Equipment/UCN2EpicsTemperature/Settings/Names"),
+            new TUCNEpicsTree(odb,
+                            "EP2T", // same bank name as temperature?
+                            "UCN2EpicsPressures",
+                            "/Equipment/UCN2EpicsPressures/Settings/Names"),
+            new TUCNEpicsTree(odb,
+                            "EP2T", // same bank name as temperature?
+                            "UCN2EpicsOthers",
+                            "/Equipment/UCN2EpicsOthers/Settings/Names"),
+            new TUCNEpicsTree(odb,
+                            "EPH2",
+                            "UCN2EpicsPhase2B",
+                            "/Equipment/UCN2EpicsPhase2B/Settings/Names"),
+        });
 
     }else{
-        fSourceEpics = 0;
-        fBeamlineEpics = 0;
         fLNDDetectorTree = 0;
         fSCMTree = 0;
         fSequencerTree = 0;
-        fscPico = 0;
-        fUCN2Epics = 0;
-        fUCN2EpicsTemperature = 0;
-        fUCN2EpicsPressures = 0;
-        fUCN2EpicsOthers = 0;
-        fUCN2EpicsPhase2B = 0;
+        fEPICSTrees = std::vector<TUCNEpicsTree*>();
     }
 
     std::cout << "Making V1725 plots " << std::endl;
@@ -95,21 +110,14 @@ int TAnaManager::ProcessMidasEvent(TDataContainer& dataContainer){
     fV1725_QL->UpdateHistograms(dataContainer);
     fV1725PSDQL->UpdateHistograms(dataContainer);
 
-    if (fSourceEpics)           fSourceEpics->FillTree(dataContainer);
-    if (fBeamlineEpics)         fBeamlineEpics->FillTree(dataContainer);
-    if (fUCN2Epics)             fUCN2Epics->FillTree(dataContainer);
-    if (fUCN2EpicsTemperature)  fUCN2EpicsTemperature->FillTree(dataContainer);
-    if (fUCN2EpicsPressures)    fUCN2EpicsPressures->FillTree(dataContainer);
-    if (fUCN2EpicsOthers)       fUCN2EpicsOthers->FillTree(dataContainer);
-    if (fUCN2EpicsPhase2B)      fUCN2EpicsPhase2B->FillTree(dataContainer);
-    if (fscPico)                fscPico->FillTree(dataContainer);
+    for (unsigned int i=0; i<fEPICSTrees.size(); i++)
+        fEPICSTrees[i]->FillTree(dataContainer);
     if (fSequencerTree)         fSequencerTree->FillTree(dataContainer);
     if (fSCMTree)               fSCMTree->FillTree(dataContainer);
     if (fLNDDetectorTree)       fLNDDetectorTree->FillTree(dataContainer);
 
     TV792NData *data = dataContainer.GetEventData<TV792NData>("ADC0");
     if(data) {
-
         /// Get the Vector of ADC Measurements.
         std::vector<VADCNMeasurement> measurements = data->GetMeasurements();
         for (unsigned int i = 0; i < measurements.size(); i++) { // loop over measurements
@@ -196,12 +204,14 @@ int TAnaManager::ProcessMidasEvent(TDataContainer& dataContainer){
             Li6backgroundrate = Li6result->Parameter(0);
             Li6backgroundrateerr = Li6result->ParError(0);
         }
+
         auto He3result = graphs["He3StorageBackground"]->Fit("pol0", "QS");
         double He3backgroundrate = 0., He3backgroundrateerr = 0.;
         if (He3result == 0){
             He3backgroundrate = He3result->Parameter(0);
             He3backgroundrateerr = He3result->ParError(0);
         }
+
         double Li6corrected = Li6Hits[2] - Li6backgroundrate*countingtime;
         double Li6correctederr = std::sqrt(Li6Hits[2] + std::pow(Li6backgroundrateerr*countingtime, 2));
 
