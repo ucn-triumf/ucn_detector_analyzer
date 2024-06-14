@@ -21,7 +21,6 @@ private:
                                              };
     int run_number;
 
-
 public:
 
     // Two analysis managers.  Define and fill histograms in analysis manager.
@@ -99,7 +98,6 @@ public:
     }
 
     bool ProcessMidasEvent(TDataContainer& dataContainer){
-
         if(!anaManager)
             InitManager();
 

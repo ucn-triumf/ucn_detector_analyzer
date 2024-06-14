@@ -84,22 +84,22 @@ OBJS += TLi6GainCalib.o
 OBJS += TUCNCycleParameters.o
 OBJS += TUCNChronobox.o
 
-all: $(OBJS) online_analysis.exe anaDisplay.exe midas2root.exe analyzer_persist.exe data_quality_checker.exe
+all: $(OBJS) anaDisplay.exe midas2root.exe analyzer_persist.exe data_quality_checker.exe #online_analysis.exe
 # UCNAnalyzer.exe UCNDisplay.exe UCNRateMonitor.exe UCNDisplay3.exe
 
-online_analysis.exe: online_analysis.cxx $(OBJS) 
+online_analysis.exe: online_analysis.cxx $(OBJS)
 	$(CXX) -o $@ $(CXXFLAGS) $^ $(LIBS) $(ROOTGLIBS) -lm -lz -lpthread -lssl -lutil
 
-anaDisplay.exe: anaDisplay.cxx $(OBJS) 
+anaDisplay.exe: anaDisplay.cxx $(OBJS)
 	$(CXX) -o $@ $(CXXFLAGS) $^ $(LIBS) $(ROOTGLIBS) -lm -lz -lpthread -lssl -lutil
 
-midas2root.exe: midas2root.cxx $(OBJS) 
+midas2root.exe: midas2root.cxx $(OBJS)
 	$(CXX) -o $@ $(CXXFLAGS) $^ $(LIBS) $(ROOTGLIBS) -lm -lz -lpthread -lssl -lutil
 
-analyzer_persist.exe: analyzer_persist.cxx $(OBJS) 
+analyzer_persist.exe: analyzer_persist.cxx $(OBJS)
 	$(CXX) -o $@ $(CXXFLAGS) $^ $(LIBS) $(ROOTGLIBS) -lm -lz -lpthread -lssl -lutil
 
-data_quality_checker.exe: data_quality_checker.cxx $(OBJS) 
+data_quality_checker.exe: data_quality_checker.cxx $(OBJS)
 	$(CXX) -o $@ $(CXXFLAGS) $^ $(LIBS) $(ROOTGLIBS) -lm -lz -lpthread -lssl -lutil
 
 
