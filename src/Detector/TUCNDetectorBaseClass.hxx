@@ -9,8 +9,8 @@
 #include "TUCNRateVsTime.h"
 #include "TSimpleHistogramCanvas.hxx"
 #include "TFancyHistogramCanvas.hxx"
+#include "TUCNHitsTree.hxx"
 
-#include "TUCNTreeMaker.h"
 #include "TUCNCycleParameters.hxx"
 
 

@@ -12,7 +12,10 @@
 
 #include "THe3Detector.hxx"
 #include "TLi6Detector.hxx"
-#include "TUCNTreeMaker.h"
+#include "TUCNEpicsTree.hxx"
+#include "TLNDDetectorTree.hxx"
+#include "TSequencerTree.hxx"
+#include "TSCMTree.hxx"
 #include "TV792Histogram.h"
 #include "TV1725WaveformDisplay.h"
 #include "TUCNChronobox.hxx"
