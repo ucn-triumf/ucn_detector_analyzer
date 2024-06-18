@@ -30,7 +30,7 @@ TAnaManager::TAnaManager(bool isOffline, MVOdb* odb, bool saveTree){
                             "BeamlineEpics",
                             "/Equipment/BeamlineEpics/Settings/Names"),
             new TUCNEpicsTree(odb,
-                            "EPU2",
+                            "EPUC",
                             "UCN2Epics",
                             "/Equipment/UCN2Epics/Settings/Names"),
             new TUCNEpicsTree(odb,
