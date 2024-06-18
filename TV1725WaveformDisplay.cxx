@@ -219,8 +219,9 @@ void TV1725_PH::CreateHistograms(){
       char title[100];
       sprintf(name,"TV1725_PH_%i_%i",i,iBoard);
       
-      sprintf(title,"V1725 PH for channel=%i Board=%i",i,iBoard);	
+      sprintf(title,"V1725 PH ARGH for channel=%i Board=%i",i,iBoard);	
       
+      //TH1D *tmp = new TH1D(name, title, 400, 0., 16000);
       TH1D *tmp = new TH1D(name, title, 400, 0., 16000);
       tmp->SetXTitle("Pulse Height (ADC)");
       
@@ -249,9 +250,13 @@ void TV1725_PH::UpdateHistograms(TDataContainer& dataContainer){
     for (int b = 0; b<nsamples; b++){
       if(meas.GetSample(b) < min_value) min_value = meas.GetSample(b);
     }
-    
-    double ph = 14718 - min_value;
-    GetHistogram(ch)->Fill(ph);
+
+    std::cout << "min_value " << min_value << " " << ch << std::endl;
+    double ph = 16000 - min_value;
+    //double ph = min_value;
+    GetHistogram(ch)->Fill(min_value);
+
+    std::cout << "Number events " << GetHistogram(ch)->GetEntries() << std::endl;
 
   }
 

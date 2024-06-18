@@ -310,7 +310,8 @@ public:
 	  for(unsigned int i = 0; i < fHitsPerCycle[det].size(); i++){
 	    
 	    time_t t(fHitsPerCycle[det][i].first);
-	    struct tm *tm = localtime(&t);
+	    struct tm buf;
+	    struct tm *tm = localtime_r(&t,&buf);
 	    char date[256];
 	    
 	    strftime(date,sizeof(date),"%Y/%m/%d %H:%M:%S",tm);
@@ -559,7 +560,8 @@ public:
 	  for(unsigned int i = 0; i < fHitsPerCycle[det].size(); i++){
 
 	    time_t t(fHitsPerCycle[det][i].first);
-	    struct tm *tm = localtime(&t);
+	    struct tm buf;
+	    struct tm *tm = localtime_r(&t,&buf);
 	    char date[256];
 	    
 	    strftime(date,sizeof(date),"%Y/%m/%d %H:%M:%S",tm);

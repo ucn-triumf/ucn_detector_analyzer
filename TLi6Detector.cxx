@@ -197,6 +197,8 @@ void TLi6Detector::GetHits(TDataContainer& dataContainer){
     double hittime = meas.GetExtendedTimeTag() * 0.000000004; // in seconds
     int ch = meas.GetChannel();
 
+ 
+
     // Use the first time synchronization pulse to set the initial unix time
     if(initialUnixTime < 0){
       if(ch == 11){	
@@ -213,6 +215,8 @@ void TLi6Detector::GetHits(TDataContainer& dataContainer){
     hit.channel = meas.GetChannel();
     hit.chargeShort = meas.GetQshort();
     hit.chargeLong = meas.GetQlong();
+
+    std::cout << "Hit " << hit.time << " " << hit.chargeShort << std::endl;
           
     // Is this a real UCN hit or a monitoring hit?
     if(ucn_channels[hit.channel]){
@@ -220,10 +224,13 @@ void TLi6Detector::GetHits(TDataContainer& dataContainer){
       hit.psd = 0;
       if(hit.chargeLong != 0)
 	hit.psd = ((Float_t)(hit.chargeLong)-(Float_t)(hit.chargeShort))/((Float_t)(hit.chargeLong));
-      if(hit.psd > fPSDThreshold && hit.chargeLong > fQLongThreshold ){
+      std::cout << hit.psd << " " << hit.chargeShort << " " << hit.chargeLong << std::endl;
+      if((hit.psd > fPSDThreshold && hit.chargeLong > fQLongThreshold) || 1 ){
 	fHits.push_back(hit);		
+	std::cout << " over threshold " << std::endl;
       }else{
 	fBackgroundHits.push_back(hit);
+	std::cout << "background " << std::endl;
       }
     }else{
       fNonHits.push_back(hit);
@@ -286,7 +293,7 @@ void TLi6Detector::GetHits(TDataContainer& dataContainer){
 	    hit.psd = 0;
 	    if(hit.chargeLong != 0)
 	      hit.psd = ((Float_t)(hit.chargeLong)-(Float_t)(hit.chargeShort))/((Float_t)(hit.chargeLong));
-	    if(hit.psd > fPSDThreshold && hit.chargeLong > fQLongThreshold ){
+	    if((hit.psd > fPSDThreshold && hit.chargeLong > fQLongThreshold) || 1 ){
 	      fHits.push_back(hit);		
 	    }else{
 	      fBackgroundHits.push_back(hit);
