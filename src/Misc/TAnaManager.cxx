@@ -79,9 +79,9 @@ TAnaManager::TAnaManager(bool isOffline, MVOdb* odb, bool saveTree){
     gStyle->SetOptStat(1001111);
 
     // initialize graphs for displaying analysis
-    for (const auto& [name, title] : GRAPH_NAME_TITLE){
-        graphs[name] = new TGraphErrors();
-        graphs[name]->SetTitle(title);
+    for (auto itr = GRAPH_NAME_TITLE.begin(); itr != GRAPH_NAME_TITLE.end(); itr++){
+        graphs[itr->first] = new TGraphErrors();
+        graphs[itr->first]->SetTitle(itr->second);
     }
     std::cout << "Finished TAnaManager constructor" << std::endl;
 };
@@ -91,8 +91,8 @@ void TAnaManager::BeginRun(int transition, int run, int time) {
     if(fUCNChronobox) fUCNChronobox->BeginRun(transition, run, time);
 
     // reset graphs
-    for (const auto& [name, graph] : graphs){
-        graph->Set(0);
+    for (auto itr=graphs.begin(); itr != graphs.end(); itr++){
+        itr->second->Set(0);
     }
 }
 
