@@ -21,10 +21,10 @@ TAnaManager::TAnaManager(bool isOffline, MVOdb* odb, bool saveTree){
         fSCMTree = new TSCMTree();
         fSequencerTree = new TSequencerTree();
         fEPICSTrees = std::vector<TUCNEpicsTree*>({
-            new TUCNEpicsTree(odb,
-                            "EPSR",         // bank name
-                            "SourceEpics",  // tree name
-                            "/Equipment/SourceEpics/Settings/Names"), // odb path to branch names
+            // new TUCNEpicsTree(odb,
+            //                 "EPSR",         // bank name
+            //                 "SourceEpics",  // tree name
+            //                 "/Equipment/SourceEpics/Settings/Names"), // odb path to branch names
             new TUCNEpicsTree(odb,
                             "EPBL",
                             "BeamlineEpics",
@@ -38,17 +38,25 @@ TAnaManager::TAnaManager(bool isOffline, MVOdb* odb, bool saveTree){
                             "UCN2EpicsTemperature",
                             "/Equipment/UCN2EpicsTemperature/Settings/Names"),
             new TUCNEpicsTree(odb,
-                            "EP2T", // same bank name as temperature?
+                            "EP2P",
                             "UCN2EpicsPressures",
                             "/Equipment/UCN2EpicsPressures/Settings/Names"),
             new TUCNEpicsTree(odb,
-                            "EP2T", // same bank name as temperature?
+                            "EP2O",
                             "UCN2EpicsOthers",
                             "/Equipment/UCN2EpicsOthers/Settings/Names"),
             new TUCNEpicsTree(odb,
                             "EPH2",
                             "UCN2EpicsPhase2B",
                             "/Equipment/UCN2EpicsPhase2B/Settings/Names"),
+            new TUCNEpicsTree(odb,
+                            "EP3A",
+                            "UCN2EpicsPhase3",
+                            "/Equipment/UCN2EpicsPhase3/Settings/Names"),
+            new TUCNEpicsTree(odb,
+                            "EPFA",
+                            "UCN2FastEpics",
+                            "/Equipment/UCN2fastEpics/Settings/Names"),
         });
 
     }else{
