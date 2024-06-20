@@ -11,7 +11,7 @@
 
 #include "TV1725DppPsdData.hxx"
 
-/// Reset the histograms for this canvas
+/// TV1725PSDQL ----------------------------------------------
 TV1725PSDQL::TV1725PSDQL(){
     SetNumberChannelsInGroup(V1725_MAXCHAN);
     SetGroupName("Module");
@@ -73,6 +73,7 @@ void TV1725PSDQL::BeginRun(int transition,int run,int time){
 
 void TV1725PSDQL::EndRun(int transition,int run,int time){}
 
+/// TV1725WaveformDisplay -----------------------------------
 TV1725WaveformDisplay::TV1725WaveformDisplay(){
     SetNumberChannelsInGroup(V1725_MAXCHAN);
     SetGroupName("Module");
@@ -152,6 +153,7 @@ void TV1725WaveformDisplay::BeginRun(int transition,int run,int time){
 
 void TV1725WaveformDisplay::EndRun(int transition,int run,int time){}
 
+/// TV1725_PH ----------------------------------------------
 TV1725_PH::TV1725_PH(){
     SetNumberChannelsInGroup(V1725_MAXCHAN);
     SetGroupName("Module");
@@ -219,6 +221,7 @@ void TV1725_PH::BeginRun(int transition,int run,int time){
 
 void TV1725_PH::EndRun(int transition,int run,int time){}
 
+/// TV1725_QL ----------------------------------------------
 TV1725_QL::TV1725_QL(){
     SetNumberChannelsInGroup(V1725_MAXCHAN);
     SetGroupName("Module");

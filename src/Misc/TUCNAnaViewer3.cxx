@@ -12,8 +12,7 @@
 #include "TV1720WaveformDisplay.h"
 
 TUCNAnaViewer3::TUCNAnaViewer3(){
-    //fUCNEvent = NULL;
-    verbose = 0;
+    verbose = 0;    // boolean
 
     // event histograms for runtime window
     fV1720WaveformDisplay = new TV1720WaveformDisplay();
@@ -24,17 +23,13 @@ TUCNAnaViewer3::TUCNAnaViewer3(){
     fV1720QSQLHistograms = new TV1720QSQLHistograms();
     fV1720QSQLHistograms->DisableAutoUpdate();
 
-  // PSD vs QL histograms
-  fV1720PSDQLHistograms = new TV1720PSDQLHistograms();
-  fV1720PSDQLHistograms->DisableAutoUpdate();
+    // PSD vs QL histograms
+    fV1720PSDQLHistograms = new TV1720PSDQLHistograms();
+    fV1720PSDQLHistograms->DisableAutoUpdate();
 
-  // Pulse Height Histograms
-  fV1720_PH = new TV1720_PH();
-  fV1720_PH->DisableAutoUpdate();
-
-}
-
-TUCNAnaViewer3::~TUCNAnaViewer3(){
+    // Pulse Height Histograms
+    fV1720_PH = new TV1720_PH();
+    fV1720_PH->DisableAutoUpdate();
 }
 
 // Analyze Data and Save to TTree
@@ -47,7 +42,7 @@ int TUCNAnaViewer3::FindAndFitPulses(TDataContainer& dataContainer, char CutChoi
     if(banklist.find("W20") == std::string::npos) return 1;
 
     // output bank block information
-    if(verbose) {
+    if(verbose){
         printf("event id: %d\n",sample.GetEventId());
         printf("trigger mask: %d\n",sample.GetTriggerMask());
         printf("serial number: %d\n",sample.GetSerialNumber());
@@ -72,17 +67,17 @@ int TUCNAnaViewer3::FindAndFitPulses(TDataContainer& dataContainer, char CutChoi
     }
 
     // loop over the all data for one event and organize said data
-    for(sample.IterateBank32(&bank,&pdata);bank!=NULL&&pdata!=NULL;
+    for(sample.IterateBank32(&bank,&pdata); bank!=NULL && pdata!=NULL;
         sample.IterateBank32(&bank,&pdata)) {
 
         sscanf(&bank->fName[3],"%1d", &iboard);
         if ( iboard<0 || iboard >= NDPPBOARDS){
-        if(verbose)
-        std::cout<<"<TUCNAnaViewer3> bank="<<iboard<<" but MAXBOARDS= "<<NDPPBOARDS<<std::endl;
-        continue;
+            if(verbose)
+                std::cout<<"<TUCNAnaViewer3> bank="<<iboard<<" but MAXBOARDS= "<<NDPPBOARDS<<std::endl;
+            continue;
         }
         if(verbose)
-        std::cout<<"<TUCNAnaViewer3> board="<<iboard<<std::endl;
+            std::cout<<"<TUCNAnaViewer3> board="<<iboard<<std::endl;
 
         fDPP[iboard].Init( pdata );
 
@@ -136,137 +131,93 @@ int TUCNAnaViewer3::FindAndFitPulses(TDataContainer& dataContainer, char CutChoi
                 uint16_t pulseValues[b->Length];
                 TimeStampArray[i] = b->TimeTag;
 
+                for (int s=0; s < b->Length; s++)//sets the value of wf for each bin to an array
+                    pulseValues[s] = *(wf+s);
+                for (int a = 4; a < 54; a++)//adds the wf value of all the bins in the long gate (after gate offset)
+                    qlCalculated[i] = qlCalculated[i] + (b->Baseline - pulseValues[a]);
+                for (int h = 4; h < 14; h++)
+                    qsCalculated[i] = qsCalculated[i] + (b->Baseline - pulseValues[h]);
 
-	  for (int s=0; s < b->Length; s++)//sets the value of wf for each bin to an array
-	    {
-	      pulseValues[s] = *(wf+s);
+                PSDCalculated[i] = ((float)qlCalculated[i] - (float)qsCalculated[i])/(float)qlCalculated[i];
+                QLDifference[i] = ((float)qlCalculated[i])/((float)b->ChargeLong);
+                QSDifference[i] = ((float)qsCalculated[i])/((float)b->ChargeShort);
+                QLBoard[i] = b->ChargeLong;
+                QSBoard[i] = b->ChargeShort;
+	        }
 
-	    }
-	  for (int a = 4; a < 54; a++)//adds the wf value of all the bins in the long gate (after gate offset)
-	    {
-	      qlCalculated[i] = qlCalculated[i] + (b->Baseline - pulseValues[a]);
-	    }
-	  for (int h = 4; h < 14; h++)
-	    {
-	      qsCalculated[i] = qsCalculated[i] + (b->Baseline - pulseValues[h]);
-	    }
-	  PSDCalculated[i] = ((float)qlCalculated[i] - (float)qsCalculated[i])/(float)qlCalculated[i];
-	  QLDifference[i] = ((float)qlCalculated[i])/((float)b->ChargeLong);
-	  QSDifference[i] = ((float)qsCalculated[i])/((float)b->ChargeShort);
-	  QLBoard[i] = b->ChargeLong;
-	  QSBoard[i] = b->ChargeShort;
+            std::sort(TimeStampArray, TimeStampArray + size);//sorts time tags from smallest to largest
 
+            //added July 5, 2016 to sort the waveforms based on time tag
+            for (int j =0; j<nEvents; j++){
+	            for (isubev = 0;isubev<nEvents;isubev++){
+	                b  = fDPP[iboard].GetPSD( isubev, ichan );
+                    if (b->TimeTag == TimeStampArray[j]){//added July 5, 2016 to sort the waveforms based on time tag
+                                                        //checks if time tag in the sub event is the same as the time tag
+                                                        //of the j element of the TimeStampArray (plots waves in order)
+                        
+		                wf = fDPP[iboard].GetWaveform( isubev, ichan );//changed isubev for q July 28, 2016
 
-	}
+                        if ( b==NULL)   continue;
+	                	if ( wf==NULL)  continue;
 
+                        if (b->Length){
+                            if (b->Length !=0){
+                                tChargeL = qcali.get_q( iboard, ichan, double(b->ChargeLong), 0.0 );
+                                tChargeS = qcali.get_q( iboard, ichan, double(b->ChargeShort), 0.0 );
+                                float ql = float(tChargeL);
+                                float qs = float(tChargeS);
 
-      std::sort(TimeStampArray, TimeStampArray + size);//sorts time tags from smallest to largest
+                                tPSD = 0.0;
+                                if ( ql!=0.0 )
+                                    tPSD = ( ql - qs ) / ql ;
 
-      //      if (nEvents!=0 )
-      //std::cout<<"*** ch="<<ichan<<" waveform "<<g<<" of nEvents= "<<nEvents<<" *** "<<std::endl;
-      for (int j =0; j<nEvents; j++)//added July 5, 2016 to sort the waveforms based on time tag
-      	{
-          //std::cout<<"====================================================J= "<<j<<"============================"<<std::endl;
-	for (isubev = 0;isubev<nEvents;isubev++) {	;
-	  b  = fDPP[iboard].GetPSD( isubev, ichan );
-	     if (b->TimeTag == TimeStampArray[j])//added July 5, 2016 to sort the waveforms based on time tag
-	                                        //checks if time tag in the sub event is the same as the time tag
-	                                        //of the j element of the TimeStampArray (plots waves in order)
-		 {
+                                // fill histograms
+                                time_t tt=sample.GetTimeStamp();
+                                int timet = sample.GetTimeStamp();
+                                sprintf( htitle, "%s BL=% 5d QS=% 5d QL=% 5d PSD=%6.2f WF=%5d/%5d %i",
+                                        ctime( &tt ),
+                                        b->Baseline, tChargeS, tChargeL,
+                                        tPSD, /*q+1*/isubev+1, nEvents, b->Length);
 
-		wf = fDPP[iboard].GetWaveform( isubev, ichan );//changed isubev for q July 28, 2016
+                                // Calculate the pulse height for each waveform and plot the pulse height (3750 - minium ADC value);
+                                uint32_t min_value = 99999;
+                                for (int i = 0; i < b->Length; i++){
+                                    if(wf[i] < min_value)
+                                        min_value = wf[i];
+                                }
+                                int pulse_height = 3750 - (int)min_value;
 
-		if ( b==NULL){
-                  //		  std::cout<<"b==NULL"<<std::endl;
-		  continue;
-		}
-		if ( wf==NULL)
-		  {
-                    //		    std::cout<<"wf == NULL"<<std::endl;
-		    continue;
-		  }
+                                fV1720_PH->UpdateHistogram(iboard, ichan, pulse_height);
 
-		//DPP_Bank_Out_Print( b );
+                                //passes wave info to UpdateHistograms if a cut is put on PSD values
+                                if (CutChoice == 'y'){
+                                    if(tPSD <= PSDMax && tPSD >= PSDMin){
+                                        fV1720WaveformDisplay->UpdateHistogram(iboard, ichan, wf, b->Length, htitle);
+                                    }
+                                }else{
+                                    if(ichan != 4 or iboard != 1 or pulse_height > 400)
+                                        fV1720WaveformDisplay->UpdateHistogram(iboard, ichan, wf, b->Length,htitle);
+                                }
 
+                                fV1720QLQL->UpdateHistogram(iboard, ichan, qlCalculated, QLBoard, nEvents);
+                                fV1720QSQS->UpdateHistogram(iboard, ichan, qsCalculated, QSBoard, nEvents);
+                            }//if (b->length != 0)
+                        }//if (b->length)
+		            }//if (b->TimeTag == TimeStampArray[j])
+	            }//isubev loop
+	        }//j loop
+        }//ichan loop
+    }//iboard loop  // end filling tree
 
-		if (b->Length)
-		  {
-		    if (b->Length !=0)
-		      {
-			//int igch = iboard*8 + ichan;
-                        //			std::cout<<"tChargeL"<<std::endl;
-			tChargeL  =  qcali.get_q( iboard, ichan, double(b->ChargeLong), 0.0 );
-			//std::cout<<"tChargeS"<<std::endl;
-			tChargeS  =qcali.get_q( iboard, ichan, double(b->ChargeShort), 0.0 );
-			//std::cout<<"PSD"<<std::endl;
-			float ql = float(tChargeL);
-			float qs = float(tChargeS);
-
-			tPSD = 0.0;
-			if ( ql!=0.0 ) tPSD = ( ql - qs ) / ql ;
-
-			// fill histograms
-			time_t tt=sample.GetTimeStamp();
-			int timet = sample.GetTimeStamp();
-                        //			std::cout<<"timet "<<timet<<std::endl;
-			//std::cout<<"BL="<<b->Baseline<<" QL="<<tChargeL<<" PSD="<<tPSD<<" Evno="<<sample.GetEventId()
-			//	 <<" WF="<<isubev<<" / "<<nEvents<<std::endl;
-			sprintf( htitle, "%s BL=% 5d QS=% 5d QL=% 5d PSD=%6.2f WF=%5d/%5d %i",
-				 ctime( &tt ),
-				 b->Baseline, tChargeS, tChargeL, tPSD,  /*q+1*/isubev+1, nEvents,b->Length );
-			//std::cout<<" htitle ="<<htitle<<std::endl;
-
-		        // Calculate the pulse height for each waveform and plot the pulse height (3750 - minium ADC value);
-			uint32_t min_value = 99999;
-			for (int i = 0; i < b->Length; i++){
-			  if(wf[i] < min_value) min_value = wf[i];
-			}
-			int pulse_height = 3750 - (int)min_value;
-
-			//if(iboard == 1 and ichan ==4)
-			//std::cout << "PPH " << min_value << " " << pulse_height << std::endl;
-			fV1720_PH->UpdateHistogram(iboard, ichan, pulse_height);
-
-
-			if (CutChoice == 'y')//passes wave info to UpdateHistograms if a cut is put on PSD values
-			  {
-			    if(tPSD <= PSDMax && tPSD >= PSDMin)
-			      {
-				fV1720WaveformDisplay->UpdateHistogram(iboard, ichan, wf, b->Length, htitle);
-			      }
-			  }
-			else
-			  {
-                            //  			std::cout<<"Passing to UpdateHistograms"<<std::endl;
-			    if(ichan != 4 or iboard != 1 or pulse_height > 400)
-			    fV1720WaveformDisplay->UpdateHistogram(iboard, ichan, wf, b->Length,htitle);
-			  }
-
-			//fV1720QLQL->UpdateHistogram(iboard, ichan, qlCalculated, QLBoard, nEvents);
-			//fV1720QSQS->UpdateHistogram(iboard, ichan, qsCalculated, QSBoard, nEvents);
-			//std::cout<<"After Update Histograms"<<std::endl;
-
-
-
-		      }//if (b->length != 0)
-		  }//if (b->length)
-		 }//if (b->TimeTag == TimeStampArray[j])
-	}//isubev loop
-	}//j loop
-    }//ichan loop
-  }//iboard loop  // end filling tree
-
-  return 1;
+    return 1;
 
 } // end FindAndFitPulses
-
 
 int TUCNAnaViewer3::ProcessMidasEvent(TDataContainer& dataContainer, char CutChoice, float PSDMax, float PSDMin){
 
     // Find and fit V1720 pulses; this also fills the V1720 waveforms.
     TMidasEvent sample = dataContainer.GetMidasEvent();
     std::string banklist(sample.GetBankList());
-    //std::cout << banklist << std::endl;
     int counter = 1;
     if(banklist.find("W20") != std::string::npos){
         counter = FindAndFitPulses(dataContainer, CutChoice, PSDMax, PSDMin);

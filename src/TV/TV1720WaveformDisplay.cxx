@@ -9,7 +9,7 @@
 
 #include "time.h"
 
-/// Reset the histograms for this canvas
+/// TV1720QLQL --------------------------------------------
 TV1720QLQL::TV1720QLQL(){
 	SetNumberChannelsInGroup(PSD_MAXNCHAN);
 	SetGroupName("Module");
@@ -61,8 +61,7 @@ void TV1720QLQL::BeginRun(int transition,int run,int time){
 
 void TV1720QLQL::EndRun(int transition,int run,int time){}
 
-
-///////////////////////////////////////////////////////////
+/// TV1720QSQS --------------------------------------------
 TV1720QSQS::TV1720QSQS(){
 	SetNumberChannelsInGroup(PSD_MAXNCHAN);
 	SetGroupName("Module");
@@ -86,8 +85,8 @@ void TV1720QSQS::CreateHistograms(){
 		for(int i = 0; i < PSD_MAXNCHAN; i++){ // loop over 8 channels
 			char name[100];
 			char title[100];
-			sprintf(name,"V1720QSQS_%i_%i",iBoard,i);
-			sprintf(title,"V1720 Gate Values for module = %i, channel=%i",iBoard,i);
+			sprintf(name,"V1720QSQS_%i_%i", iBoard, i);
+			sprintf(title,"V1720 Gate Values for module = %i, channel=%i", iBoard, i);
 
 			TH2F *tmp = new TH2F(name,title,320,-20,40000,320,-20,30000);
 			tmp->SetDrawOption("colz");
@@ -111,6 +110,7 @@ void TV1720QSQS::BeginRun(int transition,int run,int time){
 
 void TV1720QSQS::EndRun(int transition,int run,int time){}
 
+/// TV1720WaveformDisplay ---------------------------------
 TV1720WaveformDisplay::TV1720WaveformDisplay(){
 	SetNumberChannelsInGroup(PSD_MAXNCHAN);
 	SetGroupName("Module");
@@ -164,6 +164,7 @@ void TV1720WaveformDisplay::BeginRun(int transition,int run,int time){
 
 void TV1720WaveformDisplay::EndRun(int transition,int run,int time){}
 
+/// TV1720_PH ---------------------------------------------
 TV1720_PH::TV1720_PH(){
 	SetNumberChannelsInGroup(PSD_MAXNCHAN);
 	SetGroupName("Module");
@@ -197,8 +198,6 @@ void TV1720_PH::CreateHistograms(){
 		}
 	}
 }
-
-
 
 /// Update the histograms for this canvas
 void TV1720_PH::UpdateHistogram(int board, int chan, uint32_t pulseHeight){
