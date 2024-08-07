@@ -26,9 +26,9 @@ TAnaManager::TAnaManager(bool isOffline, MVOdb* odb, bool saveTree){
             //                 "SourceEpics",  // tree name
             //                 "/Equipment/SourceEpics/Settings/Names"), // odb path to branch names
             new TUCNEpicsTree(odb,
-                            "EPBL",
-                            "BeamlineEpics",
-                            "/Equipment/BeamlineEpics/Settings/Names"),
+                            "EPBL",             // bank name
+                            "BeamlineEpics",    // tree name
+                            "/Equipment/BeamlineEpics/Settings/Names"), // odb path
             new TUCNEpicsTree(odb,
                             "EPUC",
                             "UCN2Epics",

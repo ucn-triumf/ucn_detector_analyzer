@@ -34,6 +34,9 @@ TUCNEpicsTree::TUCNEpicsTree(MVOdb* odb, char const* bankname, char const* treen
             // can't have colons in the name or leaf list is expanded
             std::replace(names[i].begin(), names[i].end(), ':', '_');
 
+            // replace . with _ for ease of processing later
+            std::replace(names[i].begin(), names[i].end(), '.', '_');
+
             datatree->Branch(names[i].c_str(), &values[i], (names[i]+"/D").c_str());
         }
     }
@@ -54,7 +57,7 @@ void TUCNEpicsTree::FillTree(TDataContainer& dataContainer){
 
     // Save variables
     for (long unsigned int i=0; i<values.size(); i++){
-        values[i] = data->GetDouble()[i];
+        values[i] = data->GetFloat()[i];
     }
     datatree->Fill();
 };
