@@ -168,16 +168,16 @@ class MyTestLoop: public TRootanaDisplay {
 
         void UpdateHistograms(TDataContainer& dataContainer){
 
-            if(fUsePCTime) anaManager->UsePCTime();
+            if(fUsePCTime)
+                anaManager->UsePCTime();
 
             anaViewer->ProcessMidasEvent(dataContainer, 'n', PSDMax, PSDMin);
             anaManager->ProcessMidasEvent(dataContainer);
 
             if(0)
-            if(dataContainer.GetMidasData().GetSerialNumber() %1000 ==0)
-
-            std::cout << "IV3 histogram: " << anaManager->fUCNChronobox->fIV3DriveClosedDiff->GetEntries()
-                << " 0x" << anaManager->fUCNChronobox->fIV3DriveClosedDiff << std::endl;
+                if(dataContainer.GetMidasData().GetSerialNumber() %1000 ==0)
+                    std::cout << "IV3 histogram: " << anaManager->fUCNChronobox->fIV3DriveClosedDiff->GetEntries()
+                        << " 0x" << anaManager->fUCNChronobox->fIV3DriveClosedDiff << std::endl;
         }
 
         void PlotCanvas(TDataContainer& dataContainer){}

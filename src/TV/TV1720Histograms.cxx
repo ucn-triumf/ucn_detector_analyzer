@@ -13,7 +13,7 @@ void TV1720QSQLHistograms::CreateHistograms(){
 
     // check if we already have histograms.
     char tname[100];
-    sprintf(tname,"V1720QSQL_%i_%i",0,0);
+    sprintf(tname,"V1720QSQL_%i_%i", 0, 0);
 
     TH2F *tmp = (TH2F*)gDirectory->Get(tname);
     if (tmp) return;

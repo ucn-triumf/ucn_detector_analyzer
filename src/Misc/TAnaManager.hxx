@@ -80,9 +80,9 @@ class TAnaManager  {
         TV792Histograms *fV785Charge;
 
         TV1725WaveformDisplay *fV1750WaveformDisplay;
-        TV1725PSDQL* fV1725PSDQL;
-        TV1725_PH* fV1725_PH;
-        TV1725_QL* fV1725_QL;
+        TV1725PSDQL* fV1725PSDQL;   // pulse shape discrimination charge long
+        TV1725_PH* fV1725_PH;       // pulse height
+        TV1725_QL* fV1725_QL;       // charge long
 
         // define names and titles of TGraphErrors to draw in anaDisplay
         std::map<const char*, const char*> GRAPH_NAME_TITLE = {

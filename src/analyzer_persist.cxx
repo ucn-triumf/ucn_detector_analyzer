@@ -10,77 +10,54 @@
 
 class Analyzer: public TRootanaEventLoop {
 
-
-
-
 public:
 
-  // Two analysis managers.  Define and fill histograms in
-  // analysis manager.
-  TAnaManager *anaManager;
-  TUCNAnaViewer3 *anaViewer;
+    // Two analysis managers.  Define and fill histograms in
+    // analysis manager.
+    TAnaManager *anaManager;
+    TUCNAnaViewer3 *anaViewer;
 
+    Analyzer() {
+        DisableAutoMainWindow();
+        UseBatchMode();
+        DisableRootOutput(true);
+        SetOnlineName("jsroot_server_persist");
+        anaManager = 0;
+        anaViewer = 0;
+    };
 
-  Analyzer() {
-    DisableAutoMainWindow();
-    UseBatchMode();
-    DisableRootOutput(true);
-    SetOnlineName("jsroot_server_persist");
-    anaManager = 0;
-    anaViewer = 0;
-  };
+    virtual ~Analyzer() {};
 
-  virtual ~Analyzer() {};
+    void Initialize(){
+        anaManager = new TAnaManager(IsOffline(), GetODB());
+        anaViewer  = new TUCNAnaViewer3();
+    }
 
-  void Initialize(){
+    void InitManager(){
+        if(anaManager)  delete anaManager;
+        anaManager = new TAnaManager(IsOffline(), GetODB());
 
-    anaManager = new TAnaManager(IsOffline(), GetODB());
-    anaViewer  = new TUCNAnaViewer3();
+        if(anaViewer)   delete anaViewer;
+        anaViewer  = new TUCNAnaViewer3();
+    }
 
-  }
+    void BeginRun(int transition,int run,int time){
+        anaManager->BeginRun(transition, run, time);
+    }
 
-  void InitManager(){
+    bool ProcessMidasEvent(TDataContainer& dataContainer){
+        if(!anaManager)
+            InitManager();
 
-    if(anaManager)
-      delete anaManager;
-    anaManager = new TAnaManager(IsOffline(), GetODB());
-    if(anaViewer)
-      delete anaViewer;
-    anaViewer  = new TUCNAnaViewer3();
-
-
-  }
-
-
-  void BeginRun(int transition,int run,int time){
-
-    //    InitManager();
-    anaManager->BeginRun(transition, run, time);
-
-  }
-
-
-  bool ProcessMidasEvent(TDataContainer& dataContainer){
-
-    if(!anaManager) InitManager();
-
-    float PSDMax, PSDMin;
-    anaViewer->ProcessMidasEvent(dataContainer, 'n', PSDMax, PSDMin);
-
-    anaManager->ProcessMidasEvent(dataContainer);
-
-    return true;
-  }
-
-
+        float PSDMax, PSDMin;
+        anaViewer->ProcessMidasEvent(dataContainer, 'n', PSDMax, PSDMin);
+        anaManager->ProcessMidasEvent(dataContainer);
+        return true;
+    }
 };
 
-
-int main(int argc, char *argv[])
-{
-
-  Analyzer::CreateSingleton<Analyzer>();
-  return Analyzer::Get().ExecuteLoop(argc, argv);
-
+int main(int argc, char *argv[]){
+    Analyzer::CreateSingleton<Analyzer>();
+    return Analyzer::Get().ExecuteLoop(argc, argv);
 }
 

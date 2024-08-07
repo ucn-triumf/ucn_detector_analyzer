@@ -10,17 +10,14 @@
 #include "TSimpleHistogramCanvas.hxx"
 #include "TFancyHistogramCanvas.hxx"
 #include "TUCNHitsTree.hxx"
-
 #include "TUCNCycleParameters.hxx"
-
 
 /// Generic base class that handles producing a consistent
 /// set of plots and data for Li-6 and He-3 detectors
 class TUCNDetectorBaseClass  {
     public:
-        TUCNDetectorBaseClass(bool isOffline, bool isLi6, bool saveTree = false, bool is3HEDET1 = true);
+        TUCNDetectorBaseClass(bool isOffline, bool isLi6, bool saveTree=false, bool is3HEDET1=true);
         virtual ~TUCNDetectorBaseClass(){};
-
 
         // Get the UCN hits for this MIDAS event.
         // This method needs to be defined in each derived class.
@@ -69,7 +66,9 @@ class TUCNDetectorBaseClass  {
         }
 
         TUCNDetectorCharge* GetChargeHistograms(){return fDetectorCharge;}
+
         TUCNRateVsTime* GetRateVsTime(){return fRateVsTime;}
+
         TFancyHistogramCanvas* GetRateVsTimeCanvas(){
             TFancyHistogramCanvas *canvas = new TFancyHistogramCanvas(fRateVsTime,"Rate Vs Time");
             canvas->SetChannelName("Timescale");
@@ -101,22 +100,20 @@ class TUCNDetectorBaseClass  {
             tmp->AddExtraHisto(fHitsPerCycleHIntime);
             return tmp;
         }
-        //  TH1D* GetHitsPerCycle(){return fHitsPerCycle;}
 
         // Get Vectors of hits per cycle
         std::vector<std::pair<double, double> > GetHitsPerCycle(){return fHitsPerCycleVector;};
-        std::vector<std::pair<double, double> > GetInTimeHitsPerCycle(){ return fHitsPerCycleVectorIntime;};
+        std::vector<std::pair<double, double> > GetInTimeHitsPerCycle(){return fHitsPerCycleVectorIntime;};
         std::vector<std::vector<std::pair<double, double> > > GetHitsPerCyclePerPeriod(){return fHitsPerCycleVectorPeriods;}
         std::vector<std::pair<double, double> > GetHitsPerCyclePerPeriod(int i){return fHitsPerCycleVectorPeriods[i];}
         std::vector<std::pair<double, double> > GetMonitorCountsAfterIrradiationPerCycle(){ return fMonitorCountsAfterIrradiationPerCycle; }
 
         TUCNCycleParameters CycleParameters;
 
-
     protected:
 
-        bool fIsLi6; // Is for Li-6 detector
-        bool fIs3HEDET1; // Is this 3HEDET1?
+        bool fIsLi6;        // Is for Li-6 detector
+        bool fIs3HEDET1;    // Is this 3HEDET1?
         bool fIsOffline;
 
         // List of UCN hits
