@@ -8,6 +8,7 @@
 #include "TAnaManager.hxx"
 #include "TUCNAnaViewer3.h"
 #include "mvodb.h"
+#include <sys/stat.h>
 
 #ifdef HAVE_MIDAS
     #include "midas.h"
@@ -171,7 +172,13 @@ class Analyzer: public TRootanaEventLoop {
             if( stat( dirname, &info ) != 0 ){
                 int status = mkdir(dirname, 0777);
                 if(status != 0){
-                    cm_msg(MERROR,"Analyzer","Couldn't make directory %s.",dirname);
+
+                    #ifdef HAVE_MIDAS
+                        cm_msg(MERROR,"Analyzer","Couldn't make directory %s.",dirname);
+                    #else
+                        std::cout << "Analyzer Couldn't make directory " << dirname << std::endl;
+                    #endif // HAVE_MIDAS
+
                     return std::string("/fail");
                 }
             }

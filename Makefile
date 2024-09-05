@@ -66,7 +66,7 @@ endef
 
 .PHONY: all checkdirs clean
 
-all: checkdirs $(OBJS) anaDisplay.exe midas2root.exe analyzer_persist.exe data_quality_checker.exe ana.exe
+all: checkdirs $(OBJS) anaDisplay.exe midas2root.exe analyzer_persist.exe data_quality_checker.exe ana.exe online_analysis.exe
 
 midas2root.exe: src/midas2root.cxx $(OBJS)
 	$(CXX) -o $@ $(CXXFLAGS) $^ $(LIBS) $(ROOTGLIBS) -lm -lz -lpthread -lssl -lutil
@@ -80,7 +80,10 @@ analyzer_persist.exe: src/analyzer_persist.cxx $(OBJS)
 data_quality_checker.exe: src/data_quality_checker.cxx $(OBJS)
 	$(CXX) -o $@ $(CXXFLAGS) $^ $(LIBS) $(ROOTGLIBS) -lm -lz -lpthread -lssl -lutil
 
-ana.exe: src/data_quality_checker.cxx $(OBJS)
+ana.exe: src/ana.cxx $(OBJS)
+	$(CXX) -o $@ $(CXXFLAGS) $^ $(LIBS) $(ROOTGLIBS) -lm -lz -lpthread -lssl -lutil
+
+online_analysis.exe: src/online_analysis.cxx $(OBJS)
 	$(CXX) -o $@ $(CXXFLAGS) $^ $(LIBS) $(ROOTGLIBS) -lm -lz -lpthread -lssl -lutil
 
 checkdirs: $(BUILD_DIR)
