@@ -44,7 +44,7 @@ The source code is organized into modules which are roughly defined as follows:
 * `Misc`: Analysis manager and viewer
 * `TUCNTree`: formerly `TUCNTreeMaker.cxx`, split into separate files for clarity of use
 * `TV`: DAQ histograms and waveforms (TV792. TV1720, TV1725)
-* `Ignore`: filese omitted from Makefile
+* `Ignore`: files omitted from Makefile
 
 Adding codes in each module doesn't require edits to the Makefile, the Makefile scans the contents automatically.
 
