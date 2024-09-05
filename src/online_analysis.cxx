@@ -375,65 +375,72 @@ class Analyzer: public TRootanaEventLoop {
 
                     // Save interesting plots
 
-                    TGraphErrors* tmp = anaManager->GetTransmissionDuringCountingGraph();
-                    tmp->Draw("AP*"); tmp->SetMarkerStyle(20);
-                    sprintf(filename,"%s/TransmissionDuringCounting.png",dirname.c_str());
-                    c1->SaveAs(filename);
+                    for(std::map<const char*, TGraphErrors*>::iterator iter = anaManager->graphs.begin(); iter!= anaManager->graphs.end(); ++iter){
+                        char* name = iter->first();
+                        TGraphErrors* tmp = iter->second();
+                        tmp->Draw("AP*"); tmp->SetMarkerStyle(20);
+                        sprintf(filename, "%s/%s.png", dirname.c_str(), name);
+                        c1->SaveAs(filename);
+                    }
+                    // TGraphErrors* tmp = anaManager->graphs["TransmissionDuringCounting"];
+                    // tmp->Draw("AP*"); tmp->SetMarkerStyle(20);
+                    // sprintf(filename,"%s/TransmissionDuringCounting.png",dirname.c_str());
+                    // c1->SaveAs(filename);
 
-                    tmp = anaManager->GetTransmissionWithPreStorageGraph();
-                    tmp->Draw("AP*"); tmp->SetMarkerStyle(20);
-                    sprintf(filename,"%s/TransmissionWithPreStorage.png",dirname.c_str());
-                    c1->SaveAs(filename);
+                    // tmp = anaManager->GetTransmissionWithPreStorageGraph();
+                    // tmp->Draw("AP*"); tmp->SetMarkerStyle(20);
+                    // sprintf(filename,"%s/TransmissionWithPreStorage.png",dirname.c_str());
+                    // c1->SaveAs(filename);
 
-                    tmp = anaManager->GetTransmissionDuringIrradiationGraph();
-                    tmp->Draw("AP*"); tmp->SetMarkerStyle(20);
-                    sprintf(filename,"%s/TransmissionDuringIrradiation.png",dirname.c_str());
-                    c1->SaveAs(filename);
+                    // tmp = anaManager->GetTransmissionDuringIrradiationGraph();
+                    // tmp->Draw("AP*"); tmp->SetMarkerStyle(20);
+                    // sprintf(filename,"%s/TransmissionDuringIrradiation.png",dirname.c_str());
+                    // c1->SaveAs(filename);
 
-                    tmp = anaManager->GetHe3DuringIrradiationGraph();
-                    tmp->Draw("AP*"); tmp->SetMarkerStyle(20);
-                    sprintf(filename,"%s/He3DuringIrradiation.png",dirname.c_str());
-                    c1->SaveAs(filename);
+                    // tmp = anaManager->GetHe3DuringIrradiationGraph();
+                    // tmp->Draw("AP*"); tmp->SetMarkerStyle(20);
+                    // sprintf(filename,"%s/He3DuringIrradiation.png",dirname.c_str());
+                    // c1->SaveAs(filename);
 
-                    tmp = anaManager->GetHe3DuringStorageGraph();
-                    tmp->Draw("AP*"); tmp->SetMarkerStyle(20);
-                    sprintf(filename,"%s/He3DuringStorage.png",dirname.c_str());
-                    c1->SaveAs(filename);
+                    // tmp = anaManager->GetHe3DuringStorageGraph();
+                    // tmp->Draw("AP*"); tmp->SetMarkerStyle(20);
+                    // sprintf(filename,"%s/He3DuringStorage.png",dirname.c_str());
+                    // c1->SaveAs(filename);
 
-                    tmp = anaManager->GetHe3AfterIrradiationGraph();
-                    tmp->Draw("AP*"); tmp->SetMarkerStyle(20);
-                    sprintf(filename,"%s/He3AfterIrradiation.png",dirname.c_str());
-                    c1->SaveAs(filename);
+                    // tmp = anaManager->GetHe3AfterIrradiationGraph();
+                    // tmp->Draw("AP*"); tmp->SetMarkerStyle(20);
+                    // sprintf(filename,"%s/He3AfterIrradiation.png",dirname.c_str());
+                    // c1->SaveAs(filename);
 
-                    tmp = anaManager->GetLi6StorageBackgroundGraph();
-                    tmp->Draw("AP*"); tmp->SetMarkerStyle(20);
-                    sprintf(filename,"%s/Li6StorageBackground.png",dirname.c_str());
-                    c1->SaveAs(filename);
+                    // tmp = anaManager->GetLi6StorageBackgroundGraph();
+                    // tmp->Draw("AP*"); tmp->SetMarkerStyle(20);
+                    // sprintf(filename,"%s/Li6StorageBackground.png",dirname.c_str());
+                    // c1->SaveAs(filename);
 
-                    tmp = anaManager->GetHe3StorageBackgroundGraph();
-                    tmp->Draw("AP*"); tmp->SetMarkerStyle(20);
-                    sprintf(filename,"%s/He3StorageBackground.png",dirname.c_str());
-                    c1->SaveAs(filename);
+                    // tmp = anaManager->GetHe3StorageBackgroundGraph();
+                    // tmp->Draw("AP*"); tmp->SetMarkerStyle(20);
+                    // sprintf(filename,"%s/He3StorageBackground.png",dirname.c_str());
+                    // c1->SaveAs(filename);
 
-                    tmp = anaManager->GetLi6StorageGraph();
-                    tmp->Draw("AP*"); tmp->SetMarkerStyle(20);
-                    sprintf(filename,"%s/Li6Storage.png",dirname.c_str());
-                    c1->SaveAs(filename);
+                    // tmp = anaManager->GetLi6StorageGraph();
+                    // tmp->Draw("AP*"); tmp->SetMarkerStyle(20);
+                    // sprintf(filename,"%s/Li6Storage.png",dirname.c_str());
+                    // c1->SaveAs(filename);
 
-                    tmp = anaManager->GetHe3StorageGraph();
-                    tmp->Draw("AP*"); tmp->SetMarkerStyle(20);
-                    sprintf(filename,"%s/He3Storage.png",dirname.c_str());
-                    c1->SaveAs(filename);
+                    // tmp = anaManager->GetHe3StorageGraph();
+                    // tmp->Draw("AP*"); tmp->SetMarkerStyle(20);
+                    // sprintf(filename,"%s/He3Storage.png",dirname.c_str());
+                    // c1->SaveAs(filename);
 
-                    tmp = anaManager->GetStorageWithMonitorDuringIrradiation();
-                    tmp->Draw("AP*"); tmp->SetMarkerStyle(20);
-                    sprintf(filename,"%s/StorageWithMonitorDuringIrradiation.png",dirname.c_str());
-                    c1->SaveAs(filename);
+                    // tmp = anaManager->GetStorageWithMonitorDuringIrradiation();
+                    // tmp->Draw("AP*"); tmp->SetMarkerStyle(20);
+                    // sprintf(filename,"%s/StorageWithMonitorDuringIrradiation.png",dirname.c_str());
+                    // c1->SaveAs(filename);
 
-                    tmp = anaManager->GetStorageWithMonitorAfterIrradiation();
-                    tmp->Draw("AP*"); tmp->SetMarkerStyle(20);
-                    sprintf(filename,"%s/StorageWithMonitorAfterIrradiation.png",dirname.c_str());
-                    c1->SaveAs(filename);
+                    // tmp = anaManager->GetStorageWithMonitorAfterIrradiation();
+                    // tmp->Draw("AP*"); tmp->SetMarkerStyle(20);
+                    // sprintf(filename,"%s/StorageWithMonitorAfterIrradiation.png",dirname.c_str());
+                    // c1->SaveAs(filename);
 
                     TV1725PSDQL *psd_vs_ql = anaManager->GetV1725PSDvsQL();
                     TH2D *tmp3 = new TH2D(*(TH2D*)psd_vs_ql->GetHistogram(0));
