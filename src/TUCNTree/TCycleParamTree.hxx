@@ -29,12 +29,12 @@ class TCycleParamTree {
         // other variables - read out from odb
         int NPeriods; // number of periods per cycle
         int NCycles;  // number of cycles per super-cycle
-        int enable;
+        bool enable;
         int nsuper;
-        int infcycles;
+        bool infcycles;
         int period_idx;
         int valve_idx;
-        std::vector<int> duration;
+        std::vector<double> duration;
         std::vector<int> valve;
 };
 #endif
