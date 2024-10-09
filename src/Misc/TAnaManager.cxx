@@ -123,7 +123,6 @@ int TAnaManager::ProcessMidasEvent(TDataContainer& dataContainer){
     for (unsigned int i=0; i<fEPICSTrees.size(); i++)
         fEPICSTrees[i]->FillTree(dataContainer);
     if (fSequencerTree)         fSequencerTree->FillTree(dataContainer);
-    if (fCycleParamTree)        fCycleParamTree->FillTree(dataContainer);
     if (fSCMTree)               fSCMTree->FillTree(dataContainer);
     if (fLNDDetectorTree)       fLNDDetectorTree->FillTree(dataContainer);
 

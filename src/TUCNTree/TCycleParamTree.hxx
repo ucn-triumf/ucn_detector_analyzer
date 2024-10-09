@@ -17,21 +17,24 @@ class TCycleParamTree {
 
     private:
         TTree *tSequencer;
-        int timestamp;
+
+        std::string dirname = "/Equipment/UCNSequencer2018/";
 
         // settings from sequence_control_multi_valve.cxx
+        static const int MaxPeriods = 10; // number of periods per cycle
+        static const int MaxCycles = 20;  // number of cycles per super-cycle
+        static const int NValves = 8; // Number of valves
+        static const int NNotes = 5; // Number of notes
+
+        // other variables - read out from odb
         int NPeriods; // number of periods per cycle
         int NCycles;  // number of cycles per super-cycle
-
-        // other settings
-        static const int NValves = 8; // Number of valves
-        std::vector<std::string> branch_names = {"cycle_index",
-                                                 "enable",
-                                                 "nperiods_in_cycle",
-                                                 "ncycles_in_super",
-                                                 "inf_cycles",
-                                                };
-
-        std::vector<int> values; // hold values for branches
+        int enable;
+        int nsuper;
+        int infcycles;
+        int period_idx;
+        int valve_idx;
+        std::vector<int> duration;
+        std::vector<int> valve;
 };
 #endif
