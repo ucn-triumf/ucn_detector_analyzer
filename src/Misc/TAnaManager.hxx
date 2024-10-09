@@ -15,6 +15,7 @@
 #include "TUCNEpicsTree.hxx"
 #include "TLNDDetectorTree.hxx"
 #include "TSequencerTree.hxx"
+#include "TCycleParamTree.hxx"
 #include "TSCMTree.hxx"
 #include "TV792Histogram.h"
 #include "TV1725WaveformDisplay.h"
@@ -75,6 +76,7 @@ class TAnaManager  {
         TLNDDetectorTree *fLNDDetectorTree;
         TSCMTree *fSCMTree;
         TSequencerTree *fSequencerTree;
+        TCycleParamTree *fCycleParamTree;
 
         // Histogram of all V785 Charges
         TV792Histograms *fV785Charge;

@@ -20,6 +20,7 @@ TAnaManager::TAnaManager(bool isOffline, MVOdb* odb, bool saveTree){
         fLNDDetectorTree = new TLNDDetectorTree();
         fSCMTree = new TSCMTree();
         fSequencerTree = new TSequencerTree();
+        fCycleParamTree = new TCycleParamTree(odb);
         fEPICSTrees = std::vector<TUCNEpicsTree*>({
             // new TUCNEpicsTree(odb,
             //                 "EPSR",         // bank name
@@ -63,6 +64,7 @@ TAnaManager::TAnaManager(bool isOffline, MVOdb* odb, bool saveTree){
         fLNDDetectorTree = 0;
         fSCMTree = 0;
         fSequencerTree = 0;
+        fCycleParamTree = 0;
         fEPICSTrees = std::vector<TUCNEpicsTree*>();
     }
 
@@ -121,6 +123,7 @@ int TAnaManager::ProcessMidasEvent(TDataContainer& dataContainer){
     for (unsigned int i=0; i<fEPICSTrees.size(); i++)
         fEPICSTrees[i]->FillTree(dataContainer);
     if (fSequencerTree)         fSequencerTree->FillTree(dataContainer);
+    if (fCycleParamTree)        fCycleParamTree->FillTree(dataContainer);
     if (fSCMTree)               fSCMTree->FillTree(dataContainer);
     if (fLNDDetectorTree)       fLNDDetectorTree->FillTree(dataContainer);
 
