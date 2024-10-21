@@ -58,6 +58,18 @@ TAnaManager::TAnaManager(bool isOffline, MVOdb* odb, bool saveTree){
                             "EPFA",
                             "UCN2FastEpics",
                             "/Equipment/UCN2fastEpics/Settings/Names"),
+            new TUCNEpicsTree(odb,
+                            "EP5P",
+                            "UCN2EpPha5Pre",
+                            "/Equipment/UCN2EpPha5Pre/Settings/Names"),
+            new TUCNEpicsTree(odb,
+                            "EP5O",
+                            "UCN2EpPha5Oth",
+                            "/Equipment/UCN2EpPha5Oth/Settings/Names"),
+            new TUCNEpicsTree(odb,
+                            "EP5T",
+                            "UCN2EpPha5Tmp",
+                            "/Equipment/UCN2EpPha5Tmp/Settings/Names"),
         });
 
     }else{
