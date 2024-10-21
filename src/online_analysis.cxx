@@ -289,7 +289,7 @@ class Analyzer: public TRootanaEventLoop {
                         for(unsigned int i = 0; i < fHitsPerCycle[det].size(); i++){
                             time_t t(fHitsPerCycle[det][i].first);
                             struct tm *tm = new struct tm();
-                            localtime_r(&t, tm);
+                            localtime_r(&t, tm); 
                             char date[256];
 
                             strftime(date,sizeof(date),"%Y/%m/%d %H:%M:%S",tm);
