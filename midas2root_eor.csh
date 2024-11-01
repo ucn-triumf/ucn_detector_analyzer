@@ -17,7 +17,7 @@ set WorkDir=/home/ucn/online/ucn_detector_analyzer
 $WorkDir/midas2root.exe $MidasDir/$Filename
 
 # get latest file made
-set NewFile=`ls -t $WorkDir/*.root | head -n1`
+set NewFile=`ls -t $WorkDir/ucn_run_*.root | head -n1`
 
 # move the file
 mv $NewFile $RootDir/

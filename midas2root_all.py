@@ -9,9 +9,9 @@ import subprocess, os, shutil
 from multiprocessing import Pool, cpu_count
 
 # settings
-midas_dir = "/data2/ucn/midas_files/"
-root_dir = "/data2/ucn/root_files/"
-midas2root = '/home/ucn/online/ucn_detector_analyzer/midas2root.exe'
+midas_dir = "/data3/ucn/midas_files/"
+root_dir = "/data3/ucn/root_files/"
+midas2root = './midas2root.exe'
 
 # get list of all files
 midas_files = glob(os.path.join(midas_dir, '*.mid.gz'))
