@@ -95,7 +95,8 @@ TLi6Detector::TLi6Detector(bool isOffline, bool saveTree):TUCNDetectorBaseClass(
   // Preliminary threshold for Qlong and PSD
   fPSDThreshold = 0.3;
   //fQLongThreshold = 2000.0;  // change for V1725
-  fQLongThreshold = 3000.0;
+  //  fQLongThreshold = 3000.0;
+  fQLongThreshold = 300.0; // What?  Why so different (TL 2024-11-01
 
   std::cout << "Finished Li-6 constructor " << std::endl;
 
@@ -207,10 +208,11 @@ void TLi6Detector::GetHits(TDataContainer& dataContainer){
     int ch = meas.GetChannel();
 
     // Use the first time synchronization pulse to set the initial unix time
+    // Use any initial pulse to set the initial unix time...
     if(initialUnixTime < 0){
-      if(ch == 11){
+      if(ch == 11 || 1){
 	initialUnixTime = (double) timestamp;
-	std::cout << "Set initial time: " << initialUnixTime << std::endl;
+	std::cout << "Set initial time: " << initialUnixTime << " "  << timestamp << std::endl;
       }
     }
 

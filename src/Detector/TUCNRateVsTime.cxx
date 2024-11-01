@@ -4,7 +4,10 @@
 const int Nchannels = 8;
 #include <sys/time.h>
 
-unsigned int timescale[8] = {300, 600, 1200, 2400, 4800, 9600, 19200, 38400};
+//unsigned int timescale[8] = {300, 600, 1200, 2400, 4800, 9600, 19200, 38400};
+int timescale[8] = {300, 600, 1200, 2400, 4800, 9600, 19200, 38400};
+
+
 
 /// Reset the histograms for this canvas
 TUCNRateVsTime::TUCNRateVsTime(bool isLi6, bool isOffline, bool is3HEDET1){
@@ -72,9 +75,14 @@ void TUCNRateVsTime::UpdateHistograms(TUCNHitCollection &hits){
     if(fIsOffline)  update_time = 10;
     else            update_time = 2;
 
+    //    if(fIsLi6) std::cout << "Got UCN hits " << hits.size() << std::endl;
+
     // do the update
+    //    std::cout << "update " << timestamp << "  "<< lastTimestamp+update_time << " " << update_time << std::endl;
     if(timestamp >= lastTimestamp+update_time){
 
+
+      if(0)std::cout << "Yes update! " << std::endl;
         for(int ch = 0; ch < Nchannels; ch++){
             GetHistogram(ch)->Reset();
 
@@ -84,14 +92,24 @@ void TUCNRateVsTime::UpdateHistograms(TUCNHitCollection &hits){
             int last_found_bin = 0;
             int bin_total = 0;
 
+
+	    if(0)std::cout <<  "loop " << std::endl;
             for(unsigned int i=0; i < fRateVsTime.size(); i++){
                 std::pair<int, double> entry = fRateVsTime[i]; // (time, rate)
-                if(!entry.second)
+                if(!entry.second){
+		  //		  std::cout << "No data " << std::endl;
                     continue;
+		}
+		if(ch==0 && 0) std::cout << entry.first << " " << entry.second 
+			  << " " << (entry.first - timestamp) << std::endl;
                 int timediff = (entry.first - timestamp);
 
                 // Ignore points that are off the graph
-                if(timediff < low_bin) continue;
+                if(timediff < low_bin){
+		  if(0)std::cout << "hits are off the graph " << timediff 
+			    << " " << entry.first << " " << timestamp << " " << low_bin << std::endl;
+		  continue;
+		}
 
                 // Increment bin_index until we find a bin that is lower
                 while(timediff > GetHistogram(ch)->GetBinLowEdge(bin_index) + bin_width){
@@ -100,6 +118,7 @@ void TUCNRateVsTime::UpdateHistograms(TUCNHitCollection &hits){
 
                 // Check if we moved onto the next index
                 if(last_found_bin != bin_index && last_found_bin != 0){
+
                     GetHistogram(ch)->SetBinContent(last_found_bin, bin_total);
                     bin_total = 0;
                 }
@@ -110,6 +129,7 @@ void TUCNRateVsTime::UpdateHistograms(TUCNHitCollection &hits){
 
             // Set the last bin
             if(bin_total != 0){
+	      
                 GetHistogram(ch)->SetBinContent(last_found_bin, bin_total);
             }
             GetHistogram(ch)->Scale(1/pow(2, ch));
@@ -131,10 +151,11 @@ void TUCNRateVsTime::UpdateHistograms(TUCNHitCollection &hits){
 
     // loop over measurements
     for(unsigned int j = 0; j < hits.size(); j++){
-        int hittime = (int)hits[j].time;
-
+      int hittime = (int)hits[j].time;
+      //      if(fIsLi6)	std::cout << hits[j].channel << std::endl;
         // Find the right entry and update...
         for(int i = fRateVsTime.size()-1; i >= 0; i--){
+	  //if (i < 2) std::cout << i << " " << hittime << " " << fRateVsTime[i].first << std::endl;
             if(hittime == fRateVsTime[i].first){
                 fRateVsTime[i].second = fRateVsTime[i].second + 1.0;
                 break;
