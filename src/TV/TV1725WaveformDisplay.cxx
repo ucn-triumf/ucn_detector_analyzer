@@ -40,7 +40,7 @@ void TV1725PSDQL::CreateHistograms(){
 
         sprintf(title,"V1725 PSD vs Qlong module = %i, channel=%i", iBoard, i);
 
-        TH2F *tmp = new TH2F(name, title, 200, -20, 15000, 200, -0.2, 1);
+        TH2F *tmp = new TH2F(name, title, 200, -20, 2000, 200, -0.2, 1);
         tmp->SetDrawOption("colz");
         tmp->SetXTitle("Q Long");
         tmp->SetYTitle("Pulse Shape Discrimination (Qlong-Qshort)/Qlong");
@@ -85,7 +85,7 @@ void TV1725WaveformDisplay::CreateHistograms(){
 
     // check if we already have histograms
     char tname[100];
-    sprintf(tname,"V1725_%i", 0);
+    sprintf(tname,"V1725_0", 0);
 
     TH1D *tmp = (TH1D*)gDirectory->Get(tname);
     if (tmp) return;
@@ -93,11 +93,11 @@ void TV1725WaveformDisplay::CreateHistograms(){
     //Otherwise make histograms
     clear();
 
-    for(int iBoard=0; iBoard<NDPPBOARDS; iBoard++){
+    for(int iBoard=0; iBoard<1; iBoard++){
         for(int ch = 0; ch < V1725_MAXCHAN; ch++){ // loop over 8 channels
             char name[100];
             char title[100];
-            sprintf(name,"V1725_%i_%i", ch, iBoard);
+            sprintf(name,"V1725_%i", ch);
 
             sprintf(title,"V1725 Waveform for channel=%i Board=%i", ch, iBoard);
 
@@ -112,11 +112,14 @@ void TV1725WaveformDisplay::CreateHistograms(){
 
 void TV1725WaveformDisplay::UpdateHistograms(TDataContainer& dataContainer){
 
+  //  std::cout << "wavefomr check" << std::endl;
     TV1725DppPsdData *data = dataContainer.GetEventData<TV1725DppPsdData>("W500");
     if(!data) return;
 
     /// Get the Vector of ADC Measurements.
     std::vector<ChannelMeasurement> measurements = data->GetMeasurements();
+    
+    //    std::cout << "Data for TV1725: " << measurements.size() << std::endl;
 
     for(unsigned int i = 0; i < measurements.size(); i++){
 
@@ -124,6 +127,7 @@ void TV1725WaveformDisplay::UpdateHistograms(TDataContainer& dataContainer){
         double timestamp = meas.GetExtendedTimeTag();
         timestamp *= 0.000000004;
 
+	//	std::cout << meas.GetChannel() << std::endl;
         if(meas.GetChannel() == 11 || meas.GetChannel() == 10){
             std::cout << "V1725: " << meas.GetChannel() << " "
                 << meas.GetQlong() << " "
@@ -138,7 +142,7 @@ void TV1725WaveformDisplay::UpdateHistograms(TDataContainer& dataContainer){
 
         int ch = meas.GetChannel();
         int nsamples = meas.GetNSamples();
-
+	//	std::cout << "Nsamples " << nsamples << std::endl;
         TH1* tmp = GetHistogram(ch);
         if ( tmp->GetNbinsX() != nsamples ) tmp->SetBins(nsamples,0.,nsamples*4.0);
         for (int b = 0; b<nsamples; b++){
@@ -177,11 +181,11 @@ void TV1725_PH::CreateHistograms(){
         for(int ch = 0; ch < V1725_MAXCHAN; ch++){ // loop over 8 channels
             char name[100];
             char title[100];
-            sprintf(name,"TV1725_PH_%i_%i", ch, iBoard);
+            sprintf(name,"TV1725_PH_%i_%i", iBoard,ch);
 
             sprintf(title,"V1725 PH for channel=%i Board=%i", ch, iBoard);
 
-            TH1D *tmp = new TH1D(name, title, 400, 0., 16000);
+            TH1D *tmp = new TH1D(name, title, 400, 0., 4000);
             tmp->SetXTitle("Pulse Height (ADC)");
 
             push_back(tmp);
@@ -245,10 +249,10 @@ void TV1725_QL::CreateHistograms(){
         for(int ch = 0; ch < V1725_MAXCHAN; ch++){ // loop over 8 channels
             char name[100];
             char title[100];
-            sprintf(name,"TV1725_QL_%i_%i", ch, iBoard);
+            sprintf(name,"TV1725_QL_%i_%i", iBoard,ch);
             sprintf(title,"V1725 QL (for PSD>0.3) for channel=%i Board=%i", ch, iBoard);
 
-            TH1D *tmp = new TH1D(name, title, 400, 0., 16000);
+            TH1D *tmp = new TH1D(name, title, 400, 0., 6000);
             tmp->SetXTitle("Q-Long");
 
             push_back(tmp);
