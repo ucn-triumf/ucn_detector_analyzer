@@ -5,13 +5,29 @@
 # Jul 2024
 
 from glob import glob
-import subprocess, os, shutil
+import subprocess, os, shutil, sys
 from multiprocessing import Pool, cpu_count
 
 # settings
 midas_dir = "/data3/ucn/midas_files/"
 root_dir = "/data3/ucn/root_files/"
 midas2root = './midas2root.exe'
+delete_midas2root_output = True
+
+# check hostname
+if 'HOSTNAME' not in os.environ.keys() or 'daq01' not in os.environ['HOSTNAME']:
+    print('This script must be run on daq01, where midas2root.cxx is compiled. '+\
+          'It will not work on daq04.')
+    
+    while True:
+        inp = input('Force continue? y/[n]: ')
+        
+        if not inp or inp.lower()[0] == 'n':
+            sys.exit()
+        elif inp.lower()[0] == 'y':
+            break
+        else:
+            print('Bad input. ', end='')
 
 # get list of all files
 midas_files = glob(os.path.join(midas_dir, '*.mid.gz'))
@@ -42,13 +58,19 @@ def convert(filepath):
         return
 
     # convert
-    subprocess.run(f'{midas2root} {filepath}', shell=True, capture_output=True)
+    printfile = f'run{run:0>8}_midas2root_output.txt'
+    with open(printfile, 'w') as fid:
+        subprocess.run(f'{midas2root} {filepath}', shell=True, 
+                       stdout=fid, stderr=fid)
     newfile = f'ucn_run_{run:0>8}.root'
 
     # move
     os.makedirs(root_dir, exist_ok=True)
     newfilepath = os.path.join(root_dir, newfile)
     shutil.move(newfile, newfilepath)
+    
+    if delete_midas2root_output:
+        os.remove(printfile)
 
     print(f'Success: {filepath} --> {newfilepath}')
 
