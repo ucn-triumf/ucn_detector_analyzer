@@ -11,7 +11,7 @@ from multiprocessing import Pool, cpu_count
 # settings
 midas_dir = "/data3/ucn/midas_files/"
 root_dir = "/data3/ucn/root_files/"
-midas2root = './midas2root.exe'
+midas2root = '/home/ucn/online/ucn_detector_analyzer/midas2root.exe'
 delete_midas2root_output = True
 
 # check hostname
@@ -59,6 +59,8 @@ def convert(filepath):
 
     # convert
     printfile = f'run{run:0>8}_midas2root_output.txt'
+    working_dir = os.path.dirname(midas2root)
+    os.chdir(working_dir)
     with open(printfile, 'w') as fid:
         subprocess.run(f'{midas2root} {filepath}', shell=True, 
                        stdout=fid, stderr=fid)
