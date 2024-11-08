@@ -55,10 +55,6 @@ TAnaManager::TAnaManager(bool isOffline, MVOdb* odb, bool saveTree){
                             "UCN2EpicsPhase3",
                             "/Equipment/UCN2EpicsPhase3/Settings/Names"),
             new TUCNEpicsTree(odb,
-                            "EPFA",
-                            "UCN2FastEpics",
-                            "/Equipment/UCN2fastEpics/Settings/Names"),
-            new TUCNEpicsTree(odb,
                             "EP5P",
                             "UCN2EpPha5Pre",
                             "/Equipment/UCN2EpPha5Pre/Settings/Names"),
@@ -70,6 +66,10 @@ TAnaManager::TAnaManager(bool isOffline, MVOdb* odb, bool saveTree){
                             "EP5T",
                             "UCN2EpPha5Tmp",
                             "/Equipment/UCN2EpPha5Tmp/Settings/Names"),
+            new TUCNEpicsTree(odb,
+                            "EP5L",
+                            "UCN2EpPha5Last",
+                            "/Equipment/UCN2EpPha5Last/Settings/Names"),        
         });
 
     }else{

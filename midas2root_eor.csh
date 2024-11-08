@@ -14,6 +14,7 @@ set RootDir=/data3/ucn/root_files
 set WorkDir=/home/ucn/online/ucn_detector_analyzer
 
 # Do the conversion
+cd $WorkDir
 $WorkDir/midas2root.exe $MidasDir/$Filename
 
 # get latest file made
