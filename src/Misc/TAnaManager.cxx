@@ -69,7 +69,11 @@ TAnaManager::TAnaManager(bool isOffline, MVOdb* odb, bool saveTree){
             new TUCNEpicsTree(odb,
                             "EP5L",
                             "UCN2EpPha5Last",
-                            "/Equipment/UCN2EpPha5Last/Settings/Names"),        
+                            "/Equipment/UCN2EpPha5Last/Settings/Names"),   
+            new TUCNEpicsTree(odb,
+                            "EPPU",
+                            "UCN2Pur",
+                            "/Equipment/UCN2Pur/Settings/Names"),        
         });
 
     }else{
