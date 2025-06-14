@@ -40,7 +40,7 @@ void TV1725PSDQL::CreateHistograms(){
 
         sprintf(title,"V1725 PSD vs Qlong module = %i, channel=%i", iBoard, i);
 
-        TH2F *tmp = new TH2F(name, title, 200, -20, 2000, 200, -0.2, 1);
+        TH2F *tmp = new TH2F(name, title, 400, -20, 10000, 200, -0.2, 1);
         tmp->SetDrawOption("colz");
         tmp->SetXTitle("Q Long");
         tmp->SetYTitle("Pulse Shape Discrimination (Qlong-Qshort)/Qlong");
@@ -185,7 +185,7 @@ void TV1725_PH::CreateHistograms(){
 
             sprintf(title,"V1725 PH for channel=%i Board=%i", ch, iBoard);
 
-            TH1D *tmp = new TH1D(name, title, 400, 0., 4000);
+            TH1D *tmp = new TH1D(name, title, 400, 0., 20000);
             tmp->SetXTitle("Pulse Height (ADC)");
 
             push_back(tmp);
@@ -252,7 +252,7 @@ void TV1725_QL::CreateHistograms(){
             sprintf(name,"TV1725_QL_%i_%i", iBoard,ch);
             sprintf(title,"V1725 QL (for PSD>0.3) for channel=%i Board=%i", ch, iBoard);
 
-            TH1D *tmp = new TH1D(name, title, 400, 0., 6000);
+            TH1D *tmp = new TH1D(name, title, 400, 0., 10000);
             tmp->SetXTitle("Q-Long");
 
             push_back(tmp);
