@@ -95,6 +95,9 @@ TAnaManager::TAnaManager(bool isOffline, MVOdb* odb, bool saveTree){
     fV1725_PH->DisableAutoUpdate();
     fV1725_QL = new TV1725_QL();
     fV1725_QL->DisableAutoUpdate();
+    fV1725_QS = new TV1725_QS();
+    fV1725_QS->DisableAutoUpdate();
+
 
     fV785Charge = new TV792Histograms();
     fV785Charge->DisableAutoUpdate();
@@ -134,6 +137,7 @@ int TAnaManager::ProcessMidasEvent(TDataContainer& dataContainer){
     fV1750WaveformDisplay->UpdateHistograms(dataContainer);
     fV1725_PH->UpdateHistograms(dataContainer);
     fV1725_QL->UpdateHistograms(dataContainer);
+    fV1725_QS->UpdateHistograms(dataContainer);
     fV1725PSDQL->UpdateHistograms(dataContainer);
 
     for (unsigned int i=0; i<fEPICSTrees.size(); i++)

@@ -254,7 +254,7 @@ void TV1725_QL::CreateHistograms(){
 
 	    TH1D *tmp ;
 	    if (ch == 13){
-	      tmp = new TH1D(name, title, 400, 0., 1000000);
+	      tmp = new TH1D(name, title, 400, 0., 100000);
 	    }else{
 	      tmp = new TH1D(name, title, 400, 0., 10000);
 	    }
@@ -293,3 +293,74 @@ void TV1725_QL::BeginRun(int transition,int run,int time){
 }
 
 void TV1725_QL::EndRun(int transition,int run,int time){}
+
+
+
+/// TV1725_QS ----------------------------------------------
+TV1725_QS::TV1725_QS(){
+    SetNumberChannelsInGroup(V1725_MAXCHAN);
+    SetGroupName("Module");
+    SetChannelName("Channel");
+    CreateHistograms();
+}
+
+void TV1725_QS::CreateHistograms(){
+
+    // check if we already have histograms
+    char tname[100];
+    sprintf(tname, "TV1725_QS_%i", 0);
+
+    TH1D *tmp = (TH1D*)gDirectory->Get(tname);
+    if (tmp) return;
+
+    //Otherwise make histograms
+    clear();
+
+    for(int iBoard=0; iBoard<NDPPBOARDS; iBoard++){
+        for(int ch = 0; ch < V1725_MAXCHAN; ch++){ // loop over 8 channels
+            char name[100];
+            char title[100];
+            sprintf(name,"TV1725_QS_%i_%i", iBoard,ch);
+            sprintf(title,"V1725 QS (for PSD>0.3) for channel=%i Board=%i", ch, iBoard);
+
+	    TH1D *tmp ;
+	    if (ch == 13){
+	      tmp = new TH1D(name, title, 400, 0., 100000);
+	    }else{
+	      tmp = new TH1D(name, title, 400, 0., 10000);
+	    }
+            tmp->SetXTitle("Q-Long");
+
+            push_back(tmp);
+
+        }
+    }
+}
+
+void TV1725_QS::UpdateHistograms(TDataContainer& dataContainer){
+
+    TV1725DppPsdData *data = dataContainer.GetEventData<TV1725DppPsdData>("W500");
+    if(!data) return;
+
+    /// Get the Vector of ADC Measurements.
+    std::vector<ChannelMeasurement> measurements = data->GetMeasurements();
+
+    for(unsigned int i = 0; i < measurements.size(); i++){
+
+        ChannelMeasurement meas = measurements[i];
+        int ch = meas.GetChannel();
+        double psd = 0;
+
+	//        if(meas.GetQlong() != 0)
+        //    psd = (double)(meas.GetQlong() - meas.GetQshort())/(double)meas.GetQlong();
+        //if(psd > 0.3)
+	GetHistogram(ch)->Fill(meas.GetQshort());
+	//	if(ch == 13) std::cout << "QL :  " << meas.GetQlong() << std::endl;
+    }
+}
+
+void TV1725_QS::BeginRun(int transition,int run,int time){
+    CreateHistograms();
+}
+
+void TV1725_QS::EndRun(int transition,int run,int time){}

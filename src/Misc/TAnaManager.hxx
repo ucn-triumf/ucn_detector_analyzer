@@ -56,6 +56,7 @@ class TAnaManager  {
         TV1725PSDQL* GetV1725PSDvsQL(){return fV1725PSDQL;}
         TV1725_PH* GetV1725_PH(){ return fV1725_PH;}
         TV1725_QL* GetV1725_QL(){ return fV1725_QL;}
+        TV1725_QS* GetV1725_QS(){ return fV1725_QS;}
         TUCNChronobox* GetChronobox(){ return fUCNChronobox;}
         TUCNChronobox *fUCNChronobox;
 
@@ -85,6 +86,7 @@ class TAnaManager  {
         TV1725PSDQL* fV1725PSDQL;   // pulse shape discrimination charge long
         TV1725_PH* fV1725_PH;       // pulse height
         TV1725_QL* fV1725_QL;       // charge long
+        TV1725_QS* fV1725_QS;       // charge long
 
         // define names and titles of TGraphErrors to draw in anaDisplay
         std::map<const char*, const char*> GRAPH_NAME_TITLE = {

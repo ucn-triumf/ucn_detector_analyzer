@@ -57,4 +57,15 @@ class TV1725_QL : public THistogramArrayBase{
         void EndRun(int transition, int run, int time);
         void CreateHistograms();
 };
+
+// charge short
+class TV1725_QS : public THistogramArrayBase{
+    public:
+        TV1725_QS();
+        virtual ~TV1725_QS(){};
+        void UpdateHistograms(TDataContainer& dataContainer);
+        void BeginRun(int transition, int run, int time);
+        void EndRun(int transition, int run, int time);
+        void CreateHistograms();
+};
 #endif
