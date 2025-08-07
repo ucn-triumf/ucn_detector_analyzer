@@ -5,6 +5,9 @@
 THe3Detector::THe3Detector(bool isOffline, bool is3HEDET1, bool saveTree): TUCNDetectorBaseClass(isOffline, false, saveTree, is3HEDET1){
     std::cout << "He3 constructor : " << isOffline << std::endl;
     initialUnixTime = -1;
+
+    // Use PC Time; less precise time
+    UsePCTime();
 }
 
 void THe3Detector::GetHits(TDataContainer& dataContainer){
@@ -29,7 +32,7 @@ void THe3Detector::GetHits(TDataContainer& dataContainer){
 
             // Use the first time synchronization pulse to set the initial unix time
             if(initialUnixTime < 0){
-                if(ch == 11){
+                if(ch == 11 || 1){
                     initialUnixTime = (double) timestamp;
                     std::cout << "Set initial time: " << initialUnixTime << std::endl;
                 }
@@ -53,10 +56,17 @@ void THe3Detector::GetHits(TDataContainer& dataContainer){
             int pulse_height = 14718 - (int)min_value;
             hit.chargeShort = pulse_height;
             hit.chargeLong  = pulse_height;
+	    //hit.chargeShort = meas.GetQshort();
+	    hit.chargeLong = meas.GetQlong();
+
+
+	    if(ch == 13 and 0)
+	      std::cout << "some hit " << hit.chargeShort << " " << hit.chargeLong <<  " " << fIs3HEDET1 << std::endl;
 
             if((fIs3HEDET1 && (ch == 13))||(!fIs3HEDET1 && (ch == 12))){
-                if(hit.chargeShort > 1500){
+                if(hit.chargeShort > 3500){
                     fHits.push_back(hit);
+		    //std::cout << "UCN hit " << hit.chargeShort << std::endl;
                 }else{
                     fBackgroundHits.push_back(hit);
                 }
@@ -85,6 +95,7 @@ void THe3Detector::GetHits(TDataContainer& dataContainer){
             hit.channel = measurements[i].GetChannel();
             hit.chargeLong = measurements[i].GetMeasurement();
             hit.chargeShort = measurements[i].GetMeasurement();
+
 
             double threshold = 0;
             if(fIs3HEDET1){
