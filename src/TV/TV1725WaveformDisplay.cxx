@@ -252,10 +252,16 @@ void TV1725_QL::CreateHistograms(){
             sprintf(name,"TV1725_QL_%i_%i", iBoard,ch);
             sprintf(title,"V1725 QL (for PSD>0.3) for channel=%i Board=%i", ch, iBoard);
 
-            TH1D *tmp = new TH1D(name, title, 400, 0., 10000);
+	    TH1D *tmp ;
+	    if (ch == 13){
+	      tmp = new TH1D(name, title, 400, 0., 1000000);
+	    }else{
+	      tmp = new TH1D(name, title, 400, 0., 10000);
+	    }
             tmp->SetXTitle("Q-Long");
 
             push_back(tmp);
+
         }
     }
 }
@@ -274,10 +280,11 @@ void TV1725_QL::UpdateHistograms(TDataContainer& dataContainer){
         int ch = meas.GetChannel();
         double psd = 0;
 
-        if(meas.GetQlong() != 0)
-            psd = (double)(meas.GetQlong() - meas.GetQshort())/(double)meas.GetQlong();
-        if(psd > 0.3)
-            GetHistogram(ch)->Fill(meas.GetQlong());
+	//        if(meas.GetQlong() != 0)
+        //    psd = (double)(meas.GetQlong() - meas.GetQshort())/(double)meas.GetQlong();
+        //if(psd > 0.3)
+	GetHistogram(ch)->Fill(meas.GetQlong());
+	//	if(ch == 13) std::cout << "QL :  " << meas.GetQlong() << std::endl;
     }
 }
 
