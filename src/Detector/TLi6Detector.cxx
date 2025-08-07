@@ -96,8 +96,11 @@ TLi6Detector::TLi6Detector(bool isOffline, bool saveTree):TUCNDetectorBaseClass(
   fPSDThreshold = 0.3;
   //fQLongThreshold = 2000.0;  // change for V1725
   //  fQLongThreshold = 3000.0;
-  fQLongThreshold = 300.0; // What?  Why so different (TL 2024-11-01
+  //fQLongThreshold = 450.0; // What?  Why so different? Because of no amplifier (TL 2024-11-01)
+  fQLongThreshold = 2000.0; // Added amplifiers back. 
 
+  // Use PC Time; less precise time
+  UsePCTime();
   std::cout << "Finished Li-6 constructor " << std::endl;
 
 }
