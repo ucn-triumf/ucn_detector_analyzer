@@ -19,6 +19,7 @@
 #include "TSCMTree.hxx"
 #include "TV792Histogram.h"
 #include "TV1725WaveformDisplay.h"
+#include "TV1730WaveformDisplay.h"
 #include "TUCNChronobox.hxx"
 #include "TGraphErrors.h"
 
@@ -53,6 +54,7 @@ class TAnaManager  {
 
         TV792Histograms* GetV785Histo(){return fV785Charge;}
         TV1725WaveformDisplay* GetV1725Waveform(){return fV1750WaveformDisplay;}
+        TV1730WaveformDisplay* GetV1730Waveform(){return fV1730WaveformDisplay;}
         TV1725PSDQL* GetV1725PSDvsQL(){return fV1725PSDQL;}
         TV1725_PH* GetV1725_PH(){ return fV1725_PH;}
         TV1725_QL* GetV1725_QL(){ return fV1725_QL;}
@@ -82,6 +84,7 @@ class TAnaManager  {
         // Histogram of all V785 Charges
         TV792Histograms *fV785Charge;
 
+        TV1730WaveformDisplay *fV1730WaveformDisplay;
         TV1725WaveformDisplay *fV1750WaveformDisplay;
         TV1725PSDQL* fV1725PSDQL;   // pulse shape discrimination charge long
         TV1725_PH* fV1725_PH;       // pulse height

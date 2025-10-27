@@ -16,4 +16,8 @@
         #define V1725_MAXCHAN 16
     #endif
 
+    #ifndef V1730_MAXCHAN
+        #define V1730_MAXCHAN 8
+    #endif
+
 #endif

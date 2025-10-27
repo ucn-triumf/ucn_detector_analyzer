@@ -14,11 +14,11 @@ set RootDir=/data3/ucn/root_files
 set WorkDir=/home/ucn/online/ucn_detector_analyzer
 
 # Do the conversion
-cd $WorkDir
+cd $RootDir
 $WorkDir/midas2root.exe $MidasDir/$Filename
 
 # get latest file made
-set NewFile=`ls -t $WorkDir/ucn_run_*.root | head -n1`
+#set NewFile=`ls -t $WorkDir/ucn_run_*.root | head -n1`
 
 # move the file
-mv $NewFile $RootDir/
+#mv $NewFile $RootDir/

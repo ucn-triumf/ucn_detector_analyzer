@@ -47,7 +47,6 @@ class TLi6Detector : public TUCNDetectorBaseClass {
 
   virtual bool UsePreciseSequenceTime(){
 
-
     if(fUsePCTime){
       return false;
     }

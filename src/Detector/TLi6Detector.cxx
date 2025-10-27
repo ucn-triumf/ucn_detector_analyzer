@@ -8,9 +8,9 @@ const int Nchannels = 16;
 
 // Keep track of which V1725 have UCN hits and which have monitoring hits
 const bool ucn_channels[16] = { true,  true,  true,  true,
-				true,  true,  true, true,
-				true, false, false, false,
-				false, false, false, false};
+                                true,  true,  true, true,
+                                true, false, false, false,
+                                false, false, false, false};
 /// End Edit above: June 7, 2018 (BJ)
 /// Updated for V1725 digitizer: Nov 22, 2019 (WS)
 /// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -80,40 +80,40 @@ TLi6Detector::TLi6Detector(bool isOffline, bool saveTree):TUCNDetectorBaseClass(
     numberRollOvers[0] = 0; numberRollOvers[1] = 0;
     initialClockTime[0] = 0; initialClockTime[1] = 0;
 
-  fSequenceLength = new TH1F("sequencelength_v1720","Cycle Length (by V1720)",1200,0,300);
-  fSequenceLength->SetXTitle("Cycle Length (sec)");
-  fDelayTime = new TH1F("delaytime_v1720","Delay Time (by V1720)",1200,0,300);
-  fDelayTime->SetXTitle("Delay Time (sec)");
-  fValveOpenTime = new TH1F("valveopentime_v1720","Valve Open Time (by V1720)",1200,0,300);
-  fValveOpenTime->SetXTitle("Valve Open Time (sec)");
+    fSequenceLength = new TH1F("sequencelength_v1720","Cycle Length (by V1720)",1200,0,300);
+    fSequenceLength->SetXTitle("Cycle Length (sec)");
+    fDelayTime = new TH1F("delaytime_v1720","Delay Time (by V1720)",1200,0,300);
+    fDelayTime->SetXTitle("Delay Time (sec)");
+    fValveOpenTime = new TH1F("valveopentime_v1720","Valve Open Time (by V1720)",1200,0,300);
+    fValveOpenTime->SetXTitle("Valve Open Time (sec)");
 
-  fEndOfIrradiationTime = 0;
-  fUCNValveOpenTime = 0;
-  fUCNValveCloseTime = 0;
+    fEndOfIrradiationTime = 0;
+    fUCNValveOpenTime = 0;
+    fUCNValveCloseTime = 0;
 
-  //was 60445
-  // Preliminary threshold for Qlong and PSD
-  fPSDThreshold = 0.3;
-  //fQLongThreshold = 2000.0;  // change for V1725
-  //  fQLongThreshold = 3000.0;
-  //fQLongThreshold = 450.0; // What?  Why so different? Because of no amplifier (TL 2024-11-01)
-  fQLongThreshold = 2000.0; // Added amplifiers back. 
+    //was 60445
+    // Preliminary threshold for Qlong and PSD
+    fPSDThreshold = 0.3;
+    //fQLongThreshold = 2000.0;  // change for V1725
+    //  fQLongThreshold = 3000.0;
+    //fQLongThreshold = 450.0; // What?  Why so different? Because of no amplifier (TL 2024-11-01)
+    fQLongThreshold = 2000.0; // Added amplifiers back.
 
-  // Use PC Time; less precise time
-  UsePCTime();
-  std::cout << "Finished Li-6 constructor " << std::endl;
+    // Use PC Time; less precise time
+    UsePCTime();
+    std::cout << "Finished Li-6 constructor " << std::endl;
 
 }
 
 void TLi6Detector::BeginRun(int transition,int run,int time){
-  lastClockTime[0] = 0; lastClockTime[1] = 0;
-  initialUnixTime = -1;
-  numberRollOvers[0] = 0; numberRollOvers[1] = 0;
-  // Fix the hand
-  if(run == 814) numberRollOvers[1] = 8;
+    lastClockTime[0] = 0; lastClockTime[1] = 0;
+    initialUnixTime = -1;
+    numberRollOvers[0] = 0; numberRollOvers[1] = 0;
+    // Fix the hand
+    if(run == 814) numberRollOvers[1] = 8;
 
-  initialClockTime[0] = 0; initialClockTime[1] = 0;
-  initClockSet[0] = false; initClockSet[1] = false;
+    initialClockTime[0] = 0; initialClockTime[1] = 0;
+    initClockSet[0] = false; initClockSet[1] = false;
 }
 
 /// Check for clock roll-overs.  Check separately for both V1720s.
@@ -185,64 +185,58 @@ void TLi6Detector::CheckClockRollover(int board, TUCNHit hit, int timestamp){
 
 }
 
-
-
 void TLi6Detector::GetHits(TDataContainer& dataContainer){
-
-  fHits = TUCNHitCollection();
-  fNonHits = TUCNHitCollection();
-  fBackgroundHits = TUCNHitCollection();
-  int timestamp = dataContainer.GetMidasData().GetTimeStamp();
-  fHits.eventTime = timestamp;
-
-
+    fHits = TUCNHitCollection();
+    fNonHits = TUCNHitCollection();
+    fBackgroundHits = TUCNHitCollection();
+    int timestamp = dataContainer.GetMidasData().GetTimeStamp();
+    fHits.eventTime = timestamp;
 
 #ifdef USING_V1725_READOUT_LI6
 
-  TV1725DppPsdData *data = dataContainer.GetEventData<TV1725DppPsdData>("W500");
-  if(!data) return;
+    TV1725DppPsdData *data = dataContainer.GetEventData<TV1725DppPsdData>("W500");
+    if(!data) return;
 
-  /// Get the Vector of ADC Measurements.
-  std::vector<ChannelMeasurement> measurements = data->GetMeasurements();
-  for(unsigned int i = 0; i < measurements.size(); i++){
+    /// Get the Vector of ADC Measurements.
+    std::vector<ChannelMeasurement> measurements = data->GetMeasurements();
+    for(unsigned int i = 0; i < measurements.size(); i++){
 
-    ChannelMeasurement meas = measurements[i];
-    double hittime = meas.GetExtendedTimeTag() * 0.000000004; // in seconds
-    int ch = meas.GetChannel();
+        ChannelMeasurement meas = measurements[i];
+        double hittime = meas.GetExtendedTimeTag() * 0.000000004; // in seconds
+        int ch = meas.GetChannel();
 
-    // Use the first time synchronization pulse to set the initial unix time
-    // Use any initial pulse to set the initial unix time...
-    if(initialUnixTime < 0){
-      if(ch == 11 || 1){
-	initialUnixTime = (double) timestamp;
-	std::cout << "Set initial time: " << initialUnixTime << " "  << timestamp << std::endl;
-      }
+        // Use the first time synchronization pulse to set the initial unix time
+        // Use any initial pulse to set the initial unix time...
+        if(initialUnixTime < 0){
+            if(ch == 11 || 1){
+                initialUnixTime = (double) timestamp;
+                std::cout << "Set initial time: " << initialUnixTime << " "  << timestamp << std::endl;
+            }
+        }
+
+        // Save
+        TUCNHit hit = TUCNHit();
+        hit.time = initialUnixTime + hittime;
+        hit.preciseTime = initialUnixTime + hittime;
+        hit.clockTime = meas.GetTimeTag();
+        hit.channel = meas.GetChannel();
+        hit.chargeShort = meas.GetQshort();
+        hit.chargeLong = meas.GetQlong();
+
+        // Is this a real UCN hit or a monitoring hit?
+        if(ucn_channels[hit.channel]){
+            hit.psd = 0;
+            if(hit.chargeLong != 0)
+                hit.psd = ((Float_t)(hit.chargeLong)-(Float_t)(hit.chargeShort))/((Float_t)(hit.chargeLong));
+            if(hit.psd > fPSDThreshold && hit.chargeLong > fQLongThreshold ){
+                fHits.push_back(hit);
+            }else{
+                fBackgroundHits.push_back(hit);
+            }
+        }else{
+            fNonHits.push_back(hit);
+        }
     }
-
-    // Save
-    TUCNHit hit = TUCNHit();
-    hit.time = initialUnixTime + hittime;
-    hit.preciseTime = initialUnixTime + hittime;
-    hit.clockTime = meas.GetTimeTag();
-    hit.channel = meas.GetChannel();
-    hit.chargeShort = meas.GetQshort();
-    hit.chargeLong = meas.GetQlong();
-
-    // Is this a real UCN hit or a monitoring hit?
-    if(ucn_channels[hit.channel]){
-
-      hit.psd = 0;
-      if(hit.chargeLong != 0)
-	hit.psd = ((Float_t)(hit.chargeLong)-(Float_t)(hit.chargeShort))/((Float_t)(hit.chargeLong));
-      if(hit.psd > fPSDThreshold && hit.chargeLong > fQLongThreshold ){
-	fHits.push_back(hit);
-      }else{
-	fBackgroundHits.push_back(hit);
-      }
-    }else{
-      fNonHits.push_back(hit);
-    }
-  }
 
 #else
   // Loop over two boards
@@ -323,18 +317,18 @@ bool TLi6Detector::CheckForSequenceStartPrecise(TDataContainer& dataContainer){
 
 #ifdef USING_V1725_READOUT_LI6
 
-  // Channel 10 for cycle start signal.
-  for(unsigned int j = 0; j < fNonHits.size(); j++){ // loop over measurements
-    if(fNonHits[j].channel == 10){ // start of cycle
-      fLastCycleStartTime = fCycleStartTime;
-      fCycleStartTime = fNonHits[j].preciseTime;
-      fSequenceLength->Fill(fCycleStartTime-fLastCycleStartTime);
-      std::cout << "Li-6 Cycle start: "  << fCycleStartTime <<  " " << fCycleStartTime-fLastCycleStartTime  << std::endl;
-      return true;
+    // Channel 10 for cycle start signal.
+    for(unsigned int j = 0; j < fNonHits.size(); j++){ // loop over measurements
+        if(fNonHits[j].channel == 10){ // start of cycle
+            fLastCycleStartTime = fCycleStartTime;
+            fCycleStartTime = fNonHits[j].preciseTime;
+            fSequenceLength->Fill(fCycleStartTime-fLastCycleStartTime);
+            std::cout << "Li-6 Cycle start: "  << fCycleStartTime <<  " " << fCycleStartTime-fLastCycleStartTime  << std::endl;
+            return true;
+        }
     }
-  }
 
-  return false;
+    return false;
 #else
 
   // Check if we had a hit on channel1-7 (15) indicating the start of a new sequence

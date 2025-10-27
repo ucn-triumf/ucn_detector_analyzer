@@ -54,27 +54,25 @@ def convert(filepath):
     # check
     run = get_midas_run(filepath)
     if run in root_runs:
-        print(f'Skipping {filepath}. Root file exists')
         return
 
+    # change directories
+    os.makedirs(root_dir, exist_ok=True)
+    os.chdir(root_dir)
+
     # convert
+    print(f'Converting {filepath}... ')
     printfile = f'run{run:0>8}_midas2root_output.txt'
     working_dir = os.path.dirname(midas2root)
-    os.chdir(working_dir)
     with open(printfile, 'w') as fid:
         subprocess.run(f'{midas2root} {filepath}', shell=True, 
                        stdout=fid, stderr=fid)
-    newfile = f'ucn_run_{run:0>8}.root'
 
-    # move
-    os.makedirs(root_dir, exist_ok=True)
-    newfilepath = os.path.join(root_dir, newfile)
-    shutil.move(newfile, newfilepath)
-    
+    # remove output text file
     if delete_midas2root_output:
         os.remove(printfile)
 
-    print(f'Success: {filepath} --> {newfilepath}')
+    print(f'Success: {filepath}')
 
 # convert only the runs which have no matching root file
 with Pool(max((cpu_count()-1, 1))) as pool:

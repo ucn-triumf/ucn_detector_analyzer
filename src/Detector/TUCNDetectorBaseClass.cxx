@@ -191,16 +191,18 @@ TUCNDetectorBaseClass::TUCNDetectorBaseClass(bool isOffline, bool isLi6, bool sa
 
 void TUCNDetectorBaseClass::CheckForSequenceSettings(TDataContainer& dataContainer){
 
+  //  std::cout << "Check for sequence settings : " << fIsLi6 << std::endl;
     // Use the sequence bank to see when a new run starts:
     TGenericData *data = dataContainer.GetEventData<TGenericData>("SEQN");
     if(data){
         fSeqDelayTime = data->GetData32()[3]/1000.0;
         fSeqOpenInterval = data->GetData32()[4]/1000.0;
     }
-
     // Use the 2018 sequence bank if it is available instead...
     data = dataContainer.GetEventData<TGenericData>("NSEQ");
     if(data){
+      std::cout << "Got cycle parameters" << fIsLi6 << std::endl;
+
         CycleParameters.SetCycleParameters(data);
         // Grab the superCycleIndex, which is not stored in the NSEQ bank
         TGenericData *data2 = dataContainer.GetEventData<TGenericData>("USEQ");
@@ -220,8 +222,8 @@ bool TUCNDetectorBaseClass::CheckForSequenceStartCrude(TDataContainer& dataConta
         int tmp2 = dataContainer.GetMidasData().GetTimeStamp();
 
         countcount++;
-        if(0 && (countcount%20 == 0 || (data->GetData32()[4] & 2)))
-        std::cout << "Checking sequence bank: " << data->GetData32()[4] << " " << (data->GetData32()[4] & 2)
+        if(1 && (countcount%100 == 0 || (data->GetData32()[4] & 2)))
+	  if(!fIsLi6) std::cout << "Checking sequence bank: " << data->GetData32()[4] << " " << (data->GetData32()[4] & 2)
                     << " " <<  data->GetData32()[5]  << " " << tmp2 << std::endl;
 
         if(data->GetData32()[4] & 2){
@@ -255,10 +257,24 @@ void TUCNDetectorBaseClass::ProcessMidasEvent(TDataContainer& dataContainer){
 
     // Check for sequence start time
     CheckForSequenceSettings(dataContainer);
+
+    // Do check for precise cycle start time
+    for(unsigned int j = 0; j < fNonHits.size(); j++){ // loop over measurements
+        if(!fIsLi6 && fIs3HEDET1){
+            if(fNonHits[j].channel == 10){ // start of cycle
+                std::cout << "Precise Cycle start: "  << fIsLi6 << " " << (int) fNonHits[j].preciseTime << std::endl;
+            }
+            if(fNonHits[j].channel == 11){ // start of cycle
+                std::cout << "Precise Start run timing: "  << fIsLi6 << " " << (int) fNonHits[j].preciseTime << std::endl;
+            }
+        }
+    }
+
     if(UsePreciseSequenceTime()){
         fcycle_started = CheckForSequenceStartPrecise(dataContainer);
     }else{
         fcycle_started = CheckForSequenceStartCrude(dataContainer);
+	    if(fcycle_started) printf("Cycle started %i\n",fIsLi6);
     }
 
     // Fill out a bunch of histograms for UCN hit rate with respect to the irradiation sequence.
@@ -269,9 +285,9 @@ void TUCNDetectorBaseClass::ProcessMidasEvent(TDataContainer& dataContainer){
         double time_in_cycle = hittime - fCycleStartTime;
         fHitsInCycle->Fill(time_in_cycle);
         fHitsInCycleCumul->Fill(time_in_cycle);
-        //if(fIsLi6) std::cout << "Time cycle: " << time_in_cycle << std::endl;
+        //if(!fIsLi6) std::cout << "Time cycle: " << time_in_cycle << std::endl;
         fTotalHitsCycle++;
-        //if(fIsLi6) std::cout << "Total: " << fTotalHitsCycle << std::endl;
+        //if(!fIsLi6) std::cout << "Total: " << fTotalHitsCycle << std::endl;
         if(hittime >= fSeqValveOpenTime && hittime < fSeqValveCloseTime){
             fTotalHitsCycleIntime++;
             fHitsInCycleIntime->Fill(time_in_cycle);
@@ -281,11 +297,25 @@ void TUCNDetectorBaseClass::ProcessMidasEvent(TDataContainer& dataContainer){
             ++fTotalMonitorCountsAfterIrradiation;
         }
 
+	if(!fIsLi6 && 0)std::cout << "He3 cycle start : " << fCycleStartTime << " "
+			     << CycleParameters.GetCumulativeTimeForPeriod(0) << " "
+			     << CycleParameters.GetCumulativeTimeForPeriod(1) << " "
+			     << CycleParameters.GetCumulativeTimeForPeriod(2) << " "
+			     << std::endl;
         // Add the total number of events in each period
         for(int i = 0; i < 10; i++){
             double cycle_start = fCycleStartTime + CycleParameters.GetCumulativeTimeForPeriod(i-1);
             double cycle_end = fCycleStartTime + CycleParameters.GetCumulativeTimeForPeriod(i);
-            if(hittime >= cycle_start && hittime < cycle_end){
+            if(!fIsLi6 && i == 0 && 0){
+	      std::cout << "He3 cycle start : " << (int) fCycleStartTime << " "
+			<< CycleParameters.GetCumulativeTimeForPeriod(-1) << " "
+			<< CycleParameters.GetCumulativeTimeForPeriod(0) << " "
+			<< CycleParameters.GetCumulativeTimeForPeriod(1) << " "
+			<< CycleParameters.GetCumulativeTimeForPeriod(2) << " "
+			<< std::endl;
+	      std::cout << "He3 times " << (int)cycle_start << " < "  << (int)hittime << " < " <<  (int)cycle_end << std::endl;
+	    }
+	    if(hittime >= cycle_start && hittime < cycle_end){
                 fTotalHitsCyclePeriods[i]++;
             }
         }

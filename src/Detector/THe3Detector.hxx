@@ -19,7 +19,10 @@ class THe3Detector : public TUCNDetectorBaseClass {
         virtual bool CheckForSequenceStartPrecise(TDataContainer& dataContainer);
         virtual bool UsePreciseSequenceTime(){
             #ifdef USING_V1725_READOUT_HE3
-                return true;
+	      if(fUsePCTime){
+		return false;
+	      }
+	      return true;
             #else
                 return false;
             #endif

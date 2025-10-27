@@ -89,9 +89,12 @@ void TUCNHitsTree::FillHits(TUCNHitCollection& hits, int isUCN){
     }
 }
 
-void TUCNHitsTree::FillTransition(double icycleStartTime, double icycleValveOpenTime, double icycleValveCloseTime,
-                                  double icycleDelayTime, double icycleOpenInterval,
-				  TUCNCycleParameters CycleParameters){
+void TUCNHitsTree::FillTransition(double icycleStartTime,
+                                  double icycleValveOpenTime,
+                                  double icycleValveCloseTime,
+                                  double icycleDelayTime,
+                                  double icycleOpenInterval,
+				                  TUCNCycleParameters CycleParameters){
 
     // Look for cases where it seems we finished a super-cycle.
     if(CycleParameters.CycleIndex() <= cycleIndex){

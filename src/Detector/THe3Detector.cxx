@@ -30,11 +30,11 @@ void THe3Detector::GetHits(TDataContainer& dataContainer){
             ChannelMeasurement meas = measurements[i];
             int ch = meas.GetChannel();
 
-            // Use the first time synchronization pulse to set the initial unix time
+            // Use the first time synchronization pulse to set the initial unix time (or any pulse)
             if(initialUnixTime < 0){
                 if(ch == 11 || 1){
                     initialUnixTime = (double) timestamp;
-                    std::cout << "Set initial time: " << initialUnixTime << std::endl;
+                    std::cout << "Set initial time for He3 detector: " << (int) initialUnixTime << std::endl;
                 }
             }
 

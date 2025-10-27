@@ -41,6 +41,7 @@ ifdef ROOTSYS
 		CXXFLAGS  += -DHAVE_ROOT_HTTP -DHAVE_THTTP_SERVER
 		ROOTGLIBS += -lRHTTP
 	endif
+
 endif # ROOTSYS
 
 # optional MIDAS library

@@ -113,13 +113,13 @@ void TV1730WaveformDisplay::CreateHistograms(){
 void TV1730WaveformDisplay::UpdateHistograms(TDataContainer& dataContainer){
 
   //  std::cout << "wavefomr check" << std::endl;
-    TV1730DppPsdData *data = dataContainer.GetEventData<TV1730DppPsdData>("W500");
+    TV1730DppPsdData *data = dataContainer.GetEventData<TV1730DppPsdData>("D730");
     if(!data) return;
 
     /// Get the Vector of ADC Measurements.
     std::vector<ChannelMeasurement> measurements = data->GetMeasurements();
     
-    //    std::cout << "Data for TV1730: " << measurements.size() << std::endl;
+    std::cout << "Data for TV1730: " << measurements.size() << std::endl;
 
     for(unsigned int i = 0; i < measurements.size(); i++){
 
@@ -142,7 +142,7 @@ void TV1730WaveformDisplay::UpdateHistograms(TDataContainer& dataContainer){
 
         int ch = meas.GetChannel();
         int nsamples = meas.GetNSamples();
-	//	std::cout << "Nsamples " << nsamples << std::endl;
+	std::cout << "Nsamples " << nsamples << std::endl;
         TH1* tmp = GetHistogram(ch);
         if ( tmp->GetNbinsX() != nsamples ) tmp->SetBins(nsamples,0.,nsamples*4.0);
         for (int b = 0; b<nsamples; b++){
