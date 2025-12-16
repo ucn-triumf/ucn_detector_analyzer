@@ -374,6 +374,7 @@ void TUCNDetectorBaseClass::ProcessMidasEvent(TDataContainer& dataContainer){
     if(fHitsTree){
         fHitsTree->FillHits(fHits,1);
         fHitsTree->FillHits(fBackgroundHits,0);
+        fHitsTree->FillHits(fNonHits,0);
         if(fcycle_started){
             fHitsTree->FillTransition(fCycleStartTime,fSeqValveOpenTime,fSeqValveCloseTime,
                                     fSeqDelayTime,fSeqOpenInterval,CycleParameters);
