@@ -129,6 +129,11 @@ class TUCNDetectorBaseClass  {
         double fCycleStartTime;
         double fValueOpenTime;
         double fLastCycleStartTime;
+
+        // All precise cycle-start times found in the current MIDAS event. A single
+        // event can contain more than one cycle-start pulse (e.g. when the digitizer
+        // buffer backs up), so we keep them all to record a transition for each.
+        std::vector<double> fCycleStartTimes;
         double fSeqValveOpenTime;
         double fSeqValveCloseTime;
         double fSeqDelayTime; // this is the length of time that sequencer waits before opening

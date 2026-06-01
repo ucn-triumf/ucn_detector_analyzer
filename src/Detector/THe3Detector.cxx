@@ -115,15 +115,19 @@ void THe3Detector::GetHits(TDataContainer& dataContainer){
 // Get a more precise sequence start time from v1725 bank
 bool THe3Detector::CheckForSequenceStartPrecise(TDataContainer& dataContainer){
 
-    // Channel 10 for cycle start signal.
+    // Channel 10 for cycle start signal. Collect *every* channel-10 pulse in this
+    // event rather than returning at the first: a single MIDAS event can contain
+    // several cycle starts when the digitizer buffer backs up, and returning early
+    // would silently drop all but the first.
+    fCycleStartTimes.clear();
     for(unsigned int j = 0; j < fNonHits.size(); j++){ // loop over measurements
         if(fNonHits[j].channel == 10){ // start of cycle
             fLastCycleStartTime = fCycleStartTime;
             fCycleStartTime = fNonHits[j].preciseTime;
+            fCycleStartTimes.push_back(fCycleStartTime);
             std::cout << "He-3 Cycle start: "  << fCycleStartTime <<  " " << fCycleStartTime-fLastCycleStartTime  << std::endl;
-            return true;
         }
     }
-    return false;
+    return !fCycleStartTimes.empty();
 }
 
