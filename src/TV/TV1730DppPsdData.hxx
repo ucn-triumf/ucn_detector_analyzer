@@ -77,6 +77,8 @@ private:
     header0 = iheader0;
     header1 = iheader1;
     header2 = iheader2;
+    extras = 0; // may be left unset if the extras record is disabled for this channel
+    qs = 0;     // may be left unset if the charge record is disabled for this channel
     fChan = chan*2 + ((header2 & 0x80000000) >> 31);
   }
   

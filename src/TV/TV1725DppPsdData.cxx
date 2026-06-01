@@ -6,83 +6,122 @@
 #include <iomanip>
 
 
+// A W500 bank holds CAEN V1725 DPP-PSD data with a nested, self-describing layout:
+//
+//   bank
+//    └── board aggregate(s)        : 4-word header (size + channel mask) + channel data
+//         └── channel aggregate(s) : 2-word header (size + record format) + records
+//              └── record(s)       : one hit: time tag, optional samples/extras/charge
+//
+// All three levels carry their own size field, so we navigate by those sizes rather
+// than assuming there is exactly one of each. This matters because the firmware packs
+// multiple board aggregates into one bank when its buffer fills between readouts, and
+// because different channels (e.g. detector vs. timing-marker channels) enable
+// different per-record fields and therefore have different record sizes.
 TV1725DppPsdData::TV1725DppPsdData(int bklen, int bktype, const char* name, void *pdata):
     TGenericData(bklen, bktype, name, pdata)
 {
-  // Save first board aggregate header for public accessors (GetChMask, GetEventCounter, etc.)
+  // Keep the first board aggregate header for the public accessors
+  // (GetChMask, GetEventCounter, ...). Note this only describes the first aggregate.
   fGlobalHeader.push_back(GetData32()[0]);
   fGlobalHeader.push_back(GetData32()[1]);
   fGlobalHeader.push_back(GetData32()[2]);
   fGlobalHeader.push_back(GetData32()[3]);
 
+  // Every board aggregate header begins with the 0xA nibble; flag if the first is wrong.
   if( (GetData32()[0] & 0xf0000000) != 0xa0000000)
     std::cerr << "First word has wrong identifier; first word = 0x"
 	      << std::hex << GetData32()[0] << std::dec << std::endl;
 
+  // 'counter' is our word offset into the bank; it walks forward through every level.
   int counter = 0;
 
-  // Loop over all board aggregates in the bank. The V1725 firmware can pack
-  // multiple aggregates into one MIDAS bank when the buffer fills between readouts.
+  // ---- Level 1: board aggregates -------------------------------------------------
+  // Loop over all board aggregates in the bank, not just the first. Stop once we run
+  // off the end of the bank or hit a word that isn't a valid aggregate header.
   while(counter < bklen) {
 
-    // Stop if the next word doesn't have the board aggregate identifier.
+    // The board aggregate header word 0 must carry the 0xA identifier nibble.
     if( (GetData32()[counter] & 0xf0000000) != 0xa0000000) break;
 
     int agg_start = counter;
-    uint32_t agg_size    = GetData32()[counter]     & 0xfffffff;
-    uint32_t agg_ch_mask = GetData32()[counter + 1] & 0xff;
-    counter += 4; // skip 4-word board aggregate header
+    uint32_t agg_size    = GetData32()[counter]     & 0xfffffff; // total words in this aggregate (incl. 4-word header)
+    uint32_t agg_ch_mask = GetData32()[counter + 1] & 0xff;      // which of the 8 dual-channel groups are present
+    counter += 4; // skip the 4-word board aggregate header
 
-    // Loop over dual channel data for this aggregate
+    // ---- Level 2: channel aggregates (one per enabled dual-channel group) --------
     for(int ch = 0; ch < 8; ch++){
 
+      // Skip groups that did not trigger; only flagged groups have data in this aggregate.
       if(!((1<<ch) & agg_ch_mask)) continue;
 
+      int ch_agg_start = counter;
       uint32_t header0 = GetData32()[counter];
-      uint32_t ch_agg_size = header0 & 0x3fffff;
+      uint32_t ch_agg_size = header0 & 0x3fffff; // total words in this channel aggregate (incl. 2-word header)
       counter++;
 
-      uint32_t header1 = GetData32()[counter];
+      uint32_t header1 = GetData32()[counter]; // describes the per-record format for this group
       counter++;
 
-      uint32_t n_samples_d8 = header1 & 0xffff;
-      int total_size_ch_agg = n_samples_d8*4 + 3;
-      int total_events = (ch_agg_size-2)/total_size_ch_agg;
+      // A record's size depends on which optional fields the channel records. These
+      // flags live in header1 and can differ from group to group, so a timing-marker
+      // channel (e.g. the cycle-start input) may use a smaller record than a detector
+      // channel. We must read the flags instead of assuming a fixed record size, or
+      // the offset drifts and later channel groups are misread.
+      uint32_t n_samples_d8 = header1 & 0xffff;       // waveform length / 8 (in samples)
+      bool samples_enabled = (header1 & 0x08000000);  // bit 27: waveform samples present
+      bool extras_enabled  = (header1 & 0x10000000);  // bit 28: extras (extended time / baseline) word present
+      bool charge_enabled  = (header1 & 0x40000000);  // bit 30: charge (Qlong/Qshort) word present
+      int ch_agg_end = ch_agg_start + (int)ch_agg_size; // first word past this channel aggregate
 
-      for(int evt = 0; evt < total_events; evt++){
+      // ---- Level 3: records ------------------------------------------------------
+      // Walk records until we reach this channel aggregate's declared end. Bounding
+      // the loop by ch_agg_end (rather than a computed event count) means that even
+      // if a single record is decoded wrong, we still resume cleanly at the next
+      // channel group instead of losing the rest of the aggregate.
+      while(counter < ch_agg_end){
 
+        // header2 is always present: it holds the trigger time tag and the
+        // odd/even-channel bit that the ChannelMeasurement uses to resolve the channel.
         uint32_t header2 = GetData32()[counter];
         counter++;
         ChannelMeasurement meas = ChannelMeasurement(ch,header0,header1,header2);
 
-        std::vector<uint32_t> Samples;
-        for(int i = 0; i < n_samples_d8*4; i++){
-          uint32_t sample = (GetData32()[counter] & 0x3fff);
-          Samples.push_back(sample);
-          sample = (GetData32()[counter] & 0x3fff0000) >> 16;
-          Samples.push_back(sample);
+        // Optional waveform: n_samples_d8*8 samples, packed two-per-word, so
+        // n_samples_d8*4 words. The counter<ch_agg_end guard is defensive against a
+        // bad length so we never read past the aggregate boundary.
+        if(samples_enabled){
+          std::vector<uint32_t> Samples;
+          for(unsigned int i = 0; i < n_samples_d8*4 && counter < ch_agg_end; i++){
+            uint32_t sample = (GetData32()[counter] & 0x3fff);
+            Samples.push_back(sample);
+            sample = (GetData32()[counter] & 0x3fff0000) >> 16;
+            Samples.push_back(sample);
+            counter++;
+          }
+          meas.AddSamples(Samples);
+        }
+
+        // Optional extras word (extended time tag / baseline), present only if enabled.
+        if(extras_enabled){
+          meas.AddExtra(GetData32()[counter]);
           counter++;
         }
-        meas.AddSamples(Samples);
-
-        uint32_t extras = GetData32()[counter];
-        counter++;
-        meas.AddExtra(extras);
-        uint32_t qs = GetData32()[counter];
-        counter++;
-        meas.AddQs(qs);
-
-        if(Samples.size() != (0xffff & header1)*8){
-          std::cout << "Check2: " << Samples.size() << " " << (0xffff & header1)*8
-                    << " whoops, mistake in decoding, sample size not as expected. counter="
-                    << counter << std::endl;
+        // Optional charge word (Qlong/Qshort), present only if enabled.
+        if(charge_enabled){
+          meas.AddQs(GetData32()[counter]);
+          counter++;
         }
 
         fMeasurements.push_back(meas);
       }
+
+      // Snap to the next channel aggregate using its declared size, absorbing any
+      // residual drift from the record loop above.
+      counter = ch_agg_end;
     }
 
-    // Advance to the next board aggregate using the size from this aggregate's header.
+    // Snap to the next board aggregate using its declared size, for the same reason.
     counter = agg_start + (int)agg_size;
   }
 }
