@@ -100,7 +100,7 @@ TLi6Detector::TLi6Detector(bool isOffline, bool saveTree):TUCNDetectorBaseClass(
     fQLongThreshold = 2000.0; // Added amplifiers back.
 
     // Use PC Time; less precise time
-    UsePCTime();
+//    UsePCTime();
     std::cout << "Finished Li-6 constructor " << std::endl;
 
 }

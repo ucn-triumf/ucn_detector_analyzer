@@ -7,7 +7,7 @@ THe3Detector::THe3Detector(bool isOffline, bool is3HEDET1, bool saveTree): TUCND
     initialUnixTime = -1;
 
     // Use PC Time; less precise time
-    UsePCTime();
+//    UsePCTime();
 }
 
 void THe3Detector::GetHits(TDataContainer& dataContainer){
