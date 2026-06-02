@@ -152,6 +152,8 @@ TV1725DppPsdData::TV1725DppPsdData(int bklen, int bktype, const char* name, void
     std::cerr << "TV1725: bank not fully decoded -- stopped at word " << counter
               << " of " << bklen << " (" << (bklen - counter)
               << " word(s) left undecoded); possible malformed/misparsed bank." << std::endl;
+  } else {
+    std::cout << "TV1725: bank fully decoded" << std::endl;
   }
 }
 
