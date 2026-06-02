@@ -47,6 +47,24 @@ TV1725DppPsdData::TV1725DppPsdData(int bklen, int bktype, const char* name, void
     int agg_start = counter;
     uint32_t agg_size    = GetData32()[counter]     & 0xfffffff; // total words in this aggregate (incl. 4-word header)
     uint32_t agg_ch_mask = GetData32()[counter + 1] & 0xff;      // which of the 8 dual-channel groups are present
+
+    // ---- Diagnostic: detect aggregates dropped at the board (e.g. buffer overflow) ----
+    // Header word 2 holds the 23-bit board aggregate counter, which increments once per
+    // aggregate the board emits. A forward jump of more than 1 means the board produced
+    // aggregates that never reached us: events were lost in the digitizer/DAQ, not in
+    // this decoder. (A backward jump is a run reset or 23-bit wrap, which we just resync
+    // to.) Word 3 is the aggregate time tag, useful for correlating with a missing marker.
+    static long lastAggCounter = -1;
+    uint32_t aggCounter = GetData32()[agg_start + 2] & 0x7fffff;
+    if(lastAggCounter >= 0 && (long)aggCounter > lastAggCounter + 1){
+      std::cerr << "TV1725: board aggregate counter gap -- "
+                << (aggCounter - lastAggCounter - 1) << " aggregate(s) dropped at the board; "
+                << "counter " << lastAggCounter << " -> " << aggCounter
+                << ", time tag " << GetData32()[agg_start + 3]
+                << ", ch mask 0x" << std::hex << agg_ch_mask << std::dec << std::endl;
+    }
+    lastAggCounter = aggCounter;
+
     counter += 4; // skip the 4-word board aggregate header
 
     // ---- Level 2: channel aggregates (one per enabled dual-channel group) --------
@@ -123,6 +141,17 @@ TV1725DppPsdData::TV1725DppPsdData(int bklen, int bktype, const char* name, void
 
     // Snap to the next board aggregate using its declared size, for the same reason.
     counter = agg_start + (int)agg_size;
+  }
+
+  // ---- Diagnostic: detect decoder desync within a bank --------------------------------
+  // A correctly-parsed bank is fully consumed: the final offset should equal bklen.
+  // If it stops short, a board aggregate header failed the 0xA identifier check and we
+  // bailed early -- meaning the bank was malformed or misparsed and any data in the tail
+  // (possibly a cycle-start marker) was dropped by *this decoder* rather than the board.
+  if(counter != bklen){
+    std::cerr << "TV1725: bank not fully decoded -- stopped at word " << counter
+              << " of " << bklen << " (" << (bklen - counter)
+              << " word(s) left undecoded); possible malformed/misparsed bank." << std::endl;
   }
 }
 
