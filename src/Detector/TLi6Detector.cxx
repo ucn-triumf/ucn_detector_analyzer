@@ -317,22 +317,18 @@ bool TLi6Detector::CheckForSequenceStartPrecise(TDataContainer& dataContainer){
 
 #ifdef USING_V1725_READOUT_LI6
 
-    // Channel 10 for cycle start signal. Collect *every* channel-10 pulse in this
-    // event rather than returning at the first: a single MIDAS event can contain
-    // several cycle starts when the digitizer buffer backs up, and returning early
-    // would silently drop all but the first.
-    fCycleStartTimes.clear();
+    // Channel 10 for cycle start signal.
     for(unsigned int j = 0; j < fNonHits.size(); j++){ // loop over measurements
         if(fNonHits[j].channel == 10){ // start of cycle
             fLastCycleStartTime = fCycleStartTime;
             fCycleStartTime = fNonHits[j].preciseTime;
             fSequenceLength->Fill(fCycleStartTime-fLastCycleStartTime);
-            fCycleStartTimes.push_back(fCycleStartTime);
             std::cout << "Li-6 Cycle start: "  << fCycleStartTime <<  " " << fCycleStartTime-fLastCycleStartTime  << std::endl;
+            return true;
         }
     }
 
-    return !fCycleStartTimes.empty();
+    return false;
 #else
 
   // Check if we had a hit on channel1-7 (15) indicating the start of a new sequence

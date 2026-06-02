@@ -376,20 +376,8 @@ void TUCNDetectorBaseClass::ProcessMidasEvent(TDataContainer& dataContainer){
         fHitsTree->FillHits(fBackgroundHits,0);
         fHitsTree->FillHits(fNonHits,0);
         if(fcycle_started){
-            if(UsePreciseSequenceTime() && !fCycleStartTimes.empty()){
-                // Record one transition per precise cycle-start pulse seen this event.
-                // Several can occur in a single MIDAS event when the digitizer buffer
-                // backs up; filling only once here was dropping the extras. Valve times
-                // follow the standard delay/interval convention from the cycle start.
-                for(unsigned int k = 0; k < fCycleStartTimes.size(); k++){
-                    double cs = fCycleStartTimes[k];
-                    fHitsTree->FillTransition(cs, cs + fSeqDelayTime, cs + fSeqDelayTime + fSeqOpenInterval,
-                                            fSeqDelayTime, fSeqOpenInterval, CycleParameters);
-                }
-            }else{
-                fHitsTree->FillTransition(fCycleStartTime,fSeqValveOpenTime,fSeqValveCloseTime,
-                                        fSeqDelayTime,fSeqOpenInterval,CycleParameters);
-            }
+            fHitsTree->FillTransition(fCycleStartTime,fSeqValveOpenTime,fSeqValveCloseTime,
+                                    fSeqDelayTime,fSeqOpenInterval,CycleParameters);
         }
     }
 
